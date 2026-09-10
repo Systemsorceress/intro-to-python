@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intro to Python — Milestone 1</title>
+<style>
+  :root{
+    --py-blue:#306998;
+    --py-blue2:#4d9bd0;
+    --py-yellow:#FFD43B;
+    --navy:#0F172A;
+    --slate:#1E293B;
+    --muted:#94a3b8;
+    --card:rgba(30,41,59,.78);
+    --border:rgba(148,163,184,.18);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    min-height:100vh;
+    color:#e2e8f0;
+    font-family:"SF Mono","JetBrains Mono","Fira Code",Menlo,Consolas,monospace;
+    background:
+      radial-gradient(1200px 600px at 15% 0%, rgba(48,105,152,.28), transparent 60%),
+      radial-gradient(1000px 700px at 100% 100%, rgba(255,212,59,.10), transparent 55%),
+      linear-gradient(160deg,#0b1220 0%,var(--navy) 45%,#0b1120 100%);
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background-image:
+      linear-gradient(rgba(148,163,184,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148,163,184,.05) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse at center, #000 35%, transparent 82%);
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    width:min(760px, calc(100% - 32px));
+    margin:0 auto;
+    padding:64px 0 72px;
+  }
+
+  /* ---------- Header ---------- */
+  header{text-align:center;margin-bottom:40px}
+
+  .logo{
+    width:66px;height:66px;
+    margin:0 auto 20px;
+    display:grid;place-items:center;
+    border-radius:20px;
+    font-size:24px;font-weight:700;
+    color:var(--navy);
+    background:linear-gradient(135deg,var(--py-yellow),#ffe680);
+    box-shadow:0 0 0 7px rgba(255,212,59,.08),0 15px 45px rgba(255,212,59,.18);
+  }
+
+  .kicker{
+    font-size:12px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:rgba(255,212,59,.75);
+    font-weight:700;
+    margin-bottom:12px;
+  }
+  .kicker #m1-badge{color:#4ade80;letter-spacing:.14em}
+
+  /* completed state (set from localStorage after Exercise 1) */
+  body.m1-done .num{
+    color:#22c55e;
+    background:rgba(34,197,94,.12);
+    border-color:rgba(34,197,94,.35);
+  }
+  body.m1-done .lesson:hover .num{
+    color:var(--navy);
+    background:#4ade80;
+    border-color:#4ade80;
+  }
+  body.m1-done .lesson .go{color:#4ade80}
+
+  h1{
+    font-size:clamp(1.9rem,5vw,2.8rem);
+    line-height:1.15;
+    letter-spacing:-.5px;
+    margin-bottom:12px;
+  }
+  h1 span{color:var(--py-yellow)}
+
+  .sub{
+    color:var(--muted);
+    font-size:.95rem;
+    max-width:520px;
+    margin:0 auto;
+  }
+
+  /* ---------- Lesson list ---------- */
+  .lessons{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .lesson{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:20px 22px;
+    border:1px solid var(--border);
+    border-radius:16px;
+    background:var(--card);
+    color:inherit;
+    text-decoration:none;
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease;
+  }
+  .lesson::before{
+    content:"";
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:3px;
+    border-radius:16px 0 0 16px;
+    background:linear-gradient(180deg,var(--py-blue),var(--py-yellow));
+    opacity:0;
+    transition:opacity .2s ease;
+  }
+  .lesson:hover{
+    transform:translateY(-3px);
+    border-color:rgba(75,156,211,.5);
+    background:rgba(48,105,152,.14);
+    box-shadow:0 20px 45px -18px rgba(0,0,0,.7);
+  }
+  .lesson:hover::before{opacity:1}
+  .lesson:focus-visible{outline:2px solid var(--py-yellow);outline-offset:3px}
+
+  .num{
+    flex:0 0 44px;
+    width:44px;height:44px;
+    display:grid;place-items:center;
+    border-radius:12px;
+    font-size:15px;font-weight:700;
+    color:var(--py-yellow);
+    background:rgba(148,163,184,.09);
+    border:1px solid rgba(148,163,184,.16);
+  }
+  .lesson:hover .num{
+    color:var(--navy);
+    background:var(--py-yellow);
+    border-color:var(--py-yellow);
+  }
+
+  .body{flex:1 1 auto;min-width:0}
+  .body .title{
+    font-size:1.05rem;
+    font-weight:700;
+    color:#f8fafc;
+    margin-bottom:3px;
+  }
+  .body .desc{
+    font-size:.82rem;
+    color:var(--muted);
+  }
+
+  .go{
+    flex:0 0 auto;
+    font-size:18px;
+    color:var(--py-blue2);
+    transition:transform .2s ease,color .2s ease;
+  }
+  .lesson:hover .go{transform:translateX(4px);color:var(--py-yellow)}
+
+  /* ---------- Start button ---------- */
+  .start-row{
+    margin-top:28px;
+    text-align:center;
+  }
+  .start{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 28px;
+    border-radius:999px;
+    font:inherit;
+    font-size:.95rem;
+    font-weight:700;
+    letter-spacing:.02em;
+    text-decoration:none;
+    color:var(--navy);
+    background:linear-gradient(135deg,var(--py-yellow),#ffe680);
+    box-shadow:0 12px 30px -8px rgba(255,212,59,.4);
+    transition:transform .18s ease;
+  }
+  .start:hover{transform:translateY(-2px)}
+  .start:focus-visible{outline:2px solid var(--py-yellow);outline-offset:3px}
+
+  footer{
+    margin-top:44px;
+    text-align:center;
+    color:var(--muted);
+    font-size:.78rem;
+  }
+  footer b{color:var(--py-yellow)}
+
+  @media (max-width:520px){
+    .lesson{padding:16px}
+    .body .desc{display:none}
+  }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header>
+      <div class="logo">&gt;_</div>
+      <div class="kicker">Milestone 1<span id="m1-badge" hidden> &bull; &#10003; Completed</span></div>
+      <h1>Intro to <span>Python</span></h1>
+      <p class="sub">Work through the lessons in order. Each has a <b>Next</b> button in the
+      bottom-right corner &mdash; finishing Exercise 1 marks Milestone 1 complete.</p>
+    </header>
+
+    <ol class="lessons">
+      <li>
+        <a class="lesson" href="Intro%20to%20python/index.html">
+          <span class="num">1</span>
+          <span class="body">
+            <span class="title">Intro to Python</span>
+            <span class="desc">Presentation deck &amp; worksheet &mdash; what programming and Python are</span>
+          </span>
+          <span class="go" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+      <li>
+        <a class="lesson" href="Data_Types.html">
+          <span class="num">2</span>
+          <span class="body">
+            <span class="title">Data Types</span>
+            <span class="desc">Strings, integers, floats, booleans and how Python tells them apart</span>
+          </span>
+          <span class="go" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+      <li>
+        <a class="lesson" href="Basic_Functions.html">
+          <span class="num">3</span>
+          <span class="body">
+            <span class="title">Basic Functions</span>
+            <span class="desc">Common beginner functions: print(), len(), type(), int() and friends</span>
+          </span>
+          <span class="go" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+      <li>
+        <a class="lesson" href="Input_Variables.html">
+          <span class="num">4</span>
+          <span class="body">
+            <span class="title">Input &amp; Variables</span>
+            <span class="desc">Making Python listen with input() and remember with variables</span>
+          </span>
+          <span class="go" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+      <li>
+        <a class="lesson" href="Exercise1.html">
+          <span class="num">5</span>
+          <span class="body">
+            <span class="title">Exercise 1</span>
+            <span class="desc">Mini programming task: build a Student Profile program</span>
+          </span>
+          <span class="go" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+    </ol>
+
+    <div class="start-row">
+      <a class="start" href="Intro%20to%20python/index.html">Start Milestone 1 &nbsp;&rarr;</a>
+    </div>
+
+    <footer>
+      <b>&gt;&gt;&gt;</b> print("Intro to Python &bull; Milestone 1")
+    </footer>
+  </div>
+
+  <script>
+  (function(){
+    var done = false;
+    try { done = localStorage.getItem("milestone1.completed") === "true"; } catch (e) {}
+    if (!done) return;
+
+    document.body.classList.add("m1-done");
+    var badge = document.getElementById("m1-badge");
+    if (badge) badge.hidden = false;
+
+    var start = document.querySelector(".start");
+    if (start) start.innerHTML = "Review Milestone 1 &nbsp;&rarr;";
+  })();
+  </script>
+
+</body>
+</html>

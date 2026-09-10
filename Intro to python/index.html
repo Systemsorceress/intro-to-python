@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intro to Python — Deck &amp; Worksheet</title>
+<style>
+  :root{
+    --py-blue:#306998;
+    --py-yellow:#FFD43B;
+    --navy:#0F172A;
+    --slate:#1E293B;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{height:100%;width:100%;overflow:hidden;background:var(--navy)}
+
+  .view{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+    display:block;
+    background:var(--navy);
+  }
+  .view[hidden]{display:none}
+
+  /* ---------- Top-right toggle ---------- */
+  .switcher{
+    position:fixed;
+    top:14px;
+    right:14px;
+    z-index:2147483000;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    padding:5px;
+    border-radius:999px;
+    background:rgba(15,23,42,.82);
+    border:1px solid rgba(255,212,59,.28);
+    box-shadow:0 10px 34px -10px rgba(0,0,0,.7);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    font-family:"SF Mono","JetBrains Mono","Fira Code",Menlo,Consolas,monospace;
+    user-select:none;
+  }
+
+  .switcher .brand{
+    color:rgba(255,212,59,.75);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.08em;
+    padding:0 6px 0 8px;
+  }
+
+  .switcher button{
+    appearance:none;
+    border:0;
+    cursor:pointer;
+    padding:8px 16px;
+    border-radius:999px;
+    font:inherit;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.03em;
+    color:#cbd5e1;
+    background:transparent;
+    transition:background .18s ease,color .18s ease,transform .12s ease;
+  }
+  .switcher button:hover{color:#fff}
+  .switcher button:active{transform:scale(.95)}
+  .switcher button[aria-pressed="true"]{
+    color:var(--navy);
+    background:linear-gradient(135deg,var(--py-yellow),#ffe680);
+    box-shadow:0 4px 14px rgba(255,212,59,.25);
+  }
+  .switcher button:focus-visible{outline:2px solid var(--py-yellow);outline-offset:2px}
+
+  @media (max-width:520px){
+    .switcher .brand{display:none}
+    .switcher button{padding:8px 12px;font-size:12px}
+  }
+</style>
+</head>
+<body>
+
+  <iframe id="view-presentation" class="view" title="Python presentation deck" allow="fullscreen" allowfullscreen></iframe>
+  <iframe id="view-worksheet"    class="view" title="Python programming worksheet" allow="fullscreen" allowfullscreen hidden></iframe>
+
+  <div class="switcher" role="group" aria-label="Choose view">
+    <span class="brand">&gt;&gt;&gt;</span>
+    <button id="btn-presentation" type="button" data-view="presentation" aria-pressed="true">Presentation</button>
+    <button id="btn-worksheet"    type="button" data-view="worksheet"    aria-pressed="false">Worksheet</button>
+  </div>
+
+
+  <!-- ============================================================= -->
+  <!--  SLIDE DECK  (rendered inside the presentation iframe)         -->
+  <!-- ============================================================= -->
+  <script type="text/html" id="tpl-presentation">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intro to Python Programming</title>
+<style>
+  :root{
+    --py-blue:#306998;
+    --py-yellow:#FFD43B;
+    --navy:#0F172A;
+    --slate:#1E293B;
+    --pad:clamp(12px, 3.5vw, 56px);
+    --transition:520ms cubic-bezier(.4,0,.2,1);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{height:100%;width:100%;overflow:hidden}
+
+  body{
+    background:var(--navy);
+    color:#e2e8f0;
+    font-family:"SF Mono", "JetBrains Mono","Fira Code",Menlo,Consolas,"Liberation Mono",monospace;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* ---------- Decorative Python-themed background ---------- */
+  .bg{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
+    pointer-events:none;
+    background:
+      radial-gradient(1200px 600px at 15% 0%, rgba(48,105,152,.28), transparent 60%),
+      radial-gradient(1000px 700px at 100% 100%, rgba(255,212,59,.10), transparent 55%),
+      linear-gradient(160deg, #0b1220 0%, var(--navy) 45%, #0b1120 100%);
+  }
+
+  /* faint grid / "code editor" pattern */
+  .bg::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    background-image:
+      linear-gradient(rgba(148,163,184,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148,163,184,.05) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse at center, #000 35%, transparent 78%);
+  }
+
+  .bg .prompt{
+    position:absolute;
+    font-size:clamp(3rem, 12vw, 11rem);
+    font-weight:700;
+    color:rgba(255,212,59,.06);
+    letter-spacing:.05em;
+    user-select:none;
+  }
+  .bg .prompt.tl{top:4%;left:3%}
+  .bg .prompt.br{bottom:3%;right:4%;color:rgba(48,105,152,.20)}
+
+  .bg .bracket{
+    position:absolute;
+    font-size:clamp(8rem, 34vw, 30rem);
+    line-height:1;
+    font-weight:300;
+    color:rgba(48,105,152,.10);
+    user-select:none;
+  }
+  .bg .bracket.left{left:-1.5vw;top:50%;transform:translateY(-50%)}
+  .bg .bracket.right{right:-1.5vw;top:50%;transform:translateY(-50%)}
+
+  .bg .snake{
+    position:absolute;
+    right:6%;
+    top:8%;
+    width:min(180px,18vw);
+    opacity:.10;
+  }
+
+  /* ---------- Stage / slides ---------- */
+  .stage{
+    position:relative;
+    z-index:1;
+    width:100vw;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:var(--pad);
+  }
+
+  .deck{
+    position:relative;
+    width:100%;
+    height:auto;
+    max-width:calc((100vh - 2 * var(--pad)) * 16 / 9);
+    aspect-ratio:16 / 9;
+    margin:auto;
+    border-radius:14px;
+    overflow:hidden;
+    background:var(--slate);
+    box-shadow:
+      0 0 0 1px rgba(255,212,59,.14),
+      0 0 0 6px rgba(15,23,42,.6),
+      0 30px 80px -20px rgba(0,0,0,.75);
+  }
+
+  /* subtle "title bar" of a terminal window */
+  .deck::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:6px;
+    background:linear-gradient(90deg,var(--py-blue),var(--py-yellow));
+    z-index:5;
+    opacity:.9;
+  }
+
+  .slide{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    transform:scale(1.012);
+    transition:opacity var(--transition), transform var(--transition);
+    pointer-events:none;
+  }
+
+  .slide.active{
+    opacity:1;
+    transform:scale(1);
+    pointer-events:auto;
+  }
+
+  .slide img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    user-select:none;
+    -webkit-user-drag:none;
+  }
+
+  /* ---------- Control bar ---------- */
+  .controls{
+    position:fixed;
+    z-index:20;
+    left:50%;
+    bottom:26px;
+    transform:translateX(-50%) translateY(8px);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 10px;
+    background:rgba(15,23,42,.82);
+    border:1px solid rgba(255,212,59,.22);
+    border-radius:999px;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    box-shadow:0 12px 40px -12px rgba(0,0,0,.7);
+    opacity:0;
+    transition:opacity 360ms ease, transform 360ms ease;
+  }
+  .controls.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .controls button{
+    appearance:none;
+    border:0;
+    cursor:pointer;
+    width:38px;
+    height:38px;
+    border-radius:999px;
+    display:grid;
+    place-items:center;
+    font-family:inherit;
+    font-size:16px;
+    color:#e2e8f0;
+    background:rgba(48,105,152,.28);
+    transition:background 160ms ease, color 160ms ease, transform 120ms ease;
+  }
+  .controls button:hover{background:var(--py-blue);color:#fff}
+  .controls button:active{transform:scale(.92)}
+  .controls button:disabled{opacity:.3;cursor:not-allowed}
+  .controls button:focus-visible{outline:2px solid var(--py-yellow);outline-offset:2px}
+
+  .counter{
+    min-width:92px;
+    text-align:center;
+    font-size:13px;
+    letter-spacing:.08em;
+    padding:0 10px;
+    color:#cbd5e1;
+    user-select:none;
+    white-space:nowrap;
+  }
+  .counter .cur{color:var(--py-yellow);font-weight:700}
+  .counter .sep{color:#64748b;margin:0 4px}
+  .counter .prompt{color:var(--py-blue);margin-right:6px;font-weight:700}
+
+  /* ---------- Progress bar ---------- */
+  .progress{
+    position:fixed;
+    z-index:20;
+    left:0;
+    bottom:0;
+    height:4px;
+    width:100%;
+    background:rgba(148,163,184,.14);
+  }
+  .progress .fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--py-blue),var(--py-yellow));
+    transition:width var(--transition);
+  }
+
+  /* corner badge */
+  .badge{
+    position:fixed;
+    z-index:20;
+    top:16px;left:18px;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:rgba(203,213,225,.55);
+    user-select:none;
+  }
+  .badge b{color:var(--py-yellow)}
+
+  .hint{
+    position:fixed;
+    z-index:20;
+    top:16px;right:210px;
+    font-size:11px;
+    color:rgba(148,163,184,.45);
+    user-select:none;
+  }
+
+  body.idle{cursor:none}
+
+  @media (max-width:640px){
+    .badge,.hint{display:none}
+  }
+</style>
+</head>
+<body>
+
+  <div class="bg" aria-hidden="true">
+    <span class="prompt tl">&gt;&gt;&gt;</span>
+    <span class="prompt br">&gt;&gt;&gt;</span>
+    <span class="bracket left">{</span>
+    <span class="bracket right">}</span>
+    <svg class="snake" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+      <path d="M50 8c-14 0-22 7-22 18v10h30v4H20c-9 0-16 8-16 20s7 20 16 20h10V88c0-11 8-18 22-18h16c9 0 16-7 16-16V26C84 15 76 8 62 8H50z" fill="#FFD43B"/>
+      <circle cx="41" cy="22" r="4" fill="#0F172A"/>
+    </svg>
+  </div>
+
+  <div class="badge">Intro&nbsp;to&nbsp;<b>Python</b>&nbsp;Programming</div>
+  <div class="hint">&#8592; &#8594; &middot; Space &middot; F&nbsp;fullscreen</div>
+
+  <div class="stage">
+    <div class="deck" id="deck">
+      <div class="slide active"><img src="1.jpg"  alt="Slide 1"  loading="eager"></div>
+      <div class="slide"><img src="2.jpg"  alt="Slide 2"  loading="eager"></div>
+      <div class="slide"><img src="3.jpg"  alt="Slide 3"  loading="eager"></div>
+      <div class="slide"><img src="4.jpg"  alt="Slide 4"  loading="lazy"></div>
+      <div class="slide"><img src="5.jpg"  alt="Slide 5"  loading="lazy"></div>
+      <div class="slide"><img src="6.jpg"  alt="Slide 6"  loading="lazy"></div>
+      <div class="slide"><img src="7.jpg"  alt="Slide 7"  loading="lazy"></div>
+      <div class="slide"><img src="8.jpg"  alt="Slide 8"  loading="lazy"></div>
+      <div class="slide"><img src="9.jpg"  alt="Slide 9"  loading="lazy"></div>
+      <div class="slide"><img src="10.jpg" alt="Slide 10" loading="lazy"></div>
+      <div class="slide"><img src="11.jpg" alt="Slide 11" loading="lazy"></div>
+      <div class="slide"><img src="12.jpg" alt="Slide 12" loading="lazy"></div>
+      <div class="slide"><img src="13.jpg" alt="Slide 13" loading="lazy"></div>
+      <div class="slide"><img src="14.jpg" alt="Slide 14" loading="lazy"></div>
+      <div class="slide"><img src="15.jpg" alt="Slide 15" loading="lazy"></div>
+      <div class="slide"><img src="16.jpg" alt="Slide 16" loading="lazy"></div>
+    </div>
+  </div>
+
+  <div class="controls" id="controls" aria-label="Presentation controls">
+    <button id="prev" title="Previous slide (Left arrow)" aria-label="Previous slide">&#8592;</button>
+    <div class="counter">
+      <span class="prompt">&gt;&gt;&gt;</span>
+      <span class="cur" id="cur">1</span>
+      <span class="sep">/</span>
+      <span class="total" id="total">16</span>
+    </div>
+    <button id="next" title="Next slide (Right arrow)" aria-label="Next slide">&#8594;</button>
+    <button id="fs" title="Fullscreen (F)" aria-label="Toggle fullscreen">&#9210;</button>
+  </div>
+
+  <div class="progress" aria-hidden="true"><div class="fill" id="fill"></div></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var slides   = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var total    = slides.length;
+  var index    = 0;
+
+  var curEl    = document.getElementById("cur");
+  var totalEl  = document.getElementById("total");
+  var fillEl   = document.getElementById("fill");
+  var prevBtn  = document.getElementById("prev");
+  var nextBtn  = document.getElementById("next");
+  var fsBtn    = document.getElementById("fs");
+  var controls = document.getElementById("controls");
+
+  totalEl.textContent = total;
+
+  function render(){
+    slides.forEach(function(s,i){ s.classList.toggle("active", i === index); });
+    curEl.textContent = index + 1;
+    fillEl.style.width = ((index + 1) / total * 100) + "%";
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === total - 1;
+    var nxt = slides[index + 1];
+    if (nxt){ var img = nxt.querySelector("img"); if (img) img.loading = "eager"; }
+  }
+
+  function go(i){
+    var clamped = Math.max(0, Math.min(total - 1, i));
+    if (clamped === index) return;
+    index = clamped;
+    render();
+  }
+  function next(){ go(index + 1); }
+  function prev(){ go(index - 1); }
+
+  function toggleFullscreen(){
+    var el = document.documentElement;
+    if (!document.fullscreenElement && !document.webkitFullscreenElement){
+      (el.requestFullscreen || el.webkitRequestFullscreen || function(){}).call(el);
+    } else {
+      (document.exitFullscreen || document.webkitExitFullscreen || function(){}).call(document);
+    }
+  }
+
+  prevBtn.addEventListener("click", prev);
+  nextBtn.addEventListener("click", next);
+  fsBtn.addEventListener("click", toggleFullscreen);
+
+  document.addEventListener("keydown", function(e){
+    switch(e.key){
+      case "ArrowRight":
+      case "PageDown":
+        e.preventDefault(); next(); break;
+      case " ":
+      case "Spacebar":
+        e.preventDefault(); next(); break;
+      case "ArrowLeft":
+      case "PageUp":
+        e.preventDefault(); prev(); break;
+      case "Home":
+        e.preventDefault(); go(0); break;
+      case "End":
+        e.preventDefault(); go(total - 1); break;
+      case "f":
+      case "F":
+        e.preventDefault(); toggleFullscreen(); break;
+    }
+  });
+
+  document.getElementById("deck").addEventListener("click", function(e){
+    var r = this.getBoundingClientRect();
+    if (e.clientX - r.left < r.width / 2) prev(); else next();
+  });
+
+  var hideTimer = null;
+  function showControls(){
+    controls.classList.add("show");
+    document.body.classList.remove("idle");
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function(){
+      controls.classList.remove("show");
+      document.body.classList.add("idle");
+    }, 2600);
+  }
+  ["mousemove","mousedown","touchstart","keydown"].forEach(function(ev){
+    document.addEventListener(ev, showControls, {passive:true});
+  });
+  controls.addEventListener("mouseenter", function(){ clearTimeout(hideTimer); });
+  controls.addEventListener("mouseleave", showControls);
+
+  render();
+  showControls();
+})();
+<\/script>
+</body>
+</html>
+  </script>
+
+
+  <!-- ============================================================= -->
+  <!--  WORKSHEET  (rendered inside the worksheet iframe)             -->
+  <!-- ============================================================= -->
+  <script type="text/html" id="tpl-worksheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python Programming Quiz</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --blue: #306998;
+      --blue-light: #4b9cd3;
+      --gold: #ffd43b;
+      --navy: #0f172a;
+      --slate: #1e293b;
+      --slate-light: #334155;
+      --white: #f8fafc;
+      --muted: #94a3b8;
+      --green: #22c55e;
+      --red: #ef4444;
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+      --card: rgba(30, 41, 59, 0.78);
+      --border: rgba(148, 163, 184, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Inter", sans-serif;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(48, 105, 152, 0.25), transparent 30%),
+        radial-gradient(circle at 90% 20%, rgba(255, 212, 59, 0.09), transparent 25%),
+        radial-gradient(circle at 50% 100%, rgba(139, 92, 246, 0.12), transparent 35%),
+        var(--navy);
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.18;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 35px 35px;
+      z-index: -1;
+    }
+
+    .container {
+      width: min(1100px, calc(100% - 32px));
+      margin: auto;
+    }
+
+    /* ---------- HERO ---------- */
+
+    header {
+      padding: 55px 0 35px;
+      text-align: center;
+    }
+
+    .python-logo {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      font-family: "Fira Code", monospace;
+      font-size: 27px;
+      font-weight: 700;
+      color: var(--navy);
+      background: linear-gradient(135deg, var(--gold), #ffe680);
+      box-shadow:
+        0 0 0 7px rgba(255, 212, 59, 0.08),
+        0 15px 45px rgba(255, 212, 59, 0.18);
+    }
+
+    h1 {
+      font-family: "Poppins", sans-serif;
+      font-size: clamp(2.1rem, 5vw, 3.8rem);
+      line-height: 1.1;
+      margin-bottom: 14px;
+      letter-spacing: -1.5px;
+    }
+
+    h1 span {
+      color: var(--gold);
+    }
+
+    .subtitle {
+      max-width: 650px;
+      margin: auto;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .progress-wrap {
+      max-width: 700px;
+      margin: 28px auto 0;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 8px;
+    }
+
+    .progress {
+      height: 9px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue-light), var(--gold));
+      transition: width 0.35s ease;
+    }
+
+    /* ---------- QUIZ ---------- */
+
+    main {
+      padding: 10px 0 60px;
+    }
+
+    .question-card {
+      position: relative;
+      margin: 20px 0;
+      padding: 26px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 15px 45px rgba(0,0,0,0.18);
+      transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+      overflow: hidden;
+    }
+
+    .question-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--gold));
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .question-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(75, 156, 211, 0.45);
+      box-shadow: 0 20px 55px rgba(0,0,0,0.25);
+    }
+
+    .question-card:hover::before {
+      opacity: 1;
+    }
+
+    .question-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 16px;
+    }
+
+    .question-number {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-family: "Fira Code", monospace;
+      color: var(--gold);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      background: rgba(139, 92, 246, 0.13);
+      border: 1px solid rgba(139, 92, 246, 0.28);
+      color: #c4b5fd;
+    }
+
+    .badge.challenge {
+      background: rgba(255, 212, 59, 0.1);
+      border-color: rgba(255, 212, 59, 0.28);
+      color: var(--gold);
+    }
+
+    .badge.logic {
+      background: rgba(6, 182, 212, 0.1);
+      border-color: rgba(6, 182, 212, 0.28);
+      color: #67e8f9;
+    }
+
+    .question-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #f8fafc;
+      margin-bottom: 19px;
+    }
+
+    /* ---------- OPTIONS ---------- */
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 11px;
+    }
+
+    .option {
+      position: relative;
+    }
+
+    .option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .option label {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 12px 15px;
+      cursor: pointer;
+      border: 1px solid rgba(148,163,184,0.14);
+      border-radius: 14px;
+      background: rgba(15,23,42,0.55);
+      color: #cbd5e1;
+      font-size: 0.91rem;
+      transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        color 0.2s ease;
+    }
+
+    .option label:hover {
+      transform: translateY(-2px);
+      border-color: rgba(75,156,211,0.55);
+      background: rgba(48,105,152,0.14);
+      color: white;
+    }
+
+    .letter {
+      flex: 0 0 31px;
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      font-family: "Fira Code", monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      background: rgba(148,163,184,0.09);
+      border: 1px solid rgba(148,163,184,0.15);
+      transition: all 0.2s ease;
+    }
+
+    .option input:checked + label {
+      border-color: var(--gold);
+      background: rgba(255,212,59,0.1);
+      color: white;
+      box-shadow: 0 0 0 2px rgba(255,212,59,0.05);
+    }
+
+    .option input:checked + label .letter {
+      color: var(--navy);
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    /* ---------- ANSWER ---------- */
+
+    .answer-area {
+      margin-top: 17px;
+    }
+
+    .answer-btn {
+      border: 0;
+      background: transparent;
+      color: var(--blue-light);
+      font-family: "Inter", sans-serif;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .answer-btn:hover {
+      color: var(--gold);
+    }
+
+    .answer {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      margin-top: 0;
+      padding: 0 14px;
+      border-left: 3px solid var(--green);
+      background: rgba(34,197,94,0.07);
+      border-radius: 0 10px 10px 0;
+      transition:
+        max-height 0.35s ease,
+        opacity 0.3s ease,
+        margin-top 0.35s ease,
+        padding 0.35s ease;
+    }
+
+    .answer.show {
+      max-height: 100px;
+      opacity: 1;
+      margin-top: 10px;
+      padding: 10px 14px;
+    }
+
+    .answer strong {
+      color: #86efac;
+    }
+
+    /* ---------- RESULT ---------- */
+
+    .result-card {
+      display: none;
+      margin: 35px 0;
+      padding: 35px;
+      text-align: center;
+      border-radius: 25px;
+      background:
+        linear-gradient(135deg, rgba(48,105,152,0.2), rgba(255,212,59,0.08)),
+        rgba(30,41,59,0.85);
+      border: 1px solid rgba(255,212,59,0.25);
+      box-shadow: 0 20px 70px rgba(0,0,0,0.3);
+    }
+
+    .result-card.show {
+      display: block;
+      animation: pop 0.4s ease;
+    }
+
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .score {
+      font-family: "Poppins", sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+      margin: 10px 0;
+    }
+
+    .result-message {
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    /* ---------- BUTTONS ---------- */
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 35px;
+    }
+
+    button.primary,
+    button.secondary {
+      border: 0;
+      border-radius: 13px;
+      padding: 13px 22px;
+      font-family: "Inter", sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button.primary {
+      color: var(--navy);
+      background: linear-gradient(135deg, var(--gold), #ffe477);
+      box-shadow: 0 10px 25px rgba(255,212,59,0.16);
+    }
+
+    button.secondary {
+      color: #dbeafe;
+      background: rgba(48,105,152,0.2);
+      border: 1px solid rgba(75,156,211,0.3);
+    }
+
+    button.primary:hover,
+    button.secondary:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ---------- FOOTER ---------- */
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      padding: 15px 0 35px;
+    }
+
+    footer span {
+      color: var(--gold);
+      font-family: "Fira Code", monospace;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+
+    @media (max-width: 700px) {
+      header {
+        padding-top: 35px;
+      }
+
+      .question-card {
+        padding: 20px;
+        border-radius: 18px;
+      }
+
+      .options {
+        grid-template-columns: 1fr;
+      }
+
+      .question-top {
+        align-items: flex-start;
+      }
+
+      .badge {
+        font-size: 0.65rem;
+      }
+    }
+
+    /* ---------- PRINT ---------- */
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 14mm;
+      }
+
+      * {
+        color: #111827 !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+
+      body {
+        background: white !important;
+        font-size: 10pt;
+      }
+
+      body::before {
+        display: none;
+      }
+
+      header {
+        padding: 10px 0 20px;
+      }
+
+      .python-logo {
+        width: 45px;
+        height: 45px;
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        font-size: 24pt;
+      }
+
+      .subtitle {
+        color: #4b5563 !important;
+      }
+
+      .progress-wrap,
+      .actions,
+      .answer-btn,
+      .result-card,
+      footer {
+        display: none !important;
+      }
+
+      main {
+        padding: 0;
+      }
+
+      .question-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin: 0 0 12px;
+        padding: 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: white !important;
+      }
+
+      .question-card::before {
+        display: none;
+      }
+
+      .question-top {
+        margin-bottom: 8px;
+      }
+
+      .question-text {
+        margin-bottom: 10px;
+        font-size: 10.5pt;
+      }
+
+      .badge {
+        padding: 3px 7px;
+        border: 1px solid #9ca3af;
+        background: #f3f4f6 !important;
+      }
+
+      .options {
+        gap: 6px;
+      }
+
+      .option label {
+        min-height: 36px;
+        padding: 7px 9px;
+        border: 1px solid #d1d5db;
+        background: white !important;
+        color: #374151 !important;
+      }
+
+      .letter {
+        width: 24px;
+        height: 24px;
+        flex-basis: 24px;
+        background: #f3f4f6 !important;
+        border: 1px solid #d1d5db;
+      }
+
+      .option input:checked + label {
+        border-color: #111827;
+        background: #f9fafb !important;
+      }
+
+      .answer {
+        max-height: none !important;
+        opacity: 1 !important;
+        margin-top: 8px;
+        padding: 5px 9px;
+        background: #f0fdf4 !important;
+      }
+
+      .answer strong {
+        color: #166534 !important;
+      }
+
+      .answer:not(.show) {
+        display: none;
+      }
+
+      .print-note {
+        display: block !important;
+      }
+    }
+
+    .print-note {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <div class="python-logo">Py</div>
+
+      <h1>Python <span>Programming</span> Quiz</h1>
+
+      <p class="subtitle">
+        Test your understanding of programming languages, Python,
+        text editors, interpreters, and the human&ndash;computer connection.
+      </p>
+
+      <div class="progress-wrap">
+        <div class="progress-info">
+          <span>Quiz Progress</span>
+          <span id="progressText">0 / 15 answered</span>
+        </div>
+
+        <div class="progress">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Q1 -->
+    <section class="question-card" data-answer="B">
+      <div class="question-top">
+        <div class="question-number">Q01</div>
+      </div>
+
+      <p class="question-text">
+        Why do we use programming languages?
+      </p>
+
+      <div class="options">
+        <div class="option">
+          <input type="radio" name="q1" id="q1a" value="A">
+          <label for="q1a"><span class="letter">A</span>To make computers look attractive</label>
+        </div>
+        <div class="option">
+          <input type="radio" name="q1" id="q1b" value="B">
+          <label for="q1b"><span class="letter">B</span>To communicate instructions to computers</label>
+        </div>
+        <div class="option">
+          <input type="radio" name="q1" id="q1c" value="C">
+          <label for="q1c"><span class="letter">C</span>To replace computer hardware</label>
+        </div>
+        <div class="option">
+          <input type="radio" name="q1" id="q1d" value="D">
+          <label for="q1d"><span class="letter">D</span>To make computers speak human languages</label>
+        </div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: B</strong> &mdash; Programming languages allow humans to communicate instructions to computers.</div>
+      </div>
+    </section>
+
+    <!-- Q2 -->
+    <section class="question-card" data-answer="A">
+      <div class="question-top"><div class="question-number">Q02</div></div>
+      <p class="question-text">Which of these is a programming language?</p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q2" id="q2a" value="A"><label for="q2a"><span class="letter">A</span>Python</label></div>
+        <div class="option"><input type="radio" name="q2" id="q2b" value="B"><label for="q2b"><span class="letter">B</span>Keyboard</label></div>
+        <div class="option"><input type="radio" name="q2" id="q2c" value="C"><label for="q2c"><span class="letter">C</span>Monitor</label></div>
+        <div class="option"><input type="radio" name="q2" id="q2d" value="D"><label for="q2d"><span class="letter">D</span>Text editor</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: A</strong> &mdash; Python is a programming language.</div>
+      </div>
+    </section>
+
+    <!-- Q3 -->
+    <section class="question-card" data-answer="A">
+      <div class="question-top"><div class="question-number">Q03</div></div>
+      <p class="question-text">What is the main purpose of a text editor?</p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q3" id="q3a" value="A"><label for="q3a"><span class="letter">A</span>To write and edit instructions</label></div>
+        <div class="option"><input type="radio" name="q3" id="q3b" value="B"><label for="q3b"><span class="letter">B</span>To physically control the computer</label></div>
+        <div class="option"><input type="radio" name="q3" id="q3c" value="C"><label for="q3c"><span class="letter">C</span>To replace the operating system</label></div>
+        <div class="option"><input type="radio" name="q3" id="q3d" value="D"><label for="q3d"><span class="letter">D</span>To turn the computer into a human</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: A</strong> &mdash; A text editor is a tool where programmers write and edit their instructions.</div>
+      </div>
+    </section>
+
+    <!-- Q4 -->
+    <section class="question-card" data-answer="C">
+      <div class="question-top"><div class="question-number">Q04</div></div>
+      <p class="question-text">Which part helps process Python instructions so the computer can execute them?</p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q4" id="q4a" value="A"><label for="q4a"><span class="letter">A</span>Mouse</label></div>
+        <div class="option"><input type="radio" name="q4" id="q4b" value="B"><label for="q4b"><span class="letter">B</span>Text editor</label></div>
+        <div class="option"><input type="radio" name="q4" id="q4c" value="C"><label for="q4c"><span class="letter">C</span>Python interpreter/runtime</label></div>
+        <div class="option"><input type="radio" name="q4" id="q4d" value="D"><label for="q4d"><span class="letter">D</span>Monitor</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: C</strong> &mdash; The Python interpreter/runtime processes Python instructions so they can be executed.</div>
+      </div>
+    </section>
+
+    <!-- Q5 -->
+    <section class="question-card" data-answer="C">
+      <div class="question-top"><div class="question-number">Q05</div></div>
+      <p class="question-text">Which statement is TRUE?</p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q5" id="q5a" value="A"><label for="q5a"><span class="letter">A</span>Python and a text editor are the same thing</label></div>
+        <div class="option"><input type="radio" name="q5" id="q5b" value="B"><label for="q5b"><span class="letter">B</span>A text editor is a programming language</label></div>
+        <div class="option"><input type="radio" name="q5" id="q5c" value="C"><label for="q5c"><span class="letter">C</span>Python is a programming language</label></div>
+        <div class="option"><input type="radio" name="q5" id="q5d" value="D"><label for="q5d"><span class="letter">D</span>A computer is a programming language</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: C</strong> &mdash; Python is a programming language.</div>
+      </div>
+    </section>
+
+    <!-- Q6 -->
+    <section class="question-card" data-answer="A">
+      <div class="question-top"><div class="question-number">Q06</div></div>
+      <p class="question-text">Why is machine language difficult for most humans to use directly?</p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q6" id="q6a" value="A"><label for="q6a"><span class="letter">A</span>It uses very low-level instructions represented using binary</label></div>
+        <div class="option"><input type="radio" name="q6" id="q6b" value="B"><label for="q6b"><span class="letter">B</span>It uses only English words</label></div>
+        <div class="option"><input type="radio" name="q6" id="q6c" value="C"><label for="q6c"><span class="letter">C</span>It cannot be stored on a computer</label></div>
+        <div class="option"><input type="radio" name="q6" id="q6d" value="D"><label for="q6d"><span class="letter">D</span>It is only used for websites</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: A</strong> &mdash; Machine language uses very low-level instructions represented using binary.</div>
+      </div>
+    </section>
+
+    <!-- Q7 -->
+    <section class="question-card" data-answer="B">
+      <div class="question-top"><div class="question-number">Q07</div></div>
+      <p class="question-text">Which is the BEST analogy for Python?</p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q7" id="q7a" value="A"><label for="q7a"><span class="letter">A</span>A writing desk</label></div>
+        <div class="option"><input type="radio" name="q7" id="q7b" value="B"><label for="q7b"><span class="letter">B</span>A communication language</label></div>
+        <div class="option"><input type="radio" name="q7" id="q7c" value="C"><label for="q7c"><span class="letter">C</span>A computer screen</label></div>
+        <div class="option"><input type="radio" name="q7" id="q7d" value="D"><label for="q7d"><span class="letter">D</span>A keyboard</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: B</strong> &mdash; Python is a language humans use to communicate instructions to computers.</div>
+      </div>
+    </section>
+
+    <!-- Q8 -->
+    <section class="question-card" data-answer="A">
+      <div class="question-top">
+        <div class="question-number">Q08</div>
+        <span class="badge">&#129504; Brain Teaser</span>
+      </div>
+
+      <p class="question-text">
+        Imagine you travel to another country and don't understand the local language.
+        What is most similar to using a programming language?
+      </p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q8" id="q8a" value="A"><label for="q8a"><span class="letter">A</span>Using a language that allows you to communicate your instructions</label></div>
+        <div class="option"><input type="radio" name="q8" id="q8b" value="B"><label for="q8b"><span class="letter">B</span>Buying a new computer</label></div>
+        <div class="option"><input type="radio" name="q8" id="q8c" value="C"><label for="q8c"><span class="letter">C</span>Changing your clothes</label></div>
+        <div class="option"><input type="radio" name="q8" id="q8d" value="D"><label for="q8d"><span class="letter">D</span>Turning off your phone</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: A</strong> &mdash; A programming language provides a structured way to communicate instructions.</div>
+      </div>
+    </section>
+
+    <!-- Q9 -->
+    <section class="question-card" data-answer="B">
+      <div class="question-top"><div class="question-number">Q09</div></div>
+      <p class="question-text">
+        A student says: "The text editor is the translator." What is the best correction?
+      </p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q9" id="q9a" value="A"><label for="q9a"><span class="letter">A</span>Yes, because the text editor understands everything</label></div>
+        <div class="option"><input type="radio" name="q9" id="q9b" value="B"><label for="q9b"><span class="letter">B</span>No, the text editor is mainly where we write and edit our instructions</label></div>
+        <div class="option"><input type="radio" name="q9" id="q9c" value="C"><label for="q9c"><span class="letter">C</span>Yes, because the text editor is the computer</label></div>
+        <div class="option"><input type="radio" name="q9" id="q9d" value="D"><label for="q9d"><span class="letter">D</span>No, because computers don't need programming languages</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: B</strong> &mdash; The text editor is where we write and edit instructions; it is not the translator itself.</div>
+      </div>
+    </section>
+
+    <!-- Q10 -->
+    <section class="question-card" data-answer="D">
+      <div class="question-top">
+        <div class="question-number">Q10</div>
+        <span class="badge logic">&#128269; Logic Test</span>
+      </div>
+
+      <p class="question-text">Which one does NOT belong with the others?</p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q10" id="q10a" value="A"><label for="q10a"><span class="letter">A</span>Python</label></div>
+        <div class="option"><input type="radio" name="q10" id="q10b" value="B"><label for="q10b"><span class="letter">B</span>Java</label></div>
+        <div class="option"><input type="radio" name="q10" id="q10c" value="C"><label for="q10c"><span class="letter">C</span>C++</label></div>
+        <div class="option"><input type="radio" name="q10" id="q10d" value="D"><label for="q10d"><span class="letter">D</span>Text Editor</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: D</strong> &mdash; Python, Java, and C++ are programming languages; a text editor is a writing tool.</div>
+      </div>
+    </section>
+
+    <!-- Q11 -->
+    <section class="question-card" data-answer="B">
+      <div class="question-top">
+        <div class="question-number">Q11</div>
+        <span class="badge">&#129504; Brain Teaser</span>
+      </div>
+
+      <p class="question-text">
+        Why don't programmers normally communicate with computers by manually writing thousands of 0s and 1s?
+      </p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q11" id="q11a" value="A"><label for="q11a"><span class="letter">A</span>Computers cannot use 0s and 1s</label></div>
+        <div class="option"><input type="radio" name="q11" id="q11b" value="B"><label for="q11b"><span class="letter">B</span>Programming languages provide an easier way for humans to give instructions</label></div>
+        <div class="option"><input type="radio" name="q11" id="q11c" value="C"><label for="q11c"><span class="letter">C</span>0s and 1s are only used in mathematics</label></div>
+        <div class="option"><input type="radio" name="q11" id="q11d" value="D"><label for="q11d"><span class="letter">D</span>Computers don't need instructions</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: B</strong> &mdash; Programming languages make it much easier for humans to give instructions.</div>
+      </div>
+    </section>
+
+    <!-- Q12 -->
+    <section class="question-card" data-answer="A">
+      <div class="question-top"><div class="question-number">Q12</div></div>
+
+      <p class="question-text">
+        What is the main difference between Python and a text editor?
+      </p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q12" id="q12a" value="A"><label for="q12a"><span class="letter">A</span>Python is a programming language, while a text editor is a place/tool for writing it</label></div>
+        <div class="option"><input type="radio" name="q12" id="q12b" value="B"><label for="q12b"><span class="letter">B</span>Python is hardware, while a text editor is software</label></div>
+        <div class="option"><input type="radio" name="q12" id="q12c" value="C"><label for="q12c"><span class="letter">C</span>Python is a computer, while a text editor is a language</label></div>
+        <div class="option"><input type="radio" name="q12" id="q12d" value="D"><label for="q12d"><span class="letter">D</span>There is no difference</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: A</strong> &mdash; Python is the programming language; a text editor is a tool used to write it.</div>
+      </div>
+    </section>
+
+    <!-- Q13 -->
+    <section class="question-card" data-answer="C">
+      <div class="question-top">
+        <div class="question-number">Q13</div>
+        <span class="badge challenge">&#128293; Brain Teaser</span>
+      </div>
+
+      <p class="question-text">
+        A student says: "If I have a text editor, I automatically have Python."
+        Is this necessarily true?
+      </p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q13" id="q13a" value="A"><label for="q13a"><span class="letter">A</span>Yes, every text editor contains Python</label></div>
+        <div class="option"><input type="radio" name="q13" id="q13b" value="B"><label for="q13b"><span class="letter">B</span>Yes, text editors are programming languages</label></div>
+        <div class="option"><input type="radio" name="q13" id="q13c" value="C"><label for="q13c"><span class="letter">C</span>No, a text editor and Python are separate things</label></div>
+        <div class="option"><input type="radio" name="q13" id="q13d" value="D"><label for="q13d"><span class="letter">D</span>No, computers cannot use Python</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: C</strong> &mdash; A text editor and Python are separate things. A text editor does not automatically install Python.</div>
+      </div>
+    </section>
+
+    <!-- Q14 -->
+    <section class="question-card" data-answer="B">
+      <div class="question-top">
+        <div class="question-number">Q14</div>
+        <span class="badge challenge">&#128293; Brain Teaser</span>
+      </div>
+
+      <p class="question-text">
+        Which sequence best describes the communication process?
+      </p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q14" id="q14a" value="A"><label for="q14a"><span class="letter">A</span>Computer &rarr; Human &rarr; Text Editor &rarr; Python</label></div>
+        <div class="option"><input type="radio" name="q14" id="q14b" value="B"><label for="q14b"><span class="letter">B</span>Human &rarr; Programming Language &rarr; Computer &rarr; Result</label></div>
+        <div class="option"><input type="radio" name="q14" id="q14c" value="C"><label for="q14c"><span class="letter">C</span>Text Editor &rarr; Human &rarr; Computer &rarr; Programming Language</label></div>
+        <div class="option"><input type="radio" name="q14" id="q14d" value="D"><label for="q14d"><span class="letter">D</span>Computer &rarr; Programming Language &rarr; Human &rarr; Text Editor</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: B</strong> &mdash; Humans use a programming language to give instructions, which the computer processes to produce a result.</div>
+      </div>
+    </section>
+
+    <!-- Q15 -->
+    <section class="question-card" data-answer="B">
+      <div class="question-top">
+        <div class="question-number">Q15</div>
+        <span class="badge challenge">&#127942; Challenge Question</span>
+      </div>
+
+      <p class="question-text">
+        Why can we think of Python as a bridge between humans and computers?
+      </p>
+
+      <div class="options">
+        <div class="option"><input type="radio" name="q15" id="q15a" value="A"><label for="q15a"><span class="letter">A</span>Because Python physically connects computers together</label></div>
+        <div class="option"><input type="radio" name="q15" id="q15b" value="B"><label for="q15b"><span class="letter">B</span>Because Python provides a way for humans to give instructions that computers can process</label></div>
+        <div class="option"><input type="radio" name="q15" id="q15c" value="C"><label for="q15c"><span class="letter">C</span>Because Python is part of computer hardware</label></div>
+        <div class="option"><input type="radio" name="q15" id="q15d" value="D"><label for="q15d"><span class="letter">D</span>Because Python replaces machine language completely</label></div>
+      </div>
+
+      <div class="answer-area">
+        <button class="answer-btn" onclick="toggleAnswer(this)">&#128065; Show Answer</button>
+        <div class="answer"><strong>Answer: B</strong> &mdash; Python gives humans a readable way to provide instructions that computers can process.</div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button class="primary" onclick="checkQuiz()">&#10003; Check My Score</button>
+      <button class="secondary" onclick="showAllAnswers()">&#128065; Show Answer Key</button>
+      <button class="secondary" onclick="window.print()">&#128424; Print Worksheet</button>
+      <button class="secondary" onclick="resetQuiz()">&#8635; Reset</button>
+    </div>
+
+    <div class="result-card" id="resultCard">
+      <div>&#127919; YOUR SCORE</div>
+      <div class="score" id="score">0 / 15</div>
+      <div class="result-message" id="resultMessage"></div>
+
+      <button class="primary" onclick="resetQuiz()">Try Again</button>
+    </div>
+
+    <p class="print-note">
+      Tip: Select your answers before printing. Answer reveals are hidden unless opened.
+    </p>
+
+  </main>
+
+  <footer>
+    <span>print("Keep Learning!")</span>
+    <br>
+    Python Programming Foundations &bull; Interactive Quiz
+  </footer>
+
+  <script>
+    const cards = document.querySelectorAll(".question-card");
+    const totalQuestions = cards.length;
+
+    /* Update progress whenever an answer is selected */
+    document.querySelectorAll('input[type="radio"]').forEach(input => {
+      input.addEventListener("change", updateProgress);
+    });
+
+    function updateProgress() {
+      let answered = 0;
+
+      cards.forEach(card => {
+        if (card.querySelector('input[type="radio"]:checked')) {
+          answered++;
+        }
+      });
+
+      const percentage = (answered / totalQuestions) * 100;
+
+      document.getElementById("progressBar").style.width = percentage + "%";
+      document.getElementById("progressText").textContent =
+        `${answered} / ${totalQuestions} answered`;
+    }
+
+    /* Individual answer toggle */
+    function toggleAnswer(button) {
+      const answer = button.nextElementSibling;
+      answer.classList.toggle("show");
+
+      if (answer.classList.contains("show")) {
+        button.textContent = "🙈 Hide Answer";
+      } else {
+        button.textContent = "👁 Show Answer";
+      }
+    }
+
+    /* Show every answer */
+    function showAllAnswers() {
+      cards.forEach(card => {
+        const answer = card.querySelector(".answer");
+        const button = card.querySelector(".answer-btn");
+
+        answer.classList.add("show");
+        button.textContent = "🙈 Hide Answer";
+      });
+    }
+
+    /* Check quiz */
+    function checkQuiz() {
+      let score = 0;
+      let answered = 0;
+
+      cards.forEach(card => {
+        const selected = card.querySelector('input[type="radio"]:checked');
+        const correctAnswer = card.dataset.answer;
+
+        if (selected) {
+          answered++;
+
+          if (selected.value === correctAnswer) {
+            score++;
+          }
+        }
+      });
+
+      if (answered < totalQuestions) {
+        const remaining = totalQuestions - answered;
+
+        if (!confirm(
+          `You haven't answered ${remaining} question${remaining === 1 ? "" : "s"} yet.\n\nDo you still want to see your current score?`
+        )) {
+          return;
+        }
+      }
+
+      const percentage = Math.round((score / totalQuestions) * 100);
+
+      document.getElementById("score").textContent =
+        `${score} / ${totalQuestions}`;
+
+      let message;
+
+      if (percentage === 100) {
+        message = "🏆 Perfect score! You've mastered the foundations!";
+      } else if (percentage >= 80) {
+        message = "🔥 Excellent work! Your Python foundations are strong.";
+      } else if (percentage >= 60) {
+        message = "👍 Good job! Review a few concepts and try again.";
+      } else if (percentage >= 40) {
+        message = "🧠 Keep practising! You're building your understanding.";
+      } else {
+        message = "🌱 Great start! Review the lesson and give it another try.";
+      }
+
+      document.getElementById("resultMessage").textContent = message;
+
+      const resultCard = document.getElementById("resultCard");
+      resultCard.classList.add("show");
+
+      resultCard.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+
+    /* Reset quiz */
+    function resetQuiz() {
+      document.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.checked = false;
+      });
+
+      cards.forEach(card => {
+        const answer = card.querySelector(".answer");
+        const button = card.querySelector(".answer-btn");
+
+        answer.classList.remove("show");
+        button.textContent = "👁 Show Answer";
+      });
+
+      document.getElementById("resultCard").classList.remove("show");
+
+      updateProgress();
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    updateProgress();
+  <\/script>
+
+</body>
+</html>
+  </script>
+
+
+  <!-- ============================================================= -->
+  <!--  SHELL  — wires the toggle + injects each doc into its iframe  -->
+  <!-- ============================================================= -->
+  <script>
+  (function(){
+    "use strict";
+
+    /* the only <\/script> occurrences inside the templates above are written
+       as <\/script> so the HTML parser doesn't end the block early — undo that */
+    function restore(src){
+      return src.replace(/<\\\/script>/g, "<" + "/script>");
+    }
+
+    var frames = {
+      presentation: document.getElementById("view-presentation"),
+      worksheet:    document.getElementById("view-worksheet")
+    };
+    var buttons = {
+      presentation: document.getElementById("btn-presentation"),
+      worksheet:    document.getElementById("btn-worksheet")
+    };
+
+    frames.presentation.srcdoc = restore(document.getElementById("tpl-presentation").textContent);
+    frames.worksheet.srcdoc    = restore(document.getElementById("tpl-worksheet").textContent);
+
+    var STORAGE_KEY = "introPy.view";
+    var current = null;
+
+    function setView(view){
+      if (view !== "presentation" && view !== "worksheet") view = "presentation";
+      if (view === current) return;
+      current = view;
+
+      Object.keys(frames).forEach(function(name){
+        var active = (name === view);
+        frames[name].hidden = !active;
+        buttons[name].setAttribute("aria-pressed", active ? "true" : "false");
+      });
+
+      try { localStorage.setItem(STORAGE_KEY, view); } catch (e) {}
+      if (location.hash.slice(1) !== view){
+        try { history.replaceState(null, "", "#" + view); } catch (e) { location.hash = view; }
+      }
+
+      var win = frames[view].contentWindow;
+      if (win){ setTimeout(function(){ try { win.focus(); } catch (e) {} }, 0); }
+    }
+
+    Object.keys(buttons).forEach(function(name){
+      buttons[name].addEventListener("click", function(){ setView(name); });
+    });
+
+    window.addEventListener("hashchange", function(){
+      setView(location.hash.slice(1));
+    });
+
+    /* initial view: URL hash > last saved > presentation */
+    var initial = location.hash.slice(1);
+    if (initial !== "presentation" && initial !== "worksheet"){
+      try { initial = localStorage.getItem(STORAGE_KEY) || "presentation"; }
+      catch (e) { initial = "presentation"; }
+    }
+    setView(initial);
+  })();
+  </script>
+
+  <!-- ===== Milestone 1: next-lesson button (added) ===== -->
+  <a id="m1-next" href="../Data_Types.html" aria-label="Next lesson: Data Types">
+    <span class="m1-k">Next</span>
+    <span class="m1-t">Data Types</span>
+    <span class="m1-a" aria-hidden="true">&rarr;</span>
+  </a>
+  <style>
+    #m1-next{
+      position:fixed;right:18px;bottom:18px;z-index:2147483001;
+      display:flex;align-items:center;gap:10px;
+      padding:11px 18px;border-radius:999px;line-height:1;
+      font-family:"SF Mono","JetBrains Mono","Fira Code",Menlo,Consolas,monospace;
+      text-decoration:none;color:#0F172A;
+      background:linear-gradient(135deg,#FFD43B,#ffe680);
+      box-shadow:0 10px 30px -10px rgba(0,0,0,.65),0 0 0 1px rgba(255,212,59,.35);
+      transition:transform .16s ease,box-shadow .16s ease;
+    }
+    #m1-next:hover{transform:translateY(-2px);box-shadow:0 16px 36px -10px rgba(0,0,0,.75),0 0 0 1px rgba(255,212,59,.55)}
+    #m1-next:focus-visible{outline:2px solid #FFD43B;outline-offset:3px}
+    #m1-next .m1-k{font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.55}
+    #m1-next .m1-t{font-size:13px;font-weight:700}
+    #m1-next .m1-a{font-size:15px;font-weight:700}
+    @media (max-width:560px){#m1-next{right:12px;bottom:12px;padding:10px 14px}#m1-next .m1-k{display:none}}
+    @media print{#m1-next{display:none}}
+  </style>
+  <!-- ===== end Milestone 1 nav ===== -->
+
+</body>
+</html>

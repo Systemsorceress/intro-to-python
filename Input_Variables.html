@@ -1,0 +1,3376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python input() & Variables: Making Python Listen & Remember</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+:root{
+  --navy:#0F172A;
+  --panel:#111C31;
+  --panel2:#16233A;
+  --blue:#306998;
+  --gold:#FFD43B;
+  --green:#10B981;
+  --amber:#F59E0B;
+  --red:#EF4444;
+  --text:#F8FAFC;
+  --muted:#94A3B8;
+  --border:rgba(148,163,184,.18);
+  --mono:"JetBrains Mono",monospace;
+  --ui:"Inter",sans-serif;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden;
+}
+
+body{
+  background:
+    radial-gradient(circle at 15% 15%,rgba(48,105,152,.16),transparent 30%),
+    radial-gradient(circle at 85% 80%,rgba(255,212,59,.07),transparent 25%),
+    var(--navy);
+  color:var(--text);
+  font-family:var(--ui);
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.deck{
+  width:100%;
+  height:100vh;
+  max-height:100vh;
+  position:relative;
+  overflow:hidden;
+}
+
+.header{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:58px;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  background:rgba(15,23,42,.94);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-weight:800;
+  font-size:14px;
+  letter-spacing:.2px;
+}
+
+.brand span{
+  color:var(--gold);
+}
+
+.progress-wrap{
+  width:210px;
+  height:5px;
+  background:rgba(148,163,184,.15);
+  border-radius:99px;
+  overflow:hidden;
+}
+
+.progress{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,var(--blue),var(--gold));
+  transition:width .4s ease;
+}
+
+.slide{
+  position:absolute;
+  inset:58px 0 64px;
+  opacity:0;
+  visibility:hidden;
+  transform:translateX(28px) scale(.985);
+  transition:
+    opacity .35s ease,
+    transform .35s ease,
+    visibility .35s ease;
+  overflow:hidden;
+}
+
+.slide.active{
+  opacity:1;
+  visibility:visible;
+  transform:translateX(0) scale(1);
+}
+
+.slide-inner{
+  width:min(1100px,calc(100% - 56px));
+  height:100%;
+  margin:auto;
+  padding:22px 0 16px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.eyebrow{
+  color:var(--gold);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
+
+.slide-title{
+  font-size:clamp(26px,3.2vw,42px);
+  line-height:1.08;
+  margin:0 0 7px;
+  font-weight:800;
+}
+
+.slide-subtitle{
+  color:var(--muted);
+  font-size:14px;
+  margin:0 0 15px;
+}
+
+.code-card{
+  background:#0A1120;
+  border:1px solid rgba(48,105,152,.45);
+  border-radius:13px;
+  padding:15px 18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.18);
+  margin-bottom:14px;
+}
+
+.code-card pre{
+  margin:0;
+  white-space:pre-wrap;
+  font-family:var(--mono);
+  font-size:15px;
+  line-height:1.6;
+  color:#E2E8F0;
+}
+
+.code-label{
+  font-size:9px;
+  font-weight:800;
+  color:var(--blue);
+  letter-spacing:1.5px;
+  margin-bottom:7px;
+}
+
+.code-var{color:#7DD3FC}
+.code-op{color:var(--gold)}
+.code-fn{color:#60A5FA}
+.code-string{color:#86EFAC}
+.code-punc{color:#CBD5E1}
+.code-comment{color:#64748B}
+
+.panel{
+  background:rgba(17,28,49,.82);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:17px;
+}
+
+.glass{
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.11);
+  backdrop-filter:blur(10px);
+  border-radius:15px;
+}
+
+.diagram{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin:8px 0 15px;
+  flex-wrap:wrap;
+}
+
+.node{
+  min-width:115px;
+  padding:13px 15px;
+  text-align:center;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-weight:700;
+  font-size:13px;
+  transition:.25s;
+}
+
+.node:hover,
+.node.active-node{
+  border-color:var(--gold);
+  box-shadow:0 0 20px rgba(255,212,59,.15);
+  transform:translateY(-2px);
+}
+
+.arrow{
+  color:var(--gold);
+  font-size:20px;
+  font-weight:800;
+}
+
+.question-card{
+  background:rgba(48,105,152,.1);
+  border:1px solid rgba(48,105,152,.35);
+  border-radius:14px;
+  padding:13px 16px;
+  margin:7px 0 12px;
+}
+
+.question-card h3{
+  margin:0;
+  font-size:16px;
+}
+
+.question-hint{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.answer-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+}
+
+.answer-option{
+  position:relative;
+  min-height:48px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.035);
+  color:var(--text);
+  border-radius:11px;
+  padding:10px 13px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-align:left;
+  transition:.22s;
+}
+
+.answer-option:hover{
+  border-color:rgba(48,105,152,.7);
+  transform:translateY(-1px);
+}
+
+.option-letter{
+  width:25px;
+  height:25px;
+  flex:none;
+  border-radius:7px;
+  display:grid;
+  place-items:center;
+  background:rgba(48,105,152,.18);
+  color:#93C5FD;
+  font-size:11px;
+  font-weight:800;
+}
+
+.answer-option.selected{
+  border-color:var(--blue);
+  background:rgba(48,105,152,.13);
+}
+
+.beam-correct{
+  border-color:var(--green)!important;
+  background:rgba(16,185,129,.12)!important;
+  box-shadow:
+    0 0 0 2px rgba(16,185,129,.15),
+    0 0 25px rgba(16,185,129,.5);
+}
+
+.beam-wrong{
+  border-color:var(--red)!important;
+  background:rgba(239,68,68,.12)!important;
+  box-shadow:
+    0 0 0 2px rgba(239,68,68,.14),
+    0 0 25px rgba(239,68,68,.45);
+}
+
+.beam-missed{
+  border-color:var(--amber)!important;
+  background:rgba(245,158,11,.1)!important;
+  box-shadow:
+    0 0 0 2px rgba(245,158,11,.12),
+    0 0 22px rgba(245,158,11,.4);
+}
+
+.beam-neutral{
+  opacity:.48;
+}
+
+.feedback-box{
+  min-height:40px;
+  margin-top:10px;
+  padding:9px 13px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:rgba(255,255,255,.025);
+  color:var(--muted);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  font-size:12px;
+}
+
+.feedback-box.success{
+  color:#6EE7B7;
+  border-color:rgba(16,185,129,.45);
+  background:rgba(16,185,129,.08);
+}
+
+.feedback-box.error{
+  color:#FCA5A5;
+  border-color:rgba(239,68,68,.45);
+  background:rgba(239,68,68,.08);
+}
+
+.feedback-box.warning{
+  color:#FCD34D;
+  border-color:rgba(245,158,11,.45);
+  background:rgba(245,158,11,.08);
+}
+
+.primary-btn{
+  border:0;
+  border-radius:10px;
+  padding:10px 17px;
+  background:linear-gradient(135deg,var(--blue),#3B82F6);
+  color:white;
+  font-weight:700;
+  font-size:12px;
+  box-shadow:0 8px 20px rgba(48,105,152,.25);
+  transition:.2s;
+}
+
+.primary-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 11px 26px rgba(48,105,152,.38);
+}
+
+.secondary-btn{
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 17px;
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  font-weight:700;
+  font-size:12px;
+}
+
+.center{
+  text-align:center;
+  align-items:center;
+}
+
+.center .slide-title{
+  text-align:center;
+}
+
+.center .slide-subtitle{
+  text-align:center;
+}
+
+/* Header/footer */
+
+.footer{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:64px;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  background:rgba(15,23,42,.96);
+  backdrop-filter:blur(14px);
+  border-top:1px solid var(--border);
+}
+
+.nav-btn{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  padding:8px 14px;
+  border-radius:9px;
+  font-weight:700;
+  font-size:11px;
+  transition:.2s;
+}
+
+.nav-btn:hover:not(:disabled){
+  background:rgba(48,105,152,.2);
+  border-color:var(--blue);
+}
+
+.nav-btn:disabled{
+  opacity:.3;
+  cursor:not-allowed;
+}
+
+.counter{
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:11px;
+}
+
+/* Input demo */
+
+.input-demo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:13px 15px;
+  border-radius:12px;
+  background:#070D18;
+  border:1px solid rgba(16,185,129,.25);
+  font-family:var(--mono);
+  font-size:12px;
+  margin:5px 0 13px;
+}
+
+.terminal-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px rgba(16,185,129,.7);
+}
+
+.typed-answer{
+  color:var(--gold);
+  margin-left:7px;
+}
+
+/* Reveal */
+
+.reveal-box{
+  text-align:center;
+  padding:22px;
+  border:1px solid rgba(48,105,152,.35);
+  border-radius:16px;
+  background:rgba(48,105,152,.08);
+}
+
+.reveal-text{
+  margin-top:12px;
+  color:#93C5FD;
+  font-weight:700;
+  opacity:0;
+  transform:translateY(8px);
+  transition:.35s;
+}
+
+.reveal-text.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* Prompt */
+
+.prompt-code{
+  cursor:pointer;
+  transition:.2s;
+}
+
+.prompt-code:hover{
+  border-color:var(--gold);
+  box-shadow:0 0 25px rgba(255,212,59,.1);
+}
+
+.prompt-highlight{
+  color:var(--gold);
+  background:rgba(255,212,59,.08);
+  padding:2px 4px;
+  border-radius:4px;
+}
+
+/* Storage */
+
+.storage-stage{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:160px;
+  margin:8px 0;
+}
+
+.storage-box{
+  width:250px;
+  height:125px;
+  position:relative;
+  border:2px dashed rgba(148,163,184,.3);
+  border-radius:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  transition:.5s;
+}
+
+.storage-label{
+  position:absolute;
+  top:-11px;
+  padding:3px 9px;
+  border-radius:6px;
+  background:var(--blue);
+  font-family:var(--mono);
+  font-size:10px;
+}
+
+.storage-value{
+  font-family:var(--mono);
+  color:var(--gold);
+  font-size:20px;
+  opacity:0;
+  transform:scale(.7);
+  transition:.5s;
+}
+
+.storage-box.stored{
+  border-style:solid;
+  border-color:var(--green);
+  box-shadow:0 0 30px rgba(16,185,129,.2);
+}
+
+.storage-box.stored .storage-value{
+  opacity:1;
+  transform:scale(1);
+}
+
+/* Pieces */
+
+.pieces{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:16px 0;
+}
+
+.piece{
+  padding:12px 15px;
+  background:#0A1120;
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-family:var(--mono);
+  color:#93C5FD;
+  cursor:pointer;
+  transition:.25s;
+}
+
+.piece:hover,
+.piece.clicked{
+  border-color:var(--gold);
+  color:var(--gold);
+  transform:translateY(-3px);
+}
+
+.explain-panel{
+  min-height:55px;
+  padding:11px 14px;
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--border);
+  border-radius:10px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* Before after */
+
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.compare-card{
+  padding:17px;
+  border-radius:15px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+}
+
+.compare-card.good{
+  border-color:rgba(16,185,129,.35);
+  background:rgba(16,185,129,.06);
+}
+
+.compare-title{
+  font-size:11px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.compare-code{
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:1.6;
+  margin-bottom:8px;
+}
+
+.compare-desc{
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* Pipeline */
+
+.pipeline{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  flex-wrap:wrap;
+  margin:12px 0;
+}
+
+.pipe-node{
+  padding:12px 13px;
+  min-width:100px;
+  text-align:center;
+  border-radius:11px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.035);
+  cursor:pointer;
+  transition:.25s;
+}
+
+.pipe-node:hover,
+.pipe-node.pipe-active{
+  border-color:var(--green);
+  background:rgba(16,185,129,.08);
+  box-shadow:0 0 20px rgba(16,185,129,.12);
+}
+
+.pipe-icon{
+  display:block;
+  font-size:20px;
+  margin-bottom:3px;
+}
+
+.pipe-label{
+  font-size:10px;
+  font-weight:800;
+}
+
+/* Live terminal */
+
+.live-terminal{
+  width:min(700px,100%);
+  margin:10px auto;
+  background:#070D18;
+  border:1px solid rgba(48,105,152,.4);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 15px 35px rgba(0,0,0,.2);
+}
+
+.terminal-header{
+  padding:8px 12px;
+  background:#0D1627;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  color:var(--muted);
+  font-size:9px;
+}
+
+.term-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#64748B;
+}
+
+.terminal-body{
+  padding:15px;
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:1.7;
+}
+
+.live-input{
+  background:transparent;
+  border:0;
+  border-bottom:1px solid var(--blue);
+  outline:none;
+  color:var(--gold);
+  width:220px;
+  padding:3px;
+  font-family:var(--mono);
+}
+
+.live-output{
+  color:var(--green);
+  min-height:20px;
+  margin-top:7px;
+}
+
+/* Drag builder */
+
+.builder{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.block-bank,
+.build-zone{
+  min-height:150px;
+  padding:13px;
+  border:1px dashed rgba(148,163,184,.25);
+  border-radius:14px;
+  background:rgba(255,255,255,.025);
+}
+
+.zone-title{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+  margin-bottom:10px;
+  text-transform:uppercase;
+}
+
+.code-block{
+  display:inline-block;
+  margin:4px;
+  padding:8px 10px;
+  border-radius:8px;
+  background:#0A1120;
+  border:1px solid rgba(48,105,152,.45);
+  color:#93C5FD;
+  font-family:var(--mono);
+  font-size:10px;
+  cursor:pointer;
+  user-select:none;
+  transition:.2s;
+}
+
+.code-block:hover{
+  border-color:var(--gold);
+  transform:translateY(-2px);
+}
+
+.build-zone .code-block{
+  background:rgba(16,185,129,.08);
+  border-color:rgba(16,185,129,.4);
+}
+
+.builder-result{
+  text-align:center;
+  color:var(--muted);
+  margin-top:9px;
+  font-size:11px;
+}
+
+/* Detective */
+
+.detective-code{
+  padding:17px;
+  background:#070D18;
+  border-radius:14px;
+  border:1px solid var(--border);
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:2.1;
+}
+
+.code-click{
+  cursor:pointer;
+  padding:3px 4px;
+  border-radius:5px;
+  transition:.2s;
+}
+
+.code-click:hover,
+.code-click.detective-active{
+  background:rgba(255,212,59,.13);
+  color:var(--gold);
+}
+
+.detective-question{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:13px;
+}
+
+/* Mission */
+
+.blank{
+  display:inline-block;
+  min-width:80px;
+  border-bottom:2px solid var(--gold);
+  color:var(--gold);
+  padding:0 5px;
+}
+
+.mission-grid{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:15px;
+}
+
+.mission-form{
+  display:grid;
+  gap:8px;
+}
+
+.mission-input{
+  width:100%;
+  background:#080F1D;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:9px 11px;
+  border-radius:8px;
+  outline:none;
+  font-size:12px;
+}
+
+.mission-input:focus{
+  border-color:var(--blue);
+}
+
+.badge{
+  padding:20px;
+  text-align:center;
+  border-radius:18px;
+  border:1px solid rgba(255,212,59,.35);
+  background:rgba(255,212,59,.06);
+}
+
+.badge-icon{
+  font-size:42px;
+  margin-bottom:6px;
+}
+
+.badge h3{
+  margin:0 0 5px;
+}
+
+.badge p{
+  color:var(--muted);
+  font-size:11px;
+  margin:0;
+}
+
+/* Concept map */
+
+.big-concept{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:13px;
+  margin:12px 0 16px;
+}
+
+.concept-card{
+  padding:20px 15px;
+  text-align:center;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:rgba(255,255,255,.035);
+  transition:.3s;
+}
+
+.concept-card:hover{
+  transform:translateY(-4px);
+}
+
+.concept-icon{
+  font-size:34px;
+  margin-bottom:7px;
+}
+
+.concept-card h3{
+  margin:0 0 4px;
+  font-size:16px;
+}
+
+.concept-card p{
+  color:var(--muted);
+  font-size:11px;
+  margin:0;
+}
+
+/* Legend */
+
+.legend{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:9px;
+}
+
+.legend span{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.legend-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+}
+
+.green-dot{background:var(--green)}
+.red-dot{background:var(--red)}
+.amber-dot{background:var(--amber)}
+.grey-dot{background:#64748B}
+
+/* Responsive */
+
+@media(max-width:900px){
+  .header{
+    height:50px;
+    padding:0 18px;
+  }
+
+  .slide{
+    inset:50px 0 58px;
+  }
+
+  .footer{
+    height:58px;
+    padding:0 18px;
+  }
+
+  .slide-inner{
+    width:calc(100% - 36px);
+    padding:14px 0 10px;
+  }
+
+  .slide-title{
+    font-size:26px;
+  }
+
+  .builder,
+  .mission-grid{
+    gap:10px;
+  }
+
+  .code-card{
+    padding:11px 14px;
+  }
+
+  .code-card pre{
+    font-size:12px;
+  }
+}
+
+@media(max-width:600px){
+  .brand{
+    font-size:11px;
+  }
+
+  .progress-wrap{
+    width:100px;
+  }
+
+  .slide-inner{
+    width:calc(100% - 24px);
+    padding:9px 0;
+  }
+
+  .slide-title{
+    font-size:22px;
+  }
+
+  .slide-subtitle{
+    font-size:11px;
+    margin-bottom:8px;
+  }
+
+  .answer-grid,
+  .compare,
+  .builder,
+  .mission-grid,
+  .big-concept{
+    grid-template-columns:1fr;
+  }
+
+  .answer-option{
+    min-height:39px;
+    padding:7px 9px;
+    font-size:11px;
+  }
+
+  .option-letter{
+    width:21px;
+    height:21px;
+  }
+
+  .panel{
+    padding:11px;
+  }
+
+  .node{
+    min-width:85px;
+    padding:9px;
+    font-size:10px;
+  }
+
+  .pipe-node{
+    min-width:75px;
+    padding:8px;
+  }
+
+  .pipe-icon{
+    font-size:15px;
+  }
+
+  .concept-card{
+    padding:11px;
+  }
+
+  .concept-icon{
+    font-size:24px;
+  }
+
+  .footer{
+    padding:0 10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="deck">
+
+<header class="header">
+  <div class="brand">🐍 Python <span>Listen & Remember</span></div>
+  <div class="progress-wrap">
+    <div class="progress" id="progress"></div>
+  </div>
+</header>
+
+
+<!-- =========================================================
+     SLIDE 1
+========================================================= -->
+
+<section class="slide active" id="slide1">
+  <div class="slide-inner">
+
+    <div class="eyebrow">RECAP</div>
+
+    <h1 class="slide-title">🐍 So Far, Python Can Speak...</h1>
+
+    <div class="code-card">
+      <div class="code-label">PYTHON</div>
+      <pre><span class="code-fn">print</span><span class="code-punc">(</span><span class="code-string">"Hello!"</span><span class="code-punc">)</span></pre>
+    </div>
+
+    <div class="diagram">
+      <div class="node">YOU 👤</div>
+      <div class="arrow">→</div>
+      <div class="node">🐍 Python</div>
+      <div class="arrow">→</div>
+      <div class="node">🖥️ "Hello!"</div>
+    </div>
+
+    <div class="question-card">
+      <h3>What does <code>print()</code> do?</h3>
+    </div>
+
+    <div class="answer-grid" id="slide1Answers">
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide1Answers','slide1Feedback')">
+        <span class="option-letter">A</span>
+        Gets information
+      </button>
+
+      <button type="button" class="answer-option" data-correct="true"
+              onclick="selectAnswer(this,'slide1Answers','slide1Feedback')">
+        <span class="option-letter">B</span>
+        Displays information
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide1Answers','slide1Feedback')">
+        <span class="option-letter">C</span>
+        Stores information
+      </button>
+
+    </div>
+
+    <button class="primary-btn" style="margin-top:10px"
+            onclick="checkSingleAnswer('slide1Answers','slide1Feedback')">
+      Check Answer ✓
+    </button>
+
+    <div id="slide1Feedback" class="feedback-box">
+      Choose an answer first.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 2
+========================================================= -->
+
+<section class="slide" id="slide2">
+  <div class="slide-inner center">
+
+    <div class="eyebrow">NEW IDEA</div>
+
+    <h2 class="slide-title">🤔 What if we want Python to listen to US?</h2>
+
+    <div class="diagram">
+      <div class="node">YOU 👤</div>
+      <div class="arrow">→</div>
+      <div class="node" id="questionNode">❓ ???</div>
+      <div class="arrow">→</div>
+      <div class="node">🐍 PYTHON</div>
+    </div>
+
+    <div class="reveal-box">
+      <div style="font-size:44px">🎧</div>
+
+      <button class="primary-btn" onclick="revealInput()">
+        Reveal the answer
+      </button>
+
+      <div id="inputReveal" class="reveal-text">
+        Meet Python's <code>input()</code> function!
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 3
+========================================================= -->
+
+<section class="slide" id="slide3">
+  <div class="slide-inner">
+
+    <div class="eyebrow">MEET INPUT()</div>
+
+    <h2 class="slide-title">🎤 input() — Making Python Listen</h2>
+
+    <div class="code-card">
+      <div class="code-label">PYTHON</div>
+      <pre><span class="code-fn">input</span><span class="code-punc">(</span><span class="code-punc">)</span></pre>
+    </div>
+
+    <div class="diagram">
+      <div class="node" id="typeNode">⌨️ YOU TYPE</div>
+      <div class="arrow">→</div>
+      <div class="node" id="listenNode">🎤 input()</div>
+      <div class="arrow">→</div>
+      <div class="node" id="pythonListenNode">🐍 PYTHON</div>
+    </div>
+
+    <div class="panel">
+      <p style="margin:0;text-align:center;color:var(--muted);font-size:13px">
+        When Python reaches <code>input()</code>, it
+        <strong style="color:var(--gold)">pauses</strong>
+        and waits for you to type something.
+      </p>
+    </div>
+
+    <div style="text-align:center;margin-top:14px">
+      <button class="primary-btn" onclick="animateListen()">
+        ▶ Start Listening
+      </button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 4
+========================================================= -->
+
+<section class="slide" id="slide4">
+  <div class="slide-inner">
+
+    <div class="eyebrow">CHECK YOUR UNDERSTANDING</div>
+
+    <h2 class="slide-title">⏸️ What Happens?</h2>
+
+    <div class="input-demo">
+      <div class="terminal-dot"></div>
+      <div>Python: <span style="color:var(--gold)">Type your answer:</span>
+        <span style="color:#64748B">________</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <h3>What happens when Python reaches <code>input()</code>?</h3>
+    </div>
+
+    <div class="answer-grid" id="slide4Answers">
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide4Answers','slide4Feedback')">
+        <span class="option-letter">A</span>
+        It closes
+      </button>
+
+      <button type="button" class="answer-option" data-correct="true"
+              onclick="selectAnswer(this,'slide4Answers','slide4Feedback')">
+        <span class="option-letter">B</span>
+        It waits for the user
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide4Answers','slide4Feedback')">
+        <span class="option-letter">C</span>
+        It prints automatically
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide4Answers','slide4Feedback')">
+        <span class="option-letter">D</span>
+        It deletes the program
+      </button>
+
+    </div>
+
+    <button class="primary-btn" style="margin-top:10px"
+            onclick="checkSingleAnswer('slide4Answers','slide4Feedback')">
+      Check Answer ✓
+    </button>
+
+    <div id="slide4Feedback" class="feedback-box">
+      Choose an answer first.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 5
+========================================================= -->
+
+<section class="slide" id="slide5">
+  <div class="slide-inner">
+
+    <div class="eyebrow">PROMPTS</div>
+
+    <h2 class="slide-title">💬 Give Python a Prompt</h2>
+
+    <div class="code-card prompt-code" onclick="showPromptExplanation()">
+      <div class="code-label">CLICK THE CODE</div>
+      <pre><span class="code-fn">input</span><span class="code-punc">(</span><span class="prompt-highlight"><span class="code-string">"What is your name? "</span></span><span class="code-punc">)</span></pre>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin:0 0 6px">What is a prompt?</h3>
+      <p style="margin:0;color:var(--muted);font-size:12px">
+        The message inside <code>input()</code> is called a
+        <strong style="color:var(--gold)">prompt</strong>.
+        It tells the user what Python wants.
+      </p>
+    </div>
+
+    <div id="promptExplanation" class="feedback-box" style="margin-top:12px">
+      Click the highlighted message to reveal its job.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 6
+========================================================= -->
+
+<section class="slide" id="slide6">
+  <div class="slide-inner">
+
+    <div class="eyebrow">LIVE INTERACTION</div>
+
+    <h2 class="slide-title">🎮 Your Turn!</h2>
+
+    <div class="live-terminal">
+
+      <div class="terminal-header">
+        <span class="term-dot"></span>
+        <span class="term-dot"></span>
+        <span class="term-dot"></span>
+        Python Terminal
+      </div>
+
+      <div class="terminal-body">
+        <div>
+          Python: What is your favourite colour?
+        </div>
+
+        <div style="margin-top:7px">
+          &gt;
+          <input
+            id="colourInput"
+            class="live-input"
+            type="text"
+            placeholder="type here..."
+            autocomplete="off">
+        </div>
+
+        <div id="colourFeedback" class="live-output"></div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center">
+      <button class="primary-btn" onclick="submitColour()">
+        Send to Python →
+      </button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 7
+========================================================= -->
+
+<section class="slide" id="slide7">
+  <div class="slide-inner">
+
+    <div class="eyebrow">THE BIG PROBLEM</div>
+
+    <h2 class="slide-title">🧠 But How Can Python Use the Answers Later?</h2>
+
+    <div class="code-card">
+      <pre><span class="code-fn">input</span><span class="code-punc">(</span><span class="code-string">"Name?"</span><span class="code-punc">)</span>
+<span class="code-fn">input</span><span class="code-punc">(</span><span class="code-string">"Age?"</span><span class="code-punc">)</span>
+<span class="code-fn">input</span><span class="code-punc">(</span><span class="code-string">"Colour?"</span><span class="code-punc">)</span></pre>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:center;gap:25px;flex-wrap:wrap;font-family:var(--mono);font-size:11px">
+        <span>👤 Name → <b style="color:var(--gold)">Malaika</b></span>
+        <span>🎂 Age → <b style="color:var(--gold)">15</b></span>
+        <span>🎨 Colour → <b style="color:var(--gold)">Blue</b></span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <h3>How can Python use these answers later?</h3>
+    </div>
+
+    <div class="answer-grid" id="slide7Answers">
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide7Answers','slide7Feedback')">
+        <span class="option-letter">A</span>
+        It remembers automatically
+      </button>
+
+      <button type="button" class="answer-option" data-correct="true"
+              onclick="selectAnswer(this,'slide7Answers','slide7Feedback')">
+        <span class="option-letter">B</span>
+        We need to store the information
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide7Answers','slide7Feedback')">
+        <span class="option-letter">C</span>
+        We ask again
+      </button>
+
+    </div>
+
+    <button class="primary-btn" style="margin-top:10px"
+            onclick="checkSingleAnswer('slide7Answers','slide7Feedback')">
+      Check Answer ✓
+    </button>
+
+    <div id="slide7Feedback" class="feedback-box">
+      Choose an answer first.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 8
+========================================================= -->
+
+<section class="slide" id="slide8">
+  <div class="slide-inner">
+
+    <div class="eyebrow">STORAGE</div>
+
+    <h2 class="slide-title">📦 We Need a Storage Box</h2>
+
+    <div class="question-card">
+      <h3>Imagine you receive something important. What keeps it safe?</h3>
+    </div>
+
+    <div class="answer-grid" id="slide8Answers">
+
+      <button type="button" class="answer-option" data-correct="true"
+              onclick="selectAnswer(this,'slide8Answers','slide8Feedback')">
+        <span class="option-letter">A</span>
+        📦 Box
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide8Answers','slide8Feedback')">
+        <span class="option-letter">B</span>
+        🗑️ Bin
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide8Answers','slide8Feedback')">
+        <span class="option-letter">C</span>
+        💨 Air
+      </button>
+
+    </div>
+
+    <button class="primary-btn" style="margin-top:10px"
+            onclick="checkSingleAnswer('slide8Answers','slide8Feedback')">
+      Check Answer ✓
+    </button>
+
+    <div id="slide8Feedback" class="feedback-box">
+      Choose an answer first.
+    </div>
+
+    <div class="panel" style="margin-top:10px;text-align:center">
+      In programming, we give information a
+      <strong style="color:var(--gold)">name</strong>
+      and store it in a
+      <strong style="color:var(--green)">box</strong>!
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 9
+========================================================= -->
+
+<section class="slide" id="slide9">
+  <div class="slide-inner">
+
+    <div class="eyebrow">VARIABLES BEGIN</div>
+
+    <h2 class="slide-title">🏷️ Give the Information a Name</h2>
+
+    <div class="code-card">
+      <div class="code-label">PYTHON</div>
+      <pre><span class="code-var">name</span> <span class="code-op">=</span> <span class="code-fn">input</span><span class="code-punc">(</span><span class="code-string">"What is your name? "</span><span class="code-punc">)</span></pre>
+    </div>
+
+    <div class="question-card">
+      <h3>What is <code>name</code> doing here?</h3>
+    </div>
+
+    <div class="answer-grid" id="slide9Answers">
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide9Answers','slide9Feedback')">
+        <span class="option-letter">A</span>
+        Asking the question
+      </button>
+
+      <button type="button" class="answer-option" data-correct="true"
+              onclick="selectAnswer(this,'slide9Answers','slide9Feedback')">
+        <span class="option-letter">B</span>
+        Giving the information a name
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide9Answers','slide9Feedback')">
+        <span class="option-letter">C</span>
+        Printing the answer
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide9Answers','slide9Feedback')">
+        <span class="option-letter">D</span>
+        Deleting the answer
+      </button>
+
+    </div>
+
+    <button class="primary-btn" style="margin-top:10px"
+            onclick="checkSingleAnswer('slide9Answers','slide9Feedback')">
+      Check Answer ✓
+    </button>
+
+    <div id="slide9Feedback" class="feedback-box">
+      Choose an answer first.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 10
+========================================================= -->
+
+<section class="slide" id="slide10">
+  <div class="slide-inner">
+
+    <div class="eyebrow">BREAK IT DOWN</div>
+
+    <h2 class="slide-title">🧩 Let's Understand It Piece by Piece</h2>
+
+    <div class="pieces">
+
+      <button class="piece" onclick="explainPiece(this,'name','🏷️ name = the storage location name')">
+        name
+      </button>
+
+      <button class="piece" onclick="explainPiece(this,'equals','= = assignment operator — stores the result')">
+        =
+      </button>
+
+      <button class="piece" onclick="explainPiece(this,'input','🎤 input(...) = gets information from the user')">
+        input("What is your name? ")
+      </button>
+
+    </div>
+
+    <div id="pieceExplanation" class="explain-panel">
+      Click each piece to understand its job.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 11
+========================================================= -->
+
+<section class="slide" id="slide11">
+  <div class="slide-inner center">
+
+    <div class="eyebrow">STORE IT</div>
+
+    <h2 class="slide-title">📦 The Variable Appears!</h2>
+
+    <p class="slide-subtitle">
+      The student types <strong style="color:var(--gold)">"Malaika"</strong>.
+      Now Python can store it.
+    </p>
+
+    <div class="storage-stage">
+
+      <div class="storage-box" id="storageBox">
+
+        <div class="storage-label">name</div>
+
+        <div style="font-size:25px;margin-bottom:8px">
+          📦
+        </div>
+
+        <div class="storage-value">
+          "Malaika"
+        </div>
+
+      </div>
+
+    </div>
+
+    <button class="primary-btn" onclick="storeName()">
+      Store it!
+    </button>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 12
+========================================================= -->
+
+<section class="slide" id="slide12">
+  <div class="slide-inner center">
+
+    <div class="eyebrow">DEFINITION</div>
+
+    <h2 class="slide-title">🧠 NOW: What Is a Variable?</h2>
+
+    <div class="panel" style="max-width:780px;width:100%;margin:auto;text-align:center">
+      <div style="font-size:22px;margin-bottom:9px">📦</div>
+
+      <p style="font-size:16px;line-height:1.5;margin:0">
+        A <strong style="color:var(--gold)">variable</strong>
+        is a named place where we store information
+        so we can use it later.
+      </p>
+    </div>
+
+    <div class="code-card" style="max-width:550px;width:100%;margin:15px auto 0">
+      <pre style="text-align:center"><span class="code-var">Variable</span> = <span class="code-string">Name</span> + <span class="code-string">Stored Information</span></pre>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 13
+========================================================= -->
+
+<section class="slide" id="slide13">
+  <div class="slide-inner">
+
+    <div class="eyebrow">WHY VARIABLES?</div>
+
+    <h2 class="slide-title">🔁 Before vs. After</h2>
+
+    <div class="compare">
+
+      <div class="compare-card">
+
+        <div class="compare-title" style="color:var(--red)">
+          ❌ BEFORE
+        </div>
+
+        <div class="compare-code">
+          input("What is your name? ")
+        </div>
+
+        <div class="compare-desc">
+          Information is received,
+          but we don't give it a name to reuse.
+        </div>
+
+      </div>
+
+      <div class="compare-card good">
+
+        <div class="compare-title" style="color:var(--green)">
+          ✅ AFTER
+        </div>
+
+        <div class="compare-code">
+          name = input("What is your name? ")
+        </div>
+
+        <div class="compare-desc">
+          Information is stored in
+          <strong style="color:var(--gold)">name</strong>
+          so we can reuse it later.
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 14
+========================================================= -->
+
+<section class="slide" id="slide14">
+  <div class="slide-inner">
+
+    <div class="eyebrow">USE YOUR VARIABLE</div>
+
+    <h2 class="slide-title">🖨️ Let's Use Our Variable!</h2>
+
+    <div class="code-card">
+      <div class="code-label">PYTHON</div>
+      <pre><span class="code-var">name</span> <span class="code-op">=</span> <span class="code-fn">input</span><span class="code-punc">(</span><span class="code-string">"What is your name? "</span><span class="code-punc">)</span>
+<span class="code-fn">print</span><span class="code-punc">(</span><span class="code-var">name</span><span class="code-punc">)</span></pre>
+    </div>
+
+    <div class="pipeline">
+
+      <div class="pipe-node" id="pipeUser">
+        <span class="pipe-icon">👤</span>
+        <span class="pipe-label">Malaika types</span>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="pipe-node" id="pipeStore">
+        <span class="pipe-icon">📦</span>
+        <span class="pipe-label">name stores</span>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="pipe-node" id="pipePrint">
+        <span class="pipe-icon">🖨️</span>
+        <span class="pipe-label">print(name)</span>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="pipe-node" id="pipeOutput">
+        <span class="pipe-icon">🖥️</span>
+        <span class="pipe-label">Malaika</span>
+      </div>
+
+    </div>
+
+    <button class="secondary-btn" onclick="runSlide14()">
+      ▶ Run the code
+    </button>
+
+    <div class="question-card">
+      <h3>What will Python display?</h3>
+    </div>
+
+    <div class="answer-grid" id="slide14Answers">
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide14Answers','slide14Feedback')">
+        <span class="option-letter">A</span>
+        <code>name</code>
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide14Answers','slide14Feedback')">
+        <span class="option-letter">B</span>
+        <code>"Malaika"</code>
+      </button>
+
+      <button type="button" class="answer-option" data-correct="true"
+              onclick="selectAnswer(this,'slide14Answers','slide14Feedback')">
+        <span class="option-letter">C</span>
+        <code>Malaika</code>
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide14Answers','slide14Feedback')">
+        <span class="option-letter">D</span>
+        Nothing
+      </button>
+
+    </div>
+
+    <button class="primary-btn" style="margin-top:10px"
+            onclick="checkSingleAnswer('slide14Answers','slide14Feedback')">
+      Check Answer ✓
+    </button>
+
+    <div id="slide14Feedback" class="feedback-box">
+      Choose an answer first.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 15
+========================================================= -->
+
+<section class="slide" id="slide15">
+  <div class="slide-inner">
+
+    <div class="eyebrow">MAKE PYTHON TALK BACK</div>
+
+    <h2 class="slide-title">🎉 Make Python Talk Back</h2>
+
+    <div class="code-card">
+      <pre><span class="code-var">name</span> <span class="code-op">=</span> <span class="code-fn">input</span><span class="code-punc">(</span><span class="code-string">"What is your name? "</span><span class="code-punc">)</span>
+<span class="code-fn">print</span><span class="code-punc">(</span><span class="code-string">"Hello"</span>, <span class="code-var">name</span><span class="code-punc">)</span></pre>
+    </div>
+
+    <div class="live-terminal">
+
+      <div class="terminal-header">
+        <span class="term-dot"></span>
+        <span class="term-dot"></span>
+        <span class="term-dot"></span>
+        Python Terminal
+      </div>
+
+      <div class="terminal-body">
+
+        <div>
+          What is your name?
+        </div>
+
+        <div style="margin-top:7px">
+          &gt;
+          <input
+            id="nameInput15"
+            class="live-input"
+            type="text"
+            placeholder="your name..."
+            autocomplete="off">
+        </div>
+
+        <div id="output15" class="live-output"></div>
+
+      </div>
+
+    </div>
+
+    <div style="text-align:center">
+      <button class="primary-btn" onclick="runGreeting()">
+        Run Program ▶
+      </button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 16
+========================================================= -->
+
+<section class="slide" id="slide16">
+  <div class="slide-inner">
+
+    <div class="eyebrow">CONNECT THE IDEAS</div>
+
+    <h2 class="slide-title">🔗 Connect Everything You've Learned</h2>
+
+    <div class="pipeline">
+
+      <div class="pipe-node" onclick="activatePipe(this,'User provides information')">
+        <span class="pipe-icon">👤</span>
+        <span class="pipe-label">USER</span>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="pipe-node" onclick="activatePipe(this,'input() receives the information')">
+        <span class="pipe-icon">🎤</span>
+        <span class="pipe-label">input()</span>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="pipe-node" onclick="activatePipe(this,'Variable stores the information')">
+        <span class="pipe-icon">📦</span>
+        <span class="pipe-label">VARIABLE</span>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="pipe-node" onclick="activatePipe(this,'print() displays the stored information')">
+        <span class="pipe-icon">🖨️</span>
+        <span class="pipe-label">print()</span>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="pipe-node" onclick="activatePipe(this,'The result appears on screen')">
+        <span class="pipe-icon">🖥️</span>
+        <span class="pipe-label">OUTPUT</span>
+      </div>
+
+    </div>
+
+    <div id="pipeExplanation" class="explain-panel">
+      Click each step to see its job.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 17
+========================================================= -->
+
+<section class="slide" id="slide17">
+  <div class="slide-inner">
+
+    <div class="eyebrow">DATA TYPES</div>
+
+    <h2 class="slide-title">🔢 But What About Data Types?</h2>
+
+    <div class="code-card">
+      <div class="code-label">USER ENTERS 15</div>
+      <pre><span class="code-var">age</span> <span class="code-op">=</span> <span class="code-fn">input</span><span class="code-punc">(</span><span class="code-string">"How old are you? "</span><span class="code-punc">)</span></pre>
+    </div>
+
+    <div class="question-card">
+      <h3>What data type does <code>input()</code> return?</h3>
+    </div>
+
+    <div class="answer-grid" id="slide17Answers">
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide17Answers','slide17Feedback')">
+        <span class="option-letter">A</span>
+        <code>int</code>
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide17Answers','slide17Feedback')">
+        <span class="option-letter">B</span>
+        <code>float</code>
+      </button>
+
+      <button type="button" class="answer-option" data-correct="true"
+              onclick="selectAnswer(this,'slide17Answers','slide17Feedback')">
+        <span class="option-letter">C</span>
+        <code>str</code>
+      </button>
+
+      <button type="button" class="answer-option" data-correct="false"
+              onclick="selectAnswer(this,'slide17Answers','slide17Feedback')">
+        <span class="option-letter">D</span>
+        <code>bool</code>
+      </button>
+
+    </div>
+
+    <button class="primary-btn" style="margin-top:10px"
+            onclick="checkSingleAnswer('slide17Answers','slide17Feedback')">
+      Check Answer ✓
+    </button>
+
+    <div id="slide17Feedback" class="feedback-box">
+      Choose an answer first.
+    </div>
+
+    <div class="panel" style="margin-top:8px;text-align:center;font-size:11px">
+      ⚠️ <strong style="color:var(--amber)">Important:</strong>
+      <code>input()</code> ALWAYS receives data as a
+      <strong style="color:var(--gold)">string</strong>,
+      even if numbers are typed.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 18 — FIXED VERSION
+========================================================= -->
+
+<section class="slide" id="slide18">
+  <div class="slide-inner">
+
+    <div class="eyebrow">DATA TYPES • CHALLENGE 02</div>
+
+    <h2 class="slide-title">🧪 The Tricky One</h2>
+
+    <p class="slide-subtitle">
+      Python asks you for your age...
+    </p>
+
+    <div class="code-card large-code">
+      <div class="code-label">PYTHON</div>
+      <pre><span class="code-var">age</span> <span class="code-op">=</span> <span class="code-fn">input</span><span class="code-punc">(</span><span class="code-string">"How old are you? "</span><span class="code-punc">)</span></pre>
+    </div>
+
+    <div class="input-demo">
+      <div class="terminal-dot"></div>
+      <div class="terminal-text">
+        How old are you?
+        <span class="typed-answer">15</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <h3>What is actually stored inside <code>age</code>?</h3>
+      <p class="question-hint">
+        Remember: <code>input()</code> receives user input as a string.
+      </p>
+    </div>
+
+    <div class="answer-grid slide18-answers" id="slide18Answers">
+
+      <button
+        type="button"
+        class="answer-option"
+        data-correct="false"
+        onclick="selectSlide18Answer(this)">
+        <span class="option-letter">A</span>
+        15 as an integer
+      </button>
+
+      <button
+        type="button"
+        class="answer-option"
+        data-correct="true"
+        onclick="selectSlide18Answer(this)">
+        <span class="option-letter">B</span>
+        "15" as a string
+      </button>
+
+      <button
+        type="button"
+        class="answer-option"
+        data-correct="false"
+        onclick="selectSlide18Answer(this)">
+        <span class="option-letter">C</span>
+        15.0 as a float
+      </button>
+
+      <button
+        type="button"
+        class="answer-option"
+        data-correct="false"
+        onclick="selectSlide18Answer(this)">
+        <span class="option-letter">D</span>
+        True
+      </button>
+
+    </div>
+
+    <button
+      type="button"
+      class="primary-btn"
+      style="margin-top:10px"
+      onclick="checkSlide18Answer()">
+      Check Answer ✓
+    </button>
+
+    <div
+      id="slide18Feedback"
+      class="feedback-box"
+      aria-live="polite">
+      Choose an answer first.
+    </div>
+
+    <div class="legend">
+      <span><i class="legend-dot green-dot"></i> Selected + Correct</span>
+      <span><i class="legend-dot red-dot"></i> Selected + Wrong</span>
+      <span><i class="legend-dot amber-dot"></i> Correct but Missed</span>
+      <span><i class="legend-dot grey-dot"></i> Not selected</span>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 19
+========================================================= -->
+
+<section class="slide" id="slide19">
+  <div class="slide-inner">
+
+    <div class="eyebrow">VARIABLE BUILDER</div>
+
+    <h2 class="slide-title">🎮 Variable Builder Game</h2>
+
+    <p class="slide-subtitle">
+      Click the blocks in the correct order to build the code.
+    </p>
+
+    <div class="builder">
+
+      <div class="block-bank">
+        <div class="zone-title">Code Blocks</div>
+
+        <div
+          class="code-block"
+          data-value="name"
+          onclick="addBuilderBlock(this,'name')">
+          name
+        </div>
+
+        <div
+          class="code-block"
+          data-value="="
+          onclick="addBuilderBlock(this,'=')">
+          =
+        </div>
+
+        <div
+          class="code-block"
+          data-value='input("What is your name? ")'
+          onclick="addBuilderBlock(this,'input')">
+          input("What is your name? ")
+        </div>
+
+        <hr style="border:0;border-top:1px solid var(--border);margin:9px 0">
+
+        <div
+          class="code-block"
+          data-value="age"
+          onclick="addBuilderBlock(this,'age')">
+          age
+        </div>
+
+        <div
+          class="code-block"
+          data-value='input("How old are you? ")'
+          onclick="addBuilderBlock(this,'ageinput')">
+          input("How old are you? ")
+        </div>
+
+      </div>
+
+      <div class="build-zone">
+        <div class="zone-title">Build Your Code</div>
+
+        <div id="builderOutput">
+          <span style="color:#64748B;font-size:11px">
+            Click blocks...
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="builderResult" class="builder-result">
+      Challenge 1: Build <code>name = input("What is your name? ")</code>
+    </div>
+
+    <div style="text-align:center;margin-top:9px">
+      <button class="secondary-btn" onclick="resetBuilder()">
+        Reset
+      </button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 20
+========================================================= -->
+
+<section class="slide" id="slide20">
+  <div class="slide-inner">
+
+    <div class="eyebrow">CODE DETECTIVE</div>
+
+    <h2 class="slide-title">🕵️ Code Detective</h2>
+
+    <div class="detective-code">
+
+      <div>
+        <span class="code-click" onclick="detectiveClick('variable',this)">
+          <span class="code-var">name</span>
+        </span>
+        <span class="code-op"> = </span>
+        <span class="code-click" onclick="detectiveClick('input',this)">
+          <span class="code-fn">input</span>("What is your name? ")
+        </span>
+      </div>
+
+      <div>
+        <span class="code-click" onclick="detectiveClick('print',this)">
+          <span class="code-fn">print</span>("Welcome", name)
+        </span>
+      </div>
+
+    </div>
+
+    <div class="detective-question">
+
+      <button class="secondary-btn"
+              onclick="showDetectiveHint('variable')">
+        🏷️ Find the variable
+      </button>
+
+      <button class="secondary-btn"
+              onclick="showDetectiveHint('input')">
+        🎤 Find what gets information
+      </button>
+
+      <button class="secondary-btn"
+              onclick="showDetectiveHint('print')">
+        🖨️ Find what displays information
+      </button>
+
+    </div>
+
+    <div id="detectiveFeedback" class="feedback-box">
+      Choose a target to investigate.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 21
+========================================================= -->
+
+<section class="slide" id="slide21">
+  <div class="slide-inner">
+
+    <div class="eyebrow">FINAL MISSION</div>
+
+    <h2 class="slide-title">🏆 Python Interviewer</h2>
+
+    <p class="slide-subtitle">
+      Fill in the missing pieces, then run the program.
+    </p>
+
+    <div class="mission-grid">
+
+      <div>
+
+        <div class="code-card">
+
+          <pre><span class="blank">____</span> = input("What is your name? ")
+
+colour = <span class="blank">____</span>("What is your favourite colour? ")
+
+print("Nice to meet you", <span class="blank">____</span>)</pre>
+
+        </div>
+
+        <div class="mission-form">
+
+          <input
+            id="missionName"
+            class="mission-input"
+            type="text"
+            placeholder="Your name">
+
+          <input
+            id="missionColour"
+            class="mission-input"
+            type="text"
+            placeholder="Favourite colour">
+
+          <button class="primary-btn" onclick="runMission()">
+            Run Python Interviewer ▶
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="live-terminal">
+
+        <div class="terminal-header">
+          <span class="term-dot"></span>
+          <span class="term-dot"></span>
+          <span class="term-dot"></span>
+          Mission Terminal
+        </div>
+
+        <div class="terminal-body" id="missionTerminal">
+          <span style="color:#64748B">
+            Waiting for your program...
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div id="missionFeedback" class="feedback-box">
+      Complete the program to finish the mission.
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     SLIDE 22
+========================================================= -->
+
+<section class="slide" id="slide22">
+  <div class="slide-inner center">
+
+    <div class="eyebrow">MISSION COMPLETE</div>
+
+    <h2 class="slide-title">🏅 The Big Picture</h2>
+
+    <p class="slide-subtitle">
+      You now know how Python can communicate with the user.
+    </p>
+
+    <div class="big-concept">
+
+      <div class="concept-card">
+        <div class="concept-icon">🗣️</div>
+        <h3>print()</h3>
+        <p>Python <strong>speaks</strong></p>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">🎤</div>
+        <h3>input()</h3>
+        <p>Python <strong>listens</strong></p>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">📦</div>
+        <h3>Variable</h3>
+        <p>Python <strong>remembers</strong></p>
+      </div>
+
+    </div>
+
+    <div class="panel" style="max-width:700px;width:100%;margin:auto">
+      <strong style="color:var(--gold)">Remember:</strong>
+      <span style="color:var(--muted)">
+        input() gets information → a variable stores it →
+        print() displays it.
+      </span>
+    </div>
+
+    <button
+      id="completeMissionBtn"
+      class="primary-btn"
+      style="margin-top:15px"
+      onclick="completeMission()">
+      🏆 Complete Mission
+    </button>
+
+    <div
+      id="completionMessage"
+      class="feedback-box"
+      style="max-width:600px;width:100%;margin-top:10px">
+      Click when you're ready to claim your Python badge!
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+  <button
+    id="prevBtn"
+    class="nav-btn"
+    onclick="previousSlide()">
+    ← Previous
+  </button>
+
+  <div class="counter" id="slideCounter">
+    Slide 1 / 22
+  </div>
+
+  <button
+    id="nextBtn"
+    class="nav-btn"
+    onclick="nextSlide()">
+    Next →
+  </button>
+
+</footer>
+
+</div>
+
+
+<script>
+/* =========================================================
+   GLOBAL SLIDE NAVIGATION
+========================================================= */
+
+let currentSlide = 0;
+
+const slides = Array.from(
+  document.querySelectorAll(".slide")
+);
+
+const totalSlides = slides.length;
+
+function showSlide(index){
+
+  if(index < 0) index = 0;
+  if(index >= totalSlides) index = totalSlides - 1;
+
+  slides.forEach((slide,i)=>{
+    slide.classList.toggle("active",i === index);
+  });
+
+  currentSlide = index;
+
+  document.getElementById("slideCounter").textContent =
+    `Slide ${index + 1} / ${totalSlides}`;
+
+  document.getElementById("progress").style.width =
+    `${((index + 1) / totalSlides) * 100}%`;
+
+  document.getElementById("prevBtn").disabled =
+    index === 0;
+
+  document.getElementById("nextBtn").disabled =
+    index === totalSlides - 1;
+}
+
+function nextSlide(){
+  if(currentSlide < totalSlides - 1){
+    showSlide(currentSlide + 1);
+  }
+}
+
+function previousSlide(){
+  if(currentSlide > 0){
+    showSlide(currentSlide - 1);
+  }
+}
+
+document.addEventListener("keydown",(event)=>{
+
+  const tag = document.activeElement.tagName;
+
+  if(
+    tag === "INPUT" ||
+    tag === "TEXTAREA" ||
+    tag === "SELECT"
+  ){
+    return;
+  }
+
+  if(event.key === "ArrowRight"){
+    nextSlide();
+  }
+
+  if(event.key === "ArrowLeft"){
+    previousSlide();
+  }
+});
+
+
+/* =========================================================
+   GENERIC SINGLE ANSWER LOGIC
+========================================================= */
+
+const selectedAnswers = {};
+
+function selectAnswer(button, containerId, feedbackId){
+
+  const container =
+    document.getElementById(containerId);
+
+  const buttons =
+    container.querySelectorAll(".answer-option");
+
+  buttons.forEach(btn=>{
+    btn.classList.remove(
+      "selected",
+      "beam-correct",
+      "beam-wrong",
+      "beam-missed",
+      "beam-neutral"
+    );
+  });
+
+  button.classList.add("selected");
+
+  selectedAnswers[containerId] = button;
+
+  const feedback =
+    document.getElementById(feedbackId);
+
+  feedback.className = "feedback-box";
+  feedback.textContent =
+    "Answer selected — now check it!";
+}
+
+function checkSingleAnswer(containerId,feedbackId){
+
+  const selected =
+    selectedAnswers[containerId];
+
+  const feedback =
+    document.getElementById(feedbackId);
+
+  const container =
+    document.getElementById(containerId);
+
+  const buttons =
+    container.querySelectorAll(".answer-option");
+
+  if(!selected){
+
+    feedback.className =
+      "feedback-box warning";
+
+    feedback.textContent =
+      "⚠️ Choose an answer first!";
+
+    return;
+  }
+
+  buttons.forEach(button=>{
+
+    const correct =
+      button.dataset.correct === "true";
+
+    const isSelected =
+      button === selected;
+
+    button.classList.remove(
+      "selected",
+      "beam-correct",
+      "beam-wrong",
+      "beam-missed",
+      "beam-neutral"
+    );
+
+    if(isSelected && correct){
+
+      button.classList.add("beam-correct");
+
+    }else if(isSelected && !correct){
+
+      button.classList.add("beam-wrong");
+
+    }else if(!isSelected && correct){
+
+      button.classList.add("beam-missed");
+
+    }else{
+
+      button.classList.add("beam-neutral");
+
+    }
+
+  });
+
+  if(selected.dataset.correct === "true"){
+
+    feedback.className =
+      "feedback-box success";
+
+    feedback.innerHTML =
+      "🎉 <strong>Correct!</strong> Great job!";
+
+  }else{
+
+    feedback.className =
+      "feedback-box error";
+
+    const correctButton =
+      container.querySelector('[data-correct="true"]');
+
+    feedback.innerHTML =
+      `❌ Not quite. The correct answer is <strong>${correctButton.textContent.trim()}</strong>.`;
+  }
+}
+
+
+/* =========================================================
+   SLIDE 2
+========================================================= */
+
+function revealInput(){
+
+  document
+    .getElementById("inputReveal")
+    .classList.add("show");
+
+  const node =
+    document.getElementById("questionNode");
+
+  if(node){
+    node.textContent = "🎤 input()";
+    node.classList.add("active-node");
+  }
+}
+
+
+/* =========================================================
+   SLIDE 3
+========================================================= */
+
+function animateListen(){
+
+  const nodes = [
+    document.getElementById("typeNode"),
+    document.getElementById("listenNode"),
+    document.getElementById("pythonListenNode")
+  ];
+
+  nodes.forEach(n=>{
+    if(n) n.classList.remove("active-node");
+  });
+
+  let i = 0;
+
+  const interval = setInterval(()=>{
+
+    if(i >= nodes.length){
+
+      clearInterval(interval);
+      return;
+    }
+
+    nodes[i].classList.add("active-node");
+    i++;
+
+  },450);
+}
+
+
+/* =========================================================
+   SLIDE 5
+========================================================= */
+
+function showPromptExplanation(){
+
+  const box =
+    document.getElementById("promptExplanation");
+
+  box.className =
+    "feedback-box success";
+
+  box.innerHTML =
+    "💬 <strong>This is the prompt.</strong> It tells the user what Python wants them to enter.";
+}
+
+
+/* =========================================================
+   SLIDE 6
+========================================================= */
+
+function submitColour(){
+
+  const input =
+    document.getElementById("colourInput");
+
+  const feedback =
+    document.getElementById("colourFeedback");
+
+  const value =
+    input.value.trim();
+
+  if(!value){
+
+    feedback.style.color =
+      "var(--amber)";
+
+    feedback.textContent =
+      "⚠️ Python is waiting for your answer...";
+
+    input.focus();
+    return;
+  }
+
+  feedback.style.color =
+    "var(--green)";
+
+  feedback.textContent =
+    `🎉 Python received your answer: "${value}"`;
+
+  input.style.borderBottomColor =
+    "var(--green)";
+}
+
+
+/* =========================================================
+   SLIDE 10
+========================================================= */
+
+function explainPiece(button,type,message){
+
+  document
+    .querySelectorAll(".piece")
+    .forEach(p=>p.classList.remove("clicked"));
+
+  button.classList.add("clicked");
+
+  document.getElementById(
+    "pieceExplanation"
+  ).innerHTML = message;
+}
+
+
+/* =========================================================
+   SLIDE 11
+========================================================= */
+
+function storeName(){
+
+  const box =
+    document.getElementById("storageBox");
+
+  box.classList.add("stored");
+}
+
+
+/* =========================================================
+   SLIDE 14
+========================================================= */
+
+function runSlide14(){
+
+  const ids = [
+    "pipeUser",
+    "pipeStore",
+    "pipePrint",
+    "pipeOutput"
+  ];
+
+  ids.forEach(id=>{
+    document
+      .getElementById(id)
+      .classList.remove("pipe-active");
+  });
+
+  let index = 0;
+
+  const interval = setInterval(()=>{
+
+    if(index >= ids.length){
+
+      clearInterval(interval);
+      return;
+    }
+
+    document
+      .getElementById(ids[index])
+      .classList.add("pipe-active");
+
+    index++;
+
+  },400);
+}
+
+
+/* =========================================================
+   SLIDE 15
+========================================================= */
+
+function runGreeting(){
+
+  const input =
+    document.getElementById("nameInput15");
+
+  const output =
+    document.getElementById("output15");
+
+  let name =
+    input.value.trim();
+
+  if(!name){
+    name = "Python learner";
+  }
+
+  output.textContent =
+    `Hello ${name} 👋`;
+}
+
+
+/* =========================================================
+   SLIDE 16
+========================================================= */
+
+function activatePipe(node,message){
+
+  document
+    .querySelectorAll("#slide16 .pipe-node")
+    .forEach(n=>{
+      n.classList.remove("pipe-active");
+    });
+
+  node.classList.add("pipe-active");
+
+  document.getElementById(
+    "pipeExplanation"
+  ).textContent = message;
+}
+
+
+/* =========================================================
+   SLIDE 18 — FIXED LOGIC
+========================================================= */
+
+let slide18Selected = null;
+let slide18Checked = false;
+
+function selectSlide18Answer(button){
+
+  if(slide18Checked){
+    return;
+  }
+
+  const buttons =
+    document.querySelectorAll(
+      "#slide18Answers .answer-option"
+    );
+
+  buttons.forEach(btn=>{
+    btn.classList.remove(
+      "selected",
+      "beam-correct",
+      "beam-wrong",
+      "beam-missed",
+      "beam-neutral"
+    );
+  });
+
+  button.classList.add("selected");
+
+  slide18Selected = button;
+
+  const feedback =
+    document.getElementById("slide18Feedback");
+
+  feedback.className =
+    "feedback-box";
+
+  feedback.textContent =
+    "Answer selected — now check it!";
+}
+
+function checkSlide18Answer(){
+
+  const feedback =
+    document.getElementById("slide18Feedback");
+
+  if(!slide18Selected){
+
+    feedback.className =
+      "feedback-box warning";
+
+    feedback.textContent =
+      "⚠️ Choose an answer first!";
+
+    return;
+  }
+
+  slide18Checked = true;
+
+  const buttons =
+    document.querySelectorAll(
+      "#slide18Answers .answer-option"
+    );
+
+  buttons.forEach(button=>{
+
+    const isCorrect =
+      button.dataset.correct === "true";
+
+    const isSelected =
+      button === slide18Selected;
+
+    button.classList.remove(
+      "selected",
+      "beam-correct",
+      "beam-wrong",
+      "beam-missed",
+      "beam-neutral"
+    );
+
+    if(isSelected && isCorrect){
+
+      button.classList.add(
+        "beam-correct"
+      );
+
+    }else if(isSelected && !isCorrect){
+
+      button.classList.add(
+        "beam-wrong"
+      );
+
+    }else if(!isSelected && isCorrect){
+
+      button.classList.add(
+        "beam-missed"
+      );
+
+    }else{
+
+      button.classList.add(
+        "beam-neutral"
+      );
+
+    }
+
+  });
+
+  if(
+    slide18Selected.dataset.correct === "true"
+  ){
+
+    feedback.className =
+      "feedback-box success";
+
+    feedback.innerHTML =
+      '🎉 <strong>Correct!</strong> Python stores <code>"15"</code> as a <strong>string</strong>.';
+
+  }else{
+
+    feedback.className =
+      "feedback-box error";
+
+    feedback.innerHTML =
+      '❌ <strong>Not quite!</strong> The correct answer is <code>"15"</code> as a <strong>string</strong>.';
+
+  }
+}
+
+
+/* =========================================================
+   SLIDE 19
+========================================================= */
+
+let builderSequence = [];
+let builderChallenge = 1;
+
+function addBuilderBlock(button,type){
+
+  const output =
+    document.getElementById("builderOutput");
+
+  builderSequence.push(type);
+
+  const clone =
+    button.cloneNode(true);
+
+  clone.onclick = null;
+
+  output.innerHTML = "";
+
+  builderSequence.forEach((item,index)=>{
+
+    const block =
+      document.createElement("span");
+
+    block.className =
+      "code-block";
+
+    if(item === "name"){
+      block.textContent = "name";
+    }
+
+    if(item === "="){
+      block.textContent = "=";
+    }
+
+    if(item === "input"){
+      block.textContent =
+        'input("What is your name? ")';
+    }
+
+    if(item === "age"){
+      block.textContent = "age";
+    }
+
+    if(item === "ageinput"){
+      block.textContent =
+        'input("How old are you? ")';
+    }
+
+    output.appendChild(block);
+
+  });
+
+  checkBuilder();
+}
+
+function checkBuilder(){
+
+  const result =
+    document.getElementById("builderResult");
+
+  const challenge1 =
+    JSON.stringify(builderSequence) ===
+    JSON.stringify([
+      "name",
+      "=",
+      "input"
+    ]);
+
+  const challenge2 =
+    JSON.stringify(builderSequence) ===
+    JSON.stringify([
+      "age",
+      "=",
+      "ageinput"
+    ]);
+
+  if(challenge1){
+
+    result.className =
+      "builder-result";
+
+    result.innerHTML =
+      '🎉 <strong style="color:var(--green)">Challenge 1 complete!</strong> Now try: <code>age = input("How old are you? ")</code>';
+
+    builderSequence = [];
+
+  }else if(challenge2){
+
+    result.innerHTML =
+      '🏆 <strong style="color:var(--green)">Challenge 2 complete!</strong> Variable builder mastered!';
+
+    builderSequence = [];
+
+  }else if(
+    builderSequence.length >= 3
+  ){
+
+    result.innerHTML =
+      '❌ Order not quite right. Press Reset and try again.';
+
+    builderSequence = [];
+
+  }
+}
+
+function resetBuilder(){
+
+  builderSequence = [];
+
+  document.getElementById(
+    "builderOutput"
+  ).innerHTML =
+    '<span style="color:#64748B;font-size:11px">Click blocks...</span>';
+
+  document.getElementById(
+    "builderResult"
+  ).innerHTML =
+    'Challenge 1: Build <code>name = input("What is your name? ")</code>';
+}
+
+
+/* =========================================================
+   SLIDE 20
+========================================================= */
+
+function detectiveClick(type,element){
+
+  document
+    .querySelectorAll(".code-click")
+    .forEach(el=>{
+      el.classList.remove(
+        "detective-active"
+      );
+    });
+
+  element.classList.add(
+    "detective-active"
+  );
+
+  let message = "";
+
+  if(type === "variable"){
+    message =
+      "🏷️ Correct — name is the variable that stores the user's answer.";
+  }
+
+  if(type === "input"){
+    message =
+      "🎤 Correct — input() gets information from the user.";
+  }
+
+  if(type === "print"){
+    message =
+      "🖨️ Correct — print() displays information on the screen.";
+  }
+
+  document.getElementById(
+    "detectiveFeedback"
+  ).innerHTML = message;
+}
+
+function showDetectiveHint(type){
+
+  const selectorMap = {
+    variable: ".code-click",
+    input: ".code-click",
+    print: ".code-click"
+  };
+
+  const elements =
+    document.querySelectorAll(
+      "#slide20 .code-click"
+    );
+
+  elements.forEach(el=>{
+    el.classList.remove(
+      "detective-active"
+    );
+  });
+
+  let target = null;
+
+  elements.forEach(el=>{
+
+    const text =
+      el.textContent.trim();
+
+    if(
+      type === "variable" &&
+      text === "name"
+    ){
+      target = el;
+    }
+
+    if(
+      type === "input" &&
+      text.includes("input")
+    ){
+      target = el;
+    }
+
+    if(
+      type === "print" &&
+      text.includes("print")
+    ){
+      target = el;
+    }
+
+  });
+
+  if(target){
+    detectiveClick(type,target);
+  }
+}
+
+
+/* =========================================================
+   SLIDE 21
+========================================================= */
+
+function runMission(){
+
+  const name =
+    document.getElementById(
+      "missionName"
+    ).value.trim() || "Python learner";
+
+  const colour =
+    document.getElementById(
+      "missionColour"
+    ).value.trim() || "blue";
+
+  const terminal =
+    document.getElementById(
+      "missionTerminal"
+    );
+
+  terminal.innerHTML = `
+    <div style="color:#CBD5E1">
+      What is your name?
+    </div>
+
+    <div style="color:var(--gold)">
+      &gt; ${escapeHTML(name)}
+    </div>
+
+    <div style="margin-top:6px;color:#CBD5E1">
+      What is your favourite colour?
+    </div>
+
+    <div style="color:var(--gold)">
+      &gt; ${escapeHTML(colour)}
+    </div>
+
+    <div style="margin-top:10px;color:var(--green)">
+      Nice to meet you ${escapeHTML(name)} 👋
+    </div>
+
+    <div style="color:#93C5FD">
+      Your favourite colour is ${escapeHTML(colour)}.
+    </div>
+  `;
+
+  const feedback =
+    document.getElementById(
+      "missionFeedback"
+    );
+
+  feedback.className =
+    "feedback-box success";
+
+  feedback.innerHTML =
+    "🎉 <strong>Mission executed!</strong> You used input(), variables and print() together.";
+}
+
+function escapeHTML(value){
+
+  return value
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+/* =========================================================
+   SLIDE 22
+========================================================= */
+
+let missionComplete = false;
+
+function completeMission(){
+
+  if(missionComplete){
+    return;
+  }
+
+  missionComplete = true;
+
+  const button =
+    document.getElementById(
+      "completeMissionBtn"
+    );
+
+  button.textContent =
+    "🏅 Mission Complete!";
+
+  button.style.background =
+    "linear-gradient(135deg,#10B981,#059669)";
+
+  const message =
+    document.getElementById(
+      "completionMessage"
+    );
+
+  message.className =
+    "feedback-box success";
+
+  message.innerHTML =
+    "🎉 <strong>Python Communication Badge Unlocked!</strong> You can now make Python listen, remember and speak.";
+
+  if(typeof confetti === "function"){
+
+    confetti({
+      particleCount:140,
+      spread:80,
+      origin:{y:.65}
+    });
+
+    setTimeout(()=>{
+      confetti({
+        particleCount:90,
+        spread:100,
+        origin:{x:.2,y:.7}
+      });
+    },250);
+
+    setTimeout(()=>{
+      confetti({
+        particleCount:90,
+        spread:100,
+        origin:{x:.8,y:.7}
+      });
+    },500);
+
+  }
+}
+
+
+/* =========================================================
+   INITIALISE
+========================================================= */
+
+showSlide(0);
+
+
+/* =========================================================
+   TOUCH / SWIPE NAVIGATION
+========================================================= */
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener("touchstart",(event)=>{
+  touchStartX =
+    event.changedTouches[0].screenX;
+});
+
+document.addEventListener("touchend",(event)=>{
+
+  touchEndX =
+    event.changedTouches[0].screenX;
+
+  const difference =
+    touchEndX - touchStartX;
+
+  if(Math.abs(difference) < 50){
+    return;
+  }
+
+  if(difference < 0){
+    nextSlide();
+  }else{
+    previousSlide();
+  }
+});
+
+</script>
+
+<!-- ===== Milestone 1: next-lesson button (added) ===== -->
+<a id="m1-next" href="Exercise1.html" aria-label="Next: Exercise 1">
+  <span class="m1-k">Next</span>
+  <span class="m1-t">Exercise 1</span>
+  <span class="m1-a" aria-hidden="true">&rarr;</span>
+</a>
+<style>
+  #m1-next{
+    position:fixed;right:18px;bottom:18px;z-index:2147483001;
+    display:flex;align-items:center;gap:10px;
+    padding:11px 18px;border-radius:999px;line-height:1;
+    font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+    text-decoration:none;color:#0F172A;
+    background:linear-gradient(135deg,#FFD43B,#ffe680);
+    box-shadow:0 10px 30px -10px rgba(0,0,0,.65),0 0 0 1px rgba(255,212,59,.35);
+    transition:transform .16s ease,box-shadow .16s ease;
+  }
+  #m1-next:hover{transform:translateY(-2px);box-shadow:0 16px 36px -10px rgba(0,0,0,.75),0 0 0 1px rgba(255,212,59,.55)}
+  #m1-next:focus-visible{outline:2px solid #FFD43B;outline-offset:3px}
+  #m1-next .m1-k{font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.55}
+  #m1-next .m1-t{font-size:13px;font-weight:700}
+  #m1-next .m1-a{font-size:15px;font-weight:700}
+  @media (max-width:560px){#m1-next{right:12px;bottom:12px;padding:10px 14px}#m1-next .m1-k{display:none}}
+  @media print{#m1-next{display:none}}
+</style>
+<!-- ===== end Milestone 1 nav ===== -->
+
+</body>
+</html>

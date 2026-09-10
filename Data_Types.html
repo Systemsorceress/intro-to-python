@@ -1,0 +1,2636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Data Types for Beginners</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy:#0F172A;
+  --navy2:#111c33;
+  --blue:#306998;
+  --blue2:#4d9bd0;
+  --gold:#FFD43B;
+  --green:#10B981;
+  --orange:#F97316;
+  --purple:#A855F7;
+  --red:#EF4444;
+  --white:#F8FAFC;
+  --muted:#94A3B8;
+  --line:rgba(255,255,255,.1);
+  --glass:rgba(30,41,59,.72);
+  --shadow:0 25px 80px rgba(0,0,0,.35);
+}
+
+* { box-sizing:border-box; }
+
+html,body {
+  width:100%;
+  height:100%;
+  margin:0;
+}
+
+body {
+  font-family:"Inter",sans-serif;
+  color:var(--white);
+  background:
+    radial-gradient(circle at 15% 15%,rgba(48,105,152,.28),transparent 30%),
+    radial-gradient(circle at 85% 15%,rgba(168,85,247,.15),transparent 25%),
+    radial-gradient(circle at 50% 100%,rgba(16,185,129,.08),transparent 35%),
+    var(--navy);
+  overflow:hidden;
+}
+
+body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.15;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+
+button {
+  font:inherit;
+}
+
+.app {
+  width:100%;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar {
+  height:64px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:0 28px;
+  border-bottom:1px solid var(--line);
+  background:rgba(15,23,42,.72);
+  backdrop-filter:blur(18px);
+  z-index:20;
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-family:"Poppins",sans-serif;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.py-logo {
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--gold),#ffe77d);
+  color:var(--navy);
+  font-family:"Fira Code",monospace;
+  font-weight:700;
+  font-size:14px;
+}
+
+.brand span {
+  color:var(--gold);
+}
+
+.progress-container {
+  flex:1;
+  max-width:700px;
+  margin:auto;
+}
+
+.progress-track {
+  width:100%;
+  height:5px;
+  border-radius:99px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+}
+
+.progress-bar {
+  height:100%;
+  width:4.76%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,var(--blue2),var(--gold));
+  transition:width .45s ease;
+}
+
+.top-counter {
+  color:var(--muted);
+  font-size:13px;
+  white-space:nowrap;
+}
+
+/* =========================
+   SLIDE AREA
+========================= */
+
+.deck {
+  flex:1;
+  position:relative;
+  overflow:hidden;
+}
+
+.slide {
+  position:absolute;
+  inset:0;
+  padding:42px 7vw 95px;
+  display:none;
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--blue) transparent;
+}
+
+.slide.active {
+  display:block;
+  animation:slideIn .4s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity:0;
+    transform:translateX(25px);
+  }
+  to {
+    opacity:1;
+    transform:translateX(0);
+  }
+}
+
+.slide-content {
+  width:min(1100px,100%);
+  min-height:100%;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.eyebrow {
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  width:max-content;
+  padding:7px 12px;
+  border-radius:999px;
+  color:#cbd5e1;
+  background:rgba(48,105,152,.15);
+  border:1px solid rgba(75,156,211,.25);
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:16px;
+}
+
+h1,h2,h3 {
+  font-family:"Poppins",sans-serif;
+}
+
+h1 {
+  font-size:clamp(36px,6vw,76px);
+  line-height:1.02;
+  letter-spacing:-3px;
+  margin:0 0 18px;
+}
+
+h2 {
+  font-size:clamp(30px,4.3vw,54px);
+  line-height:1.08;
+  letter-spacing:-1.5px;
+  margin:0 0 18px;
+}
+
+h3 {
+  margin:0;
+}
+
+.gradient {
+  background:linear-gradient(90deg,var(--white),var(--gold));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.lead {
+  color:var(--muted);
+  max-width:760px;
+  font-size:clamp(15px,2vw,20px);
+  line-height:1.7;
+}
+
+.center {
+  text-align:center;
+  align-items:center;
+}
+
+.center .lead {
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* =========================
+   COMMON CARDS
+========================= */
+
+.glass {
+  background:var(--glass);
+  border:1px solid var(--line);
+  border-radius:22px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(16px);
+}
+
+.cards {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin:25px 0;
+}
+
+.card {
+  padding:22px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(30,41,59,.7);
+  transition:.25s ease;
+}
+
+.card:hover {
+  transform:translateY(-5px);
+  border-color:rgba(255,212,59,.4);
+}
+
+.code {
+  font-family:"Fira Code",monospace;
+  color:var(--gold);
+}
+
+.code-card {
+  padding:22px 26px;
+  border-radius:18px;
+  background:#09101f;
+  border:1px solid rgba(75,156,211,.25);
+  font-family:"Fira Code",monospace;
+  box-shadow:inset 0 0 30px rgba(48,105,152,.07);
+}
+
+.quote-card {
+  padding:24px;
+  border-radius:18px;
+  background:rgba(15,23,42,.7);
+  border:1px solid rgba(75,156,211,.18);
+  font-family:"Fira Code",monospace;
+  color:#dbeafe;
+}
+
+.callout {
+  padding:16px 20px;
+  border-radius:15px;
+  border-left:4px solid var(--gold);
+  background:rgba(255,212,59,.07);
+  color:#e2e8f0;
+}
+
+.callout.green {
+  border-color:var(--green);
+  background:rgba(16,185,129,.08);
+}
+
+.callout.orange {
+  border-color:var(--orange);
+  background:rgba(249,115,22,.08);
+}
+
+.callout.purple {
+  border-color:var(--purple);
+  background:rgba(168,85,247,.08);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn {
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:12px 18px;
+  color:#e2e8f0;
+  background:rgba(30,41,59,.8);
+  cursor:pointer;
+  transition:.2s ease;
+  font-weight:700;
+}
+
+.btn:hover {
+  transform:translateY(-2px);
+  border-color:var(--blue2);
+  background:rgba(48,105,152,.2);
+}
+
+.btn.primary {
+  color:var(--navy);
+  border-color:transparent;
+  background:linear-gradient(135deg,var(--gold),#ffe77d);
+}
+
+.btn.green {
+  border-color:rgba(16,185,129,.3);
+  background:rgba(16,185,129,.12);
+}
+
+.btn.orange {
+  border-color:rgba(249,115,22,.3);
+  background:rgba(249,115,22,.12);
+}
+
+.btn.purple {
+  border-color:rgba(168,85,247,.3);
+  background:rgba(168,85,247,.12);
+}
+
+.option-grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:22px;
+}
+
+.option {
+  padding:17px;
+  border-radius:15px;
+  border:1px solid var(--line);
+  background:rgba(15,23,42,.62);
+  color:#cbd5e1;
+  cursor:pointer;
+  transition:.2s ease;
+  text-align:left;
+}
+
+.option:hover {
+  border-color:var(--blue2);
+  transform:translateY(-2px);
+}
+
+.option.selected {
+  border-color:var(--gold);
+  background:rgba(255,212,59,.1);
+}
+
+.option.correct {
+  border-color:var(--green)!important;
+  background:rgba(16,185,129,.14)!important;
+}
+
+.option.incorrect {
+  border-color:var(--red)!important;
+  background:rgba(239,68,68,.13)!important;
+}
+
+.feedback {
+  display:none;
+  margin-top:16px;
+  padding:13px 16px;
+  border-radius:13px;
+  font-size:14px;
+  animation:fadeUp .3s ease;
+}
+
+.feedback.show {
+  display:block;
+}
+
+.feedback.success {
+  color:#a7f3d0;
+  background:rgba(16,185,129,.12);
+  border:1px solid rgba(16,185,129,.25);
+}
+
+.feedback.error {
+  color:#fecaca;
+  background:rgba(239,68,68,.12);
+  border:1px solid rgba(239,68,68,.25);
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(7px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* =========================
+   SLIDE 1
+========================= */
+
+.data-cards {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  width:min(850px,100%);
+  margin:28px auto;
+}
+
+.data-item {
+  padding:26px 15px;
+  text-align:center;
+  border-radius:18px;
+  background:rgba(30,41,59,.75);
+  border:1px solid var(--line);
+  font-family:"Fira Code",monospace;
+  font-size:20px;
+  color:var(--gold);
+}
+
+.yes-no {
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+/* =========================
+   SLIDE 2 SORTING
+========================= */
+
+.sort-board {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-top:22px;
+}
+
+.drop-zone {
+  min-height:135px;
+  padding:16px;
+  border-radius:18px;
+  border:1.5px dashed rgba(148,163,184,.3);
+  background:rgba(15,23,42,.45);
+  transition:.2s;
+}
+
+.drop-zone.dragover {
+  border-color:var(--gold);
+  background:rgba(255,212,59,.08);
+}
+
+.zone-title {
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+
+.zone-items {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.sort-item {
+  display:inline-flex;
+  padding:10px 14px;
+  border-radius:11px;
+  background:rgba(48,105,152,.18);
+  border:1px solid rgba(75,156,211,.3);
+  font-family:"Fira Code",monospace;
+  color:#dbeafe;
+  cursor:grab;
+  user-select:none;
+  touch-action:none;
+}
+
+.sort-item:active {
+  cursor:grabbing;
+}
+
+.sort-item.placed {
+  background:rgba(16,185,129,.12);
+  border-color:rgba(16,185,129,.4);
+}
+
+.item-pool {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:18px;
+}
+
+/* =========================
+   SLIDE 3 FLIP CARDS
+========================= */
+
+.type-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-top:24px;
+}
+
+.type-card {
+  height:190px;
+  perspective:1000px;
+  cursor:pointer;
+}
+
+.type-inner {
+  position:relative;
+  width:100%;
+  height:100%;
+  transition:transform .6s;
+  transform-style:preserve-3d;
+}
+
+.type-card.flipped .type-inner {
+  transform:rotateY(180deg);
+}
+
+.type-front,
+.type-back {
+  position:absolute;
+  inset:0;
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  border-radius:19px;
+  backface-visibility:hidden;
+  border:1px solid var(--line);
+  background:rgba(30,41,59,.8);
+}
+
+.type-front {
+  gap:10px;
+}
+
+.type-front .icon {
+  font-size:34px;
+}
+
+.type-front small {
+  color:var(--muted);
+}
+
+.type-back {
+  transform:rotateY(180deg);
+  background:linear-gradient(145deg,rgba(48,105,152,.2),rgba(15,23,42,.9));
+}
+
+.type-back .keyword {
+  font:700 28px "Fira Code",monospace;
+  color:var(--gold);
+  margin:8px 0;
+}
+
+/* =========================
+   STRING
+========================= */
+
+.quote-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin:25px 0;
+}
+
+.string-quote {
+  font:600 17px "Fira Code",monospace;
+  color:#fef3c7;
+}
+
+/* =========================
+   NUMBER LINE
+========================= */
+
+.number-line-wrap {
+  padding:28px 15px;
+  margin-top:25px;
+  border-radius:20px;
+  background:rgba(15,23,42,.65);
+  border:1px solid var(--line);
+}
+
+.number-line {
+  display:flex;
+  align-items:flex-start;
+  gap:0;
+  overflow-x:auto;
+  padding:20px 5px;
+}
+
+.number {
+  min-width:58px;
+  text-align:center;
+  cursor:pointer;
+}
+
+.dot {
+  width:17px;
+  height:17px;
+  margin:0 auto 8px;
+  border-radius:50%;
+  background:var(--slate-light);
+  border:2px solid #64748b;
+  transition:.2s;
+}
+
+.number:hover .dot,
+.number.active .dot {
+  transform:scale(1.35);
+  background:var(--gold);
+  border-color:var(--gold);
+  box-shadow:0 0 18px rgba(255,212,59,.4);
+}
+
+.number-label {
+  color:var(--muted);
+  font:12px "Fira Code",monospace;
+}
+
+.number-info {
+  text-align:center;
+  color:#cbd5e1;
+  min-height:24px;
+}
+
+/* =========================
+   INTEGER/FLOAT SORT
+========================= */
+
+.two-zones {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:25px;
+}
+
+.class-zone {
+  min-height:220px;
+  padding:20px;
+  border-radius:20px;
+  border:2px dashed rgba(148,163,184,.22);
+  background:rgba(15,23,42,.45);
+}
+
+.class-zone h3 {
+  margin-bottom:14px;
+}
+
+.class-zone.integer h3 {
+  color:var(--blue2);
+}
+
+.class-zone.float h3 {
+  color:var(--purple);
+}
+
+/* =========================
+   TOGGLE
+========================= */
+
+.toggle-row {
+  display:flex;
+  gap:25px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin:30px 0;
+}
+
+.toggle-card {
+  min-width:180px;
+  padding:20px;
+  text-align:center;
+  border-radius:18px;
+  background:rgba(30,41,59,.7);
+  border:1px solid var(--line);
+}
+
+.switch {
+  width:58px;
+  height:32px;
+  border-radius:99px;
+  margin:14px auto 0;
+  padding:4px;
+  background:#334155;
+  cursor:pointer;
+  transition:.25s;
+}
+
+.switch span {
+  display:block;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:#e2e8f0;
+  transition:.25s;
+}
+
+.switch.on {
+  background:var(--green);
+}
+
+.switch.on span {
+  transform:translateX(26px);
+}
+
+/* =========================
+   SUMMARY TABLE
+========================= */
+
+.summary-table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:24px;
+  overflow:hidden;
+  border-radius:18px;
+  background:rgba(30,41,59,.65);
+}
+
+.summary-table th,
+.summary-table td {
+  padding:17px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+}
+
+.summary-table th {
+  color:var(--gold);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+}
+
+.summary-table td {
+  color:#cbd5e1;
+}
+
+.summary-table tr:last-child td {
+  border-bottom:0;
+}
+
+/* =========================
+   SPEED ROUND
+========================= */
+
+.speed-score {
+  display:inline-flex;
+  gap:7px;
+  padding:9px 14px;
+  border-radius:999px;
+  background:rgba(16,185,129,.1);
+  border:1px solid rgba(16,185,129,.2);
+  color:#a7f3d0;
+  font-weight:700;
+  margin-bottom:18px;
+}
+
+.speed-question {
+  display:none;
+}
+
+.speed-question.active {
+  display:block;
+  animation:fadeUp .3s ease;
+}
+
+.big-code {
+  padding:28px;
+  text-align:center;
+  font:700 clamp(25px,5vw,45px) "Fira Code",monospace;
+  color:var(--gold);
+  border-radius:20px;
+  background:#09101f;
+  border:1px solid rgba(75,156,211,.25);
+  margin:18px 0;
+}
+
+/* =========================
+   FINAL CHALLENGE
+========================= */
+
+.mystery-grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:25px;
+}
+
+.mystery {
+  padding:22px;
+  border:1px solid var(--line);
+  border-radius:17px;
+  background:rgba(30,41,59,.65);
+}
+
+.mystery-value {
+  font:700 22px "Fira Code",monospace;
+  color:var(--gold);
+  margin-bottom:12px;
+}
+
+.mystery-options {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.mystery-options button {
+  padding:8px 12px;
+  border-radius:9px;
+  color:#cbd5e1;
+  border:1px solid var(--line);
+  background:rgba(15,23,42,.6);
+  cursor:pointer;
+}
+
+.mystery-options button.selected {
+  border-color:var(--gold);
+}
+
+.mystery-options button.correct {
+  background:rgba(16,185,129,.16);
+  border-color:var(--green);
+  color:#a7f3d0;
+}
+
+.master-badge {
+  display:none;
+  margin:25px auto 0;
+  padding:22px 30px;
+  width:max-content;
+  max-width:100%;
+  text-align:center;
+  border-radius:20px;
+  background:linear-gradient(135deg,rgba(255,212,59,.15),rgba(168,85,247,.13));
+  border:1px solid rgba(255,212,59,.35);
+  animation:badgePop .6s ease;
+}
+
+.master-badge.show {
+  display:block;
+}
+
+@keyframes badgePop {
+  0% { transform:scale(.6) rotate(-4deg); opacity:0; }
+  70% { transform:scale(1.08); }
+  100% { transform:scale(1) rotate(0); opacity:1; }
+}
+
+.badge-icon {
+  font-size:48px;
+  display:block;
+}
+
+/* =========================
+   CONFETTI
+========================= */
+
+.confetti {
+  position:fixed;
+  width:8px;
+  height:14px;
+  top:-20px;
+  z-index:100;
+  pointer-events:none;
+  animation:confettiFall 2.8s linear forwards;
+}
+
+@keyframes confettiFall {
+  to {
+    transform:translate(var(--x),110vh) rotate(720deg);
+    opacity:0;
+  }
+}
+
+/* =========================
+   BOTTOM CONTROLS
+========================= */
+
+.controls {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:76px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  padding:12px 20px;
+  border-top:1px solid var(--line);
+  background:rgba(15,23,42,.82);
+  backdrop-filter:blur(18px);
+  z-index:30;
+}
+
+.nav-btn {
+  min-width:105px;
+}
+
+.slide-counter {
+  min-width:100px;
+  text-align:center;
+  color:var(--muted);
+  font:13px "Fira Code",monospace;
+}
+
+.keyboard {
+  position:absolute;
+  right:25px;
+  color:#64748b;
+  font-size:11px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:800px) {
+  body {
+    overflow:hidden;
+  }
+
+  .topbar {
+    height:56px;
+    padding:0 15px;
+  }
+
+  .brand-text {
+    display:none;
+  }
+
+  .slide {
+    padding:28px 18px 100px;
+  }
+
+  .cards,
+  .data-cards,
+  .type-grid,
+  .quote-grid {
+    grid-template-columns:1fr 1fr;
+  }
+
+  .sort-board,
+  .two-zones,
+  .mystery-grid {
+    grid-template-columns:1fr;
+  }
+
+  .option-grid {
+    grid-template-columns:1fr;
+  }
+
+  h1 {
+    letter-spacing:-1.5px;
+  }
+
+  .keyboard {
+    display:none;
+  }
+
+  .controls {
+    height:70px;
+  }
+
+  .nav-btn {
+    min-width:auto;
+    padding:11px 15px;
+  }
+}
+
+@media(max-width:480px) {
+  .cards,
+  .data-cards,
+  .type-grid,
+  .quote-grid {
+    grid-template-columns:1fr;
+  }
+
+  .type-card {
+    height:150px;
+  }
+
+  .top-counter {
+    font-size:11px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="py-logo">Py</div>
+      <div class="brand-text">Python <span>Data Types</span></div>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-track">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <div class="top-counter" id="topCounter">1 / 21</div>
+  </header>
+
+  <main class="deck" id="deck">
+
+    <!-- =====================================================
+         SLIDE 1
+    ====================================================== -->
+    <section class="slide active">
+      <div class="slide-content center">
+        <div class="eyebrow">🐍 PYTHON FUNDAMENTALS</div>
+
+        <h1>Can Python understand<br><span class="gradient">everything the same way?</span></h1>
+
+        <p class="lead">
+          Look carefully. These are all values we can give to Python —
+          but are they all the same kind of data?
+        </p>
+
+        <div class="data-cards">
+          <div class="data-item">"Hello"</div>
+          <div class="data-item">25</div>
+          <div class="data-item">25.5</div>
+          <div class="data-item">True</div>
+        </div>
+
+        <div class="yes-no">
+          <button class="btn" onclick="hookAnswer(false)">🟢 Yes, they're all data</button>
+          <button class="btn primary" onclick="hookAnswer(true)">🔵 No, they're different</button>
+        </div>
+
+        <div class="feedback success" id="hookFeedback">
+          ✅ <strong>Correct!</strong> They are all data, but they are different types of data.
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 2
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🎯 INTERACTIVE SORTING</div>
+        <h2>Python Sorts Data <span class="gradient">Into Types</span></h2>
+
+        <p class="lead">
+          Drag each value into the category that describes it.
+          On mobile, tap an item and then tap its destination.
+        </p>
+
+        <div class="sort-board">
+
+          <div class="drop-zone" data-type="str">
+            <div class="zone-title"><span>💬 TEXT</span><span>str</span></div>
+            <div class="zone-items"></div>
+          </div>
+
+          <div class="drop-zone" data-type="int">
+            <div class="zone-title"><span>🔢 WHOLE NUMBER</span><span>int</span></div>
+            <div class="zone-items"></div>
+          </div>
+
+          <div class="drop-zone" data-type="float">
+            <div class="zone-title"><span>📐 DECIMAL</span><span>float</span></div>
+            <div class="zone-items"></div>
+          </div>
+
+          <div class="drop-zone" data-type="bool">
+            <div class="zone-title"><span>✅ TRUE / FALSE</span><span>bool</span></div>
+            <div class="zone-items"></div>
+          </div>
+
+        </div>
+
+        <div class="item-pool" id="sortPool">
+          <div class="sort-item" draggable="true" data-type="str">"Python"</div>
+          <div class="sort-item" draggable="true" data-type="int">42</div>
+          <div class="sort-item" draggable="true" data-type="float">3.14</div>
+          <div class="sort-item" draggable="true" data-type="bool">False</div>
+        </div>
+
+        <div class="feedback" id="sortFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 3
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">💡 CORE IDEA</div>
+        <h2>So... What Is a <span class="gradient">Data Type?</span></h2>
+
+        <div class="glass" style="padding:25px;margin-bottom:10px;">
+          <p style="font-size:20px;margin:0;">
+            A <strong style="color:var(--gold)">data type</strong>
+            tells Python what kind of data a value is.
+          </p>
+        </div>
+
+        <p style="color:var(--muted);">Click each card to reveal its Python keyword.</p>
+
+        <div class="type-grid">
+
+          <div class="type-card" onclick="this.classList.toggle('flipped')">
+            <div class="type-inner">
+              <div class="type-front">
+                <div class="icon">💬</div>
+                <h3>String</h3>
+                <small>Click to flip</small>
+              </div>
+              <div class="type-back">
+                <small>Python keyword</small>
+                <div class="keyword">str</div>
+                <small>"Hello"</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-card" onclick="this.classList.toggle('flipped')">
+            <div class="type-inner">
+              <div class="type-front">
+                <div class="icon">🔢</div>
+                <h3>Integer</h3>
+                <small>Click to flip</small>
+              </div>
+              <div class="type-back">
+                <small>Python keyword</small>
+                <div class="keyword">int</div>
+                <small>42</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-card" onclick="this.classList.toggle('flipped')">
+            <div class="type-inner">
+              <div class="type-front">
+                <div class="icon">📐</div>
+                <h3>Float</h3>
+                <small>Click to flip</small>
+              </div>
+              <div class="type-back">
+                <small>Python keyword</small>
+                <div class="keyword">float</div>
+                <small>3.14</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-card" onclick="this.classList.toggle('flipped')">
+            <div class="type-inner">
+              <div class="type-front">
+                <div class="icon">✅</div>
+                <h3>Boolean</h3>
+                <small>Click to flip</small>
+              </div>
+              <div class="type-back">
+                <small>Python keyword</small>
+                <div class="keyword">bool</div>
+                <small>True / False</small>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 4
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">TYPE 1 • 💬 STRING</div>
+        <h2>String — <span class="code">str</span></h2>
+
+        <div class="glass" style="padding:30px;">
+          <div style="font-size:clamp(25px,4vw,42px);font-weight:800;">
+            A STRING is <span style="color:var(--gold)">TEXT.</span>
+          </div>
+          <p class="lead">
+            Words, sentences, names and other text are represented as strings.
+          </p>
+        </div>
+
+        <div class="quote-grid">
+          <div class="quote-card string-quote">"Hello"</div>
+          <div class="quote-card string-quote">"Ali"</div>
+          <div class="quote-card string-quote">"Python is fun"</div>
+        </div>
+
+        <div class="callout">
+          🧠 <strong>Think:</strong> Words or sentences wrapped in quotes are strings.
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 5
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🔍 STRING DETECTIVE</div>
+        <h2>Which of these are <span class="gradient">strings?</span></h2>
+
+        <p class="lead">Select all the values that are strings.</p>
+
+        <div class="option-grid" id="stringOptions">
+          <div class="option" data-correct="true">A. "Hello"</div>
+          <div class="option" data-correct="false">B. 25</div>
+          <div class="option" data-correct="true">C. "25"</div>
+          <div class="option" data-correct="false">D. Python</div>
+          <div class="option" data-correct="true">E. "Python"</div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <button class="btn primary" onclick="checkMultiSelect('stringOptions','stringFeedback')">
+            Check Answer
+          </button>
+        </div>
+
+        <div class="feedback" id="stringFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 6
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🖨 FUNCTION SPOTLIGHT</div>
+        <h2>What Does <span class="code">print()</span> Do?</h2>
+
+        <div class="code-card" style="font-size:clamp(22px,4vw,35px);margin:20px 0;">
+          print("Hello")
+        </div>
+
+        <p class="lead">
+          What will appear as the output?
+        </p>
+
+        <div class="option-grid" id="printOptions">
+          <div class="option" onclick="singleAnswer(this,'printOptions','correct')">A. Hello</div>
+          <div class="option" onclick="singleAnswer(this,'printOptions','wrong')">B. "Hello"</div>
+          <div class="option" onclick="singleAnswer(this,'printOptions','wrong')">C. print</div>
+          <div class="option" onclick="singleAnswer(this,'printOptions','wrong')">D. Nothing</div>
+        </div>
+
+        <div class="feedback" id="printFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 7
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">TYPE 2 • 🔢 INTEGER</div>
+        <h2>Integer — <span class="code">int</span></h2>
+
+        <div class="glass" style="padding:28px;">
+          <div style="font-size:clamp(23px,4vw,38px);font-weight:800;">
+            An integer is a <span style="color:var(--gold)">WHOLE NUMBER</span>
+            without decimals.
+          </div>
+        </div>
+
+        <div class="number-line-wrap">
+          <div class="number-info" id="numberInfo">
+            Click a number to explore integers.
+          </div>
+
+          <div class="number-line">
+            <script>
+              for(let i=-10;i<=10;i++){
+                document.write(`
+                  <div class="number" onclick="selectNumber(this,${i})">
+                    <div class="dot"></div>
+                    <div class="number-label">${i}</div>
+                  </div>
+                `);
+              }
+            </script>
+          </div>
+        </div>
+
+        <div class="callout green">
+          💡 Negative numbers, positive numbers, and <strong>0</strong> can all be integers.
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 8
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🎯 QUICK CHECK</div>
+        <h2>Integer <span class="gradient">or Not?</span></h2>
+
+        <p class="lead">Click all the integers.</p>
+
+        <div class="option-grid" id="integerOptions">
+          <div class="option" data-correct="true">15</div>
+          <div class="option" data-correct="false">3.5</div>
+          <div class="option" data-correct="true">-8</div>
+          <div class="option" data-correct="true">0</div>
+          <div class="option" data-correct="false">99.9</div>
+          <div class="option" data-correct="true">42</div>
+        </div>
+
+        <button class="btn primary" style="margin-top:20px;width:max-content;"
+                onclick="checkMultiSelect('integerOptions','integerFeedback')">
+          Check Answer
+        </button>
+
+        <div class="feedback" id="integerFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 9
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🌍 REAL WORLD</div>
+        <h2>Integers <span class="gradient">Around Us</span></h2>
+
+        <div class="cards">
+          <div class="card">
+            <div style="font-size:30px;">🎂</div>
+            <h3>Age</h3>
+            <div class="code">15</div>
+          </div>
+          <div class="card">
+            <div style="font-size:30px;">👩‍🎓</div>
+            <h3>Students</h3>
+            <div class="code">28</div>
+          </div>
+          <div class="card">
+            <div style="font-size:30px;">🏢</div>
+            <h3>Floor</h3>
+            <div class="code">3</div>
+          </div>
+          <div class="card">
+            <div style="font-size:30px;">💰</div>
+            <h3>Money</h3>
+            <div class="code">$500</div>
+          </div>
+        </div>
+
+        <div class="glass" style="padding:25px;">
+          <p style="margin:0 0 12px;color:var(--muted);">Mini Quiz</p>
+          <div class="code-card" style="font-size:22px;">age = 15</div>
+          <div class="callout green" style="margin-top:15px;">
+            ✅ 15 is an integer (<span class="code">int</span>) because it is a whole number.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 10
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">TYPE 3 • 📐 FLOAT</div>
+        <h2>Float — <span class="code">float</span></h2>
+
+        <div class="glass" style="padding:28px;">
+          <div style="font-size:clamp(23px,4vw,38px);font-weight:800;">
+            A float is a number with a <span style="color:var(--purple)">DECIMAL POINT.</span>
+          </div>
+        </div>
+
+        <div class="cards" style="margin-top:30px;">
+          <div class="card" style="text-align:center;">
+            <div style="font:700 40px 'Fira Code';color:var(--blue2);">25</div>
+            <h3>INTEGER</h3>
+            <small style="color:var(--muted);">int</small>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <div style="font:700 40px 'Fira Code';color:var(--purple);">25.5</div>
+            <h3>FLOAT</h3>
+            <small style="color:var(--muted);">float</small>
+          </div>
+        </div>
+
+        <div class="callout purple">
+          🔑 Look for the <strong>decimal point</strong>.
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 11
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🎯 CLASSIFIER</div>
+        <h2>Integer or <span class="gradient">Float?</span></h2>
+
+        <p class="lead">
+          Drag or tap each value into the correct zone.
+        </p>
+
+        <div class="item-pool" id="numericPool">
+          <div class="sort-item" draggable="true" data-numtype="integer">10</div>
+          <div class="sort-item" draggable="true" data-numtype="float">10.5</div>
+          <div class="sort-item" draggable="true" data-numtype="integer">7</div>
+          <div class="sort-item" draggable="true" data-numtype="float">7.2</div>
+          <div class="sort-item" draggable="true" data-numtype="integer">100</div>
+          <div class="sort-item" draggable="true" data-numtype="float">100.01</div>
+        </div>
+
+        <div class="two-zones">
+          <div class="class-zone integer" data-numzone="integer">
+            <h3>🔵 INTEGER</h3>
+            <div class="zone-items"></div>
+          </div>
+
+          <div class="class-zone float" data-numzone="float">
+            <h3>🟣 FLOAT</h3>
+            <div class="zone-items"></div>
+          </div>
+        </div>
+
+        <div class="feedback" id="numericFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 12
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content center">
+        <div class="eyebrow">🧠 TRICKY CONCEPT</div>
+        <h2>Spot the <span class="gradient">Difference</span></h2>
+
+        <div class="cards" style="width:min(700px,100%);">
+          <div class="card">
+            <div class="code" style="font-size:40px;">25</div>
+            <strong style="color:var(--blue2);">INTEGER</strong>
+          </div>
+          <div class="card">
+            <div class="code" style="font-size:40px;">25.0</div>
+            <strong style="color:var(--purple);">FLOAT</strong>
+          </div>
+        </div>
+
+        <h3 style="font-size:22px;">Are they the same data type?</h3>
+
+        <div class="yes-no" style="margin-top:20px;">
+          <button class="btn" onclick="floatDifference(false)">YES</button>
+          <button class="btn primary" onclick="floatDifference(true)">NO</button>
+        </div>
+
+        <div class="feedback" id="floatDifferenceFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 13
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content center">
+        <div class="eyebrow">TYPE 4 • ✅ BOOLEAN</div>
+        <h2>Boolean — <span class="code">bool</span></h2>
+
+        <p class="lead">
+          A Boolean can <strong style="color:var(--gold)">ONLY</strong>
+          be <strong>True</strong> or <strong>False</strong>.
+        </p>
+
+        <div class="toggle-row">
+
+          <div class="toggle-card">
+            <div class="code" style="font-size:25px;">True</div>
+            <div class="switch on" onclick="this.classList.toggle('on')">
+              <span></span>
+            </div>
+          </div>
+
+          <div class="toggle-card">
+            <div class="code" style="font-size:25px;">False</div>
+            <div class="switch" onclick="this.classList.toggle('on')">
+              <span></span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="callout green" style="width:min(700px,100%);">
+          💡 Boolean values are useful when something has two possible states:
+          <strong>yes/no</strong>, <strong>on/off</strong>, or <strong>true/false</strong>.
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 14
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">⚡ BOOLEAN QUIZ</div>
+        <h2>The Two-Choice <span class="gradient">World</span></h2>
+
+        <div class="glass" style="padding:25px;margin-bottom:16px;">
+          <h3>1. Is 10 &gt; 50?</h3>
+
+          <div class="yes-no" style="justify-content:flex-start;margin-top:15px;">
+            <button class="btn" onclick="booleanAnswer(this,false,'bool1')">True</button>
+            <button class="btn" onclick="booleanAnswer(this,true,'bool1')">False</button>
+          </div>
+
+          <div class="feedback" id="bool1"></div>
+        </div>
+
+        <div class="glass" style="padding:25px;">
+          <h3>2. Is Python a programming language?</h3>
+
+          <div class="yes-no" style="justify-content:flex-start;margin-top:15px;">
+            <button class="btn" onclick="booleanAnswer(this,true,'bool2')">True</button>
+            <button class="btn" onclick="booleanAnswer(this,false,'bool2')">False</button>
+          </div>
+
+          <div class="feedback" id="bool2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 15
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🕵️ BOOLEAN DETECTIVE</div>
+        <h2>Find the <span class="gradient">Actual Booleans</span></h2>
+
+        <p class="lead">Select all the values that are actually Boolean values.</p>
+
+        <div class="option-grid" id="booleanOptions">
+          <div class="option" data-correct="true"><span class="code">True</span></div>
+          <div class="option" data-correct="true"><span class="code">False</span></div>
+          <div class="option" data-correct="false"><span class="code">"True"</span></div>
+          <div class="option" data-correct="false"><span class="code">1</span></div>
+          <div class="option" data-correct="false"><span class="code">"False"</span></div>
+          <div class="option" data-correct="false"><span class="code">0</span></div>
+        </div>
+
+        <button class="btn primary" style="margin-top:20px;width:max-content;"
+                onclick="checkMultiSelect('booleanOptions','booleanFeedback')">
+          Check Answer
+        </button>
+
+        <div class="feedback" id="booleanFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 16
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🧩 MASTER THE FOUR</div>
+        <h2>The Four Types <span class="gradient">Summary</span></h2>
+
+        <p class="lead">
+          Click each card to review the type, keyword, and memory trick.
+        </p>
+
+        <div class="type-grid">
+
+          <div class="type-card" onclick="this.classList.toggle('flipped')">
+            <div class="type-inner">
+              <div class="type-front">
+                <div class="icon">💬</div>
+                <h3>str</h3>
+                <small>Words</small>
+              </div>
+              <div class="type-back">
+                <div class="keyword">str</div>
+                <small>Text inside quotes</small>
+                <small style="color:var(--gold);margin-top:7px;">"Hello"</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-card" onclick="this.classList.toggle('flipped')">
+            <div class="type-inner">
+              <div class="type-front">
+                <div class="icon">🔢</div>
+                <h3>int</h3>
+                <small>Whole</small>
+              </div>
+              <div class="type-back">
+                <div class="keyword">int</div>
+                <small>Whole numbers</small>
+                <small style="color:var(--gold);margin-top:7px;">42</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-card" onclick="this.classList.toggle('flipped')">
+            <div class="type-inner">
+              <div class="type-front">
+                <div class="icon">📐</div>
+                <h3>float</h3>
+                <small>Decimal</small>
+              </div>
+              <div class="type-back">
+                <div class="keyword">float</div>
+                <small>Numbers with decimal points</small>
+                <small style="color:var(--gold);margin-top:7px;">3.14</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="type-card" onclick="this.classList.toggle('flipped')">
+            <div class="type-inner">
+              <div class="type-front">
+                <div class="icon">✅</div>
+                <h3>bool</h3>
+                <small>True / False</small>
+              </div>
+              <div class="type-back">
+                <div class="keyword">bool</div>
+                <small>Only True or False</small>
+                <small style="color:var(--gold);margin-top:7px;">True</small>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 17
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🏆 MASTER SORTING CHALLENGE</div>
+        <h2>Data Type <span class="gradient">Sorting Challenge</span></h2>
+
+        <p class="lead">
+          Sort all eight values into the correct Python data type.
+        </p>
+
+        <div class="sort-board" id="masterBoard">
+
+          <div class="drop-zone" data-master="str">
+            <div class="zone-title"><span>💬 STRING</span><span>str</span></div>
+            <div class="zone-items"></div>
+          </div>
+
+          <div class="drop-zone" data-master="int">
+            <div class="zone-title"><span>🔢 INTEGER</span><span>int</span></div>
+            <div class="zone-items"></div>
+          </div>
+
+          <div class="drop-zone" data-master="float">
+            <div class="zone-title"><span>📐 FLOAT</span><span>float</span></div>
+            <div class="zone-items"></div>
+          </div>
+
+          <div class="drop-zone" data-master="bool">
+            <div class="zone-title"><span>✅ BOOLEAN</span><span>bool</span></div>
+            <div class="zone-items"></div>
+          </div>
+
+        </div>
+
+        <div class="item-pool" id="masterPool">
+          <div class="sort-item" draggable="true" data-master-type="str">"Hello"</div>
+          <div class="sort-item" draggable="true" data-master-type="int">42</div>
+          <div class="sort-item" draggable="true" data-master-type="float">3.14</div>
+          <div class="sort-item" draggable="true" data-master-type="bool">True</div>
+          <div class="sort-item" draggable="true" data-master-type="str">"Python"</div>
+          <div class="sort-item" draggable="true" data-master-type="int">-8</div>
+          <div class="sort-item" draggable="true" data-master-type="float">99.5</div>
+          <div class="sort-item" draggable="true" data-master-type="bool">False</div>
+        </div>
+
+        <div class="feedback" id="masterFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 18
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">⚡ SPEED ROUND</div>
+
+        <div class="speed-score">
+          Score: <span id="speedScore">0</span> / 4
+        </div>
+
+        <h2>How Fast Can You <span class="gradient">Classify?</span></h2>
+
+        <div id="speedQuestions">
+
+          <div class="speed-question active" data-answer="str">
+            <div class="big-code">"Pizza"</div>
+            <div class="option-grid">
+              <div class="option" onclick="speedAnswer(this,'str')">str</div>
+              <div class="option" onclick="speedAnswer(this,'int')">int</div>
+              <div class="option" onclick="speedAnswer(this,'float')">float</div>
+              <div class="option" onclick="speedAnswer(this,'bool')">bool</div>
+            </div>
+          </div>
+
+          <div class="speed-question" data-answer="int">
+            <div class="big-code">50</div>
+            <div class="option-grid">
+              <div class="option" onclick="speedAnswer(this,'str')">str</div>
+              <div class="option" onclick="speedAnswer(this,'int')">int</div>
+              <div class="option" onclick="speedAnswer(this,'float')">float</div>
+              <div class="option" onclick="speedAnswer(this,'bool')">bool</div>
+            </div>
+          </div>
+
+          <div class="speed-question" data-answer="float">
+            <div class="big-code">7.5</div>
+            <div class="option-grid">
+              <div class="option" onclick="speedAnswer(this,'str')">str</div>
+              <div class="option" onclick="speedAnswer(this,'int')">int</div>
+              <div class="option" onclick="speedAnswer(this,'float')">float</div>
+              <div class="option" onclick="speedAnswer(this,'bool')">bool</div>
+            </div>
+          </div>
+
+          <div class="speed-question" data-answer="bool">
+            <div class="big-code">False</div>
+            <div class="option-grid">
+              <div class="option" onclick="speedAnswer(this,'str')">str</div>
+              <div class="option" onclick="speedAnswer(this,'int')">int</div>
+              <div class="option" onclick="speedAnswer(this,'float')">float</div>
+              <div class="option" onclick="speedAnswer(this,'bool')">bool</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="feedback" id="speedFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 19
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🧠 TRICKY ROUND</div>
+        <h2>The <span class="gradient">Tricky Round</span></h2>
+
+        <p class="lead">
+          These values look similar. Don't let your eyes fool you.
+        </p>
+
+        <div class="glass" style="padding:20px;margin-top:20px;">
+          <h3>1. What type is <span class="code">"25"</span>?</h3>
+          <div class="option-grid tricky-q" data-answer="str">
+            <div class="option" onclick="trickyAnswer(this,'str')">str</div>
+            <div class="option" onclick="trickyAnswer(this,'int')">int</div>
+            <div class="option" onclick="trickyAnswer(this,'float')">float</div>
+          </div>
+        </div>
+
+        <div class="glass" style="padding:20px;margin-top:14px;">
+          <h3>2. What type is <span class="code">25.0</span>?</h3>
+          <div class="option-grid tricky-q" data-answer="float">
+            <div class="option" onclick="trickyAnswer(this,'int')">int</div>
+            <div class="option" onclick="trickyAnswer(this,'float')">float</div>
+            <div class="option" onclick="trickyAnswer(this,'str')">str</div>
+          </div>
+        </div>
+
+        <div class="glass" style="padding:20px;margin-top:14px;">
+          <h3>3. What type is <span class="code">"True"</span>?</h3>
+          <div class="option-grid tricky-q" data-answer="str">
+            <div class="option" onclick="trickyAnswer(this,'bool')">bool</div>
+            <div class="option" onclick="trickyAnswer(this,'str')">str</div>
+            <div class="option" onclick="trickyAnswer(this,'int')">int</div>
+          </div>
+        </div>
+
+        <div class="feedback" id="trickyFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 20
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content">
+        <div class="eyebrow">🎮 FINAL CHALLENGE</div>
+        <h2>Mystery Values <span class="gradient">Match-Up</span></h2>
+
+        <p class="lead">
+          Match every mystery value to its correct Python data type.
+        </p>
+
+        <div class="mystery-grid">
+
+          <div class="mystery">
+            <div class="mystery-value">A: "100"</div>
+            <div class="mystery-options">
+              <button data-answer="str">str</button>
+              <button data-answer="int">int</button>
+              <button data-answer="float">float</button>
+              <button data-answer="bool">bool</button>
+            </div>
+          </div>
+
+          <div class="mystery">
+            <div class="mystery-value">B: 100</div>
+            <div class="mystery-options">
+              <button data-answer="str">str</button>
+              <button data-answer="int">int</button>
+              <button data-answer="float">float</button>
+              <button data-answer="bool">bool</button>
+            </div>
+          </div>
+
+          <div class="mystery">
+            <div class="mystery-value">C: 100.0</div>
+            <div class="mystery-options">
+              <button data-answer="str">str</button>
+              <button data-answer="int">int</button>
+              <button data-answer="float">float</button>
+              <button data-answer="bool">bool</button>
+            </div>
+          </div>
+
+          <div class="mystery">
+            <div class="mystery-value">D: True</div>
+            <div class="mystery-options">
+              <button data-answer="str">str</button>
+              <button data-answer="int">int</button>
+              <button data-answer="float">float</button>
+              <button data-answer="bool">bool</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="master-badge" id="masterBadge">
+          <span class="badge-icon">🏆</span>
+          <strong style="font-size:23px;">Python Data Type Master!</strong>
+          <div style="color:var(--muted);margin-top:5px;">
+            You classified all four mystery values correctly.
+          </div>
+        </div>
+
+        <div class="feedback" id="mysteryFeedback"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         SLIDE 21
+    ====================================================== -->
+    <section class="slide">
+      <div class="slide-content center">
+        <div class="eyebrow">⭐ FINAL RECAP</div>
+        <h2>You Now Know the <span class="gradient">Four Core Types</span></h2>
+
+        <p class="lead">
+          Remember the value first — then identify the type.
+        </p>
+
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Keyword</th>
+              <th>Example</th>
+              <th>Memory Trick</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>💬 String</td>
+              <td class="code">str</td>
+              <td class="code">"Hello"</td>
+              <td>Words → <strong>str</strong></td>
+            </tr>
+
+            <tr>
+              <td>🔢 Integer</td>
+              <td class="code">int</td>
+              <td class="code">25</td>
+              <td>Whole → <strong>int</strong></td>
+            </tr>
+
+            <tr>
+              <td>📐 Float</td>
+              <td class="code">float</td>
+              <td class="code">25.5</td>
+              <td>Decimal → <strong>float</strong></td>
+            </tr>
+
+            <tr>
+              <td>✅ Boolean</td>
+              <td class="code">bool</td>
+              <td class="code">True</td>
+              <td>True/False → <strong>bool</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout green" style="margin-top:25px;">
+          🐍 <strong>Python tip:</strong>
+          Quotes → <span class="code">str</span> |
+          Whole → <span class="code">int</span> |
+          Decimal → <span class="code">float</span> |
+          True/False → <span class="code">bool</span>
+        </div>
+
+        <div style="margin-top:25px;">
+          <button class="btn primary" onclick="goToSlide(1)">
+            ↻ Restart Presentation
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM CONTROLS -->
+  <nav class="controls">
+    <button class="btn nav-btn" id="prevBtn" onclick="prevSlide()">← Previous</button>
+
+    <div class="slide-counter" id="slideCounter">
+      Slide 1 / 21
+    </div>
+
+    <button class="btn primary nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+
+    <div class="keyboard">
+      ← → keyboard navigation
+    </div>
+  </nav>
+
+</div>
+
+<script>
+/* ==========================================================
+   PRESENTATION ENGINE
+========================================================== */
+
+const slides = Array.from(document.querySelectorAll(".slide"));
+let currentSlide = 0;
+
+function updatePresentation() {
+  slides.forEach((slide,index) => {
+    slide.classList.toggle("active", index === currentSlide);
+  });
+
+  const total = slides.length;
+  const number = currentSlide + 1;
+
+  document.getElementById("slideCounter").textContent =
+    `Slide ${number} / ${total}`;
+
+  document.getElementById("topCounter").textContent =
+    `${number} / ${total}`;
+
+  document.getElementById("progressBar").style.width =
+    `${(number / total) * 100}%`;
+
+  document.getElementById("prevBtn").disabled = currentSlide === 0;
+
+  document.getElementById("nextBtn").textContent =
+    currentSlide === total - 1 ? "✓ Finished" : "Next →";
+
+  document.querySelector(".deck").scrollTop = 0;
+}
+
+function goToSlide(number) {
+  const index = Math.max(0, Math.min(slides.length - 1, number - 1));
+  currentSlide = index;
+  updatePresentation();
+}
+
+function nextSlide() {
+  if (currentSlide < slides.length - 1) {
+    currentSlide++;
+    updatePresentation();
+  }
+}
+
+function prevSlide() {
+  if (currentSlide > 0) {
+    currentSlide--;
+    updatePresentation();
+  }
+}
+
+document.addEventListener("keydown", e => {
+  if (
+    e.target.tagName === "INPUT" ||
+    e.target.tagName === "TEXTAREA"
+  ) return;
+
+  if (e.key === "ArrowRight" || e.key === " ") {
+    e.preventDefault();
+    nextSlide();
+  }
+
+  if (e.key === "ArrowLeft") {
+    e.preventDefault();
+    prevSlide();
+  }
+
+  if (e.key === "Home") {
+    goToSlide(1);
+  }
+
+  if (e.key === "End") {
+    goToSlide(slides.length);
+  }
+});
+
+/* ==========================================================
+   SLIDE 1
+========================================================== */
+
+function hookAnswer(correct) {
+  const feedback = document.getElementById("hookFeedback");
+
+  feedback.className = "feedback show " + (correct ? "success" : "error");
+
+  feedback.innerHTML = correct
+    ? "✅ <strong>Correct!</strong> They are all data, but they are different types of data."
+    : "❌ Almost! They are all data, but Python treats them as different data types.";
+}
+
+/* ==========================================================
+   MULTI SELECT QUESTIONS
+========================================================== */
+
+document.querySelectorAll(".option[data-correct]").forEach(option => {
+  option.addEventListener("click", () => {
+    option.classList.toggle("selected");
+  });
+});
+
+function checkMultiSelect(containerId, feedbackId) {
+  const container = document.getElementById(containerId);
+  const feedback = document.getElementById(feedbackId);
+  const options = Array.from(container.querySelectorAll(".option"));
+
+  let correct = true;
+
+  options.forEach(option => {
+    const shouldBeSelected = option.dataset.correct === "true";
+    const selected = option.classList.contains("selected");
+
+    option.classList.remove("correct","incorrect");
+
+    if (selected === shouldBeSelected) {
+      option.classList.add("correct");
+    } else {
+      option.classList.add("incorrect");
+      correct = false;
+    }
+  });
+
+  feedback.className =
+    "feedback show " + (correct ? "success" : "error");
+
+  if (correct) {
+    feedback.innerHTML =
+      "✅ <strong>Excellent!</strong> You selected all the correct answers.";
+
+    if (containerId === "stringOptions") {
+      feedback.innerHTML +=
+        "<br><br>🧠 Remember: <strong>\"25\"</strong> is text because it is inside quotation marks.";
+    }
+
+    if (containerId === "booleanOptions") {
+      feedback.innerHTML +=
+        "<br><br>⚠️ <strong>\"True\"</strong> is a String because of the quotation marks.";
+    }
+  } else {
+    feedback.innerHTML =
+      "❌ Not quite. Look carefully at quotation marks and decimal points, then try again.";
+  }
+}
+
+/* ==========================================================
+   SINGLE ANSWER
+========================================================== */
+
+function singleAnswer(element, containerId, result) {
+  const container = document.getElementById(containerId);
+  const feedback = document.getElementById("printFeedback");
+
+  container.querySelectorAll(".option").forEach(o => {
+    o.classList.remove("selected","correct","incorrect");
+  });
+
+  if (result === "correct") {
+    element.classList.add("correct");
+    feedback.className = "feedback show success";
+    feedback.innerHTML =
+      "✅ <strong>Correct!</strong> print() displays the output as Hello — without the quotation marks.";
+  } else {
+    element.classList.add("incorrect");
+    feedback.className = "feedback show error";
+    feedback.innerHTML =
+      "❌ Not quite. The quotation marks are part of the Python code, but print() displays the text without them.";
+  }
+}
+
+/* ==========================================================
+   SLIDE 7 NUMBER LINE
+========================================================== */
+
+function selectNumber(element, number) {
+  document.querySelectorAll(".number").forEach(n => n.classList.remove("active"));
+  element.classList.add("active");
+
+  const info = document.getElementById("numberInfo");
+
+  if (number === 0) {
+    info.innerHTML =
+      "🟡 <strong>0</strong> is an integer. It is a whole number.";
+  } else if (number < 0) {
+    info.innerHTML =
+      "🔵 <strong>" + number + "</strong> is a negative integer.";
+  } else {
+    info.innerHTML =
+      "🟢 <strong>" + number + "</strong> is a positive integer.";
+  }
+}
+
+/* ==========================================================
+   SLIDE 12
+========================================================== */
+
+function floatDifference(correct) {
+  const feedback = document.getElementById("floatDifferenceFeedback");
+
+  feedback.className =
+    "feedback show " + (correct ? "success" : "error");
+
+  feedback.innerHTML = correct
+    ? "✅ <strong>Correct!</strong> 25 is an <span class='code'>int</span>, while 25.0 is a <span class='code'>float</span>. The .0 makes it a float."
+    : "❌ Look at the decimal point. 25 is an int, but 25.0 is a float.";
+}
+
+/* ==========================================================
+   BOOLEAN QUESTIONS
+========================================================== */
+
+function booleanAnswer(button, correct, feedbackId) {
+  const feedback = document.getElementById(feedbackId);
+  const parent = button.parentElement;
+
+  parent.querySelectorAll("button").forEach(btn => {
+    btn.classList.remove("correct","incorrect");
+  });
+
+  button.classList.add(correct ? "correct" : "incorrect");
+
+  feedback.className =
+    "feedback show " + (correct ? "success" : "error");
+
+  if (feedbackId === "bool1") {
+    feedback.innerHTML = correct
+      ? "✅ Correct! 10 is NOT greater than 50, so the answer is False."
+      : "❌ Remember: 10 is smaller than 50, so the statement is False.";
+  } else {
+    feedback.innerHTML = correct
+      ? "✅ Correct! Python is a programming language, so the answer is True."
+      : "❌ Python is a programming language, so the answer is True.";
+  }
+}
+
+/* ==========================================================
+   GENERIC DRAG + TAP SORTING
+========================================================== */
+
+let selectedDragItem = null;
+
+function setupSorting(poolId, zoneSelector, itemTypeAttribute, feedbackId) {
+  const pool = document.getElementById(poolId);
+  const items = pool.querySelectorAll(".sort-item");
+  const zones = document.querySelectorAll(zoneSelector);
+
+  items.forEach(item => {
+    item.addEventListener("dragstart", e => {
+      e.dataTransfer.setData(
+        "text/plain",
+        [...items].indexOf(item)
+      );
+      item.style.opacity = ".5";
+    });
+
+    item.addEventListener("dragend", () => {
+      item.style.opacity = "1";
+    });
+
+    item.addEventListener("click", () => {
+      if (selectedDragItem === item) {
+        item.style.outline = "";
+        selectedDragItem = null;
+        return;
+      }
+
+      if (selectedDragItem) {
+        selectedDragItem.style.outline = "";
+      }
+
+      selectedDragItem = item;
+      item.style.outline = "2px solid var(--gold)";
+    });
+  });
+
+  zones.forEach(zone => {
+    zone.addEventListener("dragover", e => {
+      e.preventDefault();
+      zone.classList.add("dragover");
+    });
+
+    zone.addEventListener("dragleave", () => {
+      zone.classList.remove("dragover");
+    });
+
+    zone.addEventListener("drop", e => {
+      e.preventDefault();
+      zone.classList.remove("dragover");
+
+      const index = Number(e.dataTransfer.getData("text/plain"));
+      const item = items[index];
+
+      placeItem(item, zone, itemTypeAttribute, feedbackId);
+    });
+
+    zone.addEventListener("click", () => {
+      if (!selectedDragItem) return;
+
+      placeItem(
+        selectedDragItem,
+        zone,
+        itemTypeAttribute,
+        feedbackId
+      );
+
+      selectedDragItem = null;
+    });
+  });
+}
+
+function placeItem(item, zone, attribute, feedbackId) {
+  const correctType = zone.dataset.type ||
+                      zone.dataset.numzone ||
+                      zone.dataset.master;
+
+  const itemType = item.dataset[attribute];
+
+  const feedback = document.getElementById(feedbackId);
+
+  if (itemType === correctType) {
+    zone.querySelector(".zone-items").appendChild(item);
+    item.classList.add("placed");
+    item.style.outline = "";
+    item.setAttribute("draggable","true");
+
+    feedback.className = "feedback show success";
+    feedback.innerHTML = "✅ Correct! Great sorting.";
+
+    checkSortingComplete(feedbackId);
+  } else {
+    feedback.className = "feedback show error";
+    feedback.innerHTML =
+      "❌ Not quite. Think about the value's data type and try another bucket.";
+  }
+}
+
+function checkSortingComplete(feedbackId) {
+  let poolId = "";
+
+  if (feedbackId === "sortFeedback") poolId = "sortPool";
+  if (feedbackId === "numericFeedback") poolId = "numericPool";
+  if (feedbackId === "masterFeedback") poolId = "masterPool";
+
+  const pool = document.getElementById(poolId);
+
+  if (pool && pool.querySelectorAll(".sort-item").length === 0) {
+    const feedback = document.getElementById(feedbackId);
+
+    feedback.className = "feedback show success";
+    feedback.innerHTML =
+      "🏆 <strong>Perfect sorting!</strong> Every value is in the correct data type bucket.";
+  }
+}
+
+setupSorting(
+  "sortPool",
+  ".slide:nth-child(2) .drop-zone",
+  "type",
+  "sortFeedback"
+);
+
+setupSorting(
+  "numericPool",
+  ".class-zone",
+  "numtype",
+  "numericFeedback"
+);
+
+setupSorting(
+  "masterPool",
+  "#masterBoard .drop-zone",
+  "masterType",
+  "masterFeedback"
+);
+
+/* ==========================================================
+   SPEED ROUND
+========================================================== */
+
+let speedIndex = 0;
+let speedScore = 0;
+
+function speedAnswer(button, answer) {
+  const questions = Array.from(
+    document.querySelectorAll(".speed-question")
+  );
+
+  const question = questions[speedIndex];
+  const correct = question.dataset.answer;
+
+  question.querySelectorAll(".option").forEach(o => {
+    o.style.pointerEvents = "none";
+  });
+
+  const feedback = document.getElementById("speedFeedback");
+
+  if (answer === correct) {
+    button.classList.add("correct");
+    speedScore++;
+    document.getElementById("speedScore").textContent = speedScore;
+
+    feedback.className = "feedback show success";
+    feedback.innerHTML = "⚡ Correct! Fast thinking!";
+  } else {
+    button.classList.add("incorrect");
+
+    feedback.className = "feedback show error";
+    feedback.innerHTML =
+      `❌ The correct answer is <strong>${correct}</strong>.`;
+  }
+
+  setTimeout(() => {
+    question.classList.remove("active");
+
+    speedIndex++;
+
+    if (speedIndex < questions.length) {
+      questions[speedIndex].classList.add("active");
+      feedback.className = "feedback";
+    } else {
+      feedback.className = "feedback show success";
+      feedback.innerHTML =
+        `🏁 <strong>Speed Round Complete!</strong> Final score: ${speedScore} / 4.`;
+    }
+  },900);
+}
+
+/* ==========================================================
+   TRICKY ROUND
+========================================================== */
+
+let trickyCorrect = 0;
+const trickyAnswered = new WeakSet();
+
+function trickyAnswer(button, answer) {
+  const question = button.closest(".tricky-q");
+
+  if (trickyAnswered.has(question)) return;
+
+  const correct = question.dataset.answer;
+
+  question.querySelectorAll(".option").forEach(o => {
+    o.style.pointerEvents = "none";
+  });
+
+  const feedback = document.getElementById("trickyFeedback");
+
+  if (answer === correct) {
+    button.classList.add("correct");
+    trickyCorrect++;
+  } else {
+    button.classList.add("incorrect");
+
+    question.querySelectorAll(".option").forEach(o => {
+      if (
+        o.textContent.trim().toLowerCase() === correct.toLowerCase()
+      ) {
+        o.classList.add("correct");
+      }
+    });
+  }
+
+  trickyAnswered.add(question);
+
+  if (trickyCorrect === 3) {
+    feedback.className = "feedback show success";
+    feedback.innerHTML =
+      "🧠 <strong>Excellent!</strong> You caught all three tricky examples.";
+  } else if (
+    document.querySelectorAll(".tricky-q .correct").length +
+    document.querySelectorAll(".tricky-q .incorrect").length >= 3
+  ) {
+    feedback.className = "feedback show";
+  }
+}
+
+/* ==========================================================
+   FINAL MYSTERY MATCH
+========================================================== */
+
+const mysteryAnswers = {
+  "A: \"100\"":"str",
+  "B: 100":"int",
+  "C: 100.0":"float",
+  "D: True":"bool"
+};
+
+document.querySelectorAll(".mystery").forEach(mystery => {
+  const buttons = mystery.querySelectorAll("button");
+  const value = mystery.querySelector(".mystery-value").textContent.trim();
+  const correct = mysteryAnswers[value];
+
+  buttons.forEach(button => {
+    button.addEventListener("click", () => {
+      buttons.forEach(b => b.classList.remove("selected","correct"));
+
+      button.classList.add("selected");
+
+      if (button.dataset.answer === correct) {
+        button.classList.add("correct");
+        checkMysteryComplete();
+      } else {
+        button.style.borderColor = "var(--red)";
+
+        setTimeout(() => {
+          button.style.borderColor = "";
+        },700);
+      }
+    });
+  });
+});
+
+function checkMysteryComplete() {
+  const mysteries = document.querySelectorAll(".mystery");
+
+  const complete = Array.from(mysteries).every(m => {
+    return m.querySelector("button.correct");
+  });
+
+  if (complete) {
+    document.getElementById("masterBadge").classList.add("show");
+
+    const feedback = document.getElementById("mysteryFeedback");
+
+    feedback.className = "feedback show success";
+    feedback.innerHTML =
+      "🎉 <strong>Challenge complete!</strong> You have mastered the four core Python data types.";
+
+    launchConfetti();
+  }
+}
+
+/* ==========================================================
+   CONFETTI
+========================================================== */
+
+function launchConfetti() {
+  const symbols = ["◆","●","■","★","✦","+"];
+  const colors = [
+    "#FFD43B",
+    "#306998",
+    "#10B981",
+    "#F97316",
+    "#A855F7"
+  ];
+
+  for (let i=0;i<90;i++) {
+    const piece = document.createElement("div");
+
+    piece.className = "confetti";
+    piece.textContent =
+      symbols[Math.floor(Math.random()*symbols.length)];
+
+    piece.style.left =
+      Math.random() * 100 + "vw";
+
+    piece.style.color =
+      colors[Math.floor(Math.random()*colors.length)];
+
+    piece.style.fontSize =
+      (8 + Math.random()*12) + "px";
+
+    piece.style.setProperty(
+      "--x",
+      (Math.random()*300 - 150) + "px"
+    );
+
+    piece.style.animationDelay =
+      (Math.random()*.7) + "s";
+
+    document.body.appendChild(piece);
+
+    setTimeout(() => piece.remove(),3500);
+  }
+}
+
+/* ==========================================================
+   TOUCH / MOBILE DRAG SUPPORT
+========================================================== */
+
+document.addEventListener("touchstart", e => {
+  const item = e.target.closest(".sort-item");
+
+  if (!item) return;
+
+  selectedDragItem = item;
+
+  document.querySelectorAll(".sort-item").forEach(i => {
+    i.style.outline = "";
+  });
+
+  item.style.outline = "2px solid var(--gold)";
+}, {passive:true});
+
+/* ==========================================================
+   INITIALIZE
+========================================================== */
+
+updatePresentation();
+
+</script>
+
+<!-- ===== Milestone 1: next-lesson button (added) ===== -->
+<a id="m1-next" href="Basic_Functions.html" aria-label="Next lesson: Basic Functions">
+  <span class="m1-k">Next</span>
+  <span class="m1-t">Basic Functions</span>
+  <span class="m1-a" aria-hidden="true">&rarr;</span>
+</a>
+<style>
+  #m1-next{
+    position:fixed;right:18px;bottom:18px;z-index:2147483001;
+    display:flex;align-items:center;gap:10px;
+    padding:11px 18px;border-radius:999px;line-height:1;
+    font-family:"Fira Code","SF Mono",Menlo,Consolas,monospace;
+    text-decoration:none;color:#0F172A;
+    background:linear-gradient(135deg,#FFD43B,#ffe680);
+    box-shadow:0 10px 30px -10px rgba(0,0,0,.65),0 0 0 1px rgba(255,212,59,.35);
+    transition:transform .16s ease,box-shadow .16s ease;
+  }
+  #m1-next:hover{transform:translateY(-2px);box-shadow:0 16px 36px -10px rgba(0,0,0,.75),0 0 0 1px rgba(255,212,59,.55)}
+  #m1-next:focus-visible{outline:2px solid #FFD43B;outline-offset:3px}
+  #m1-next .m1-k{font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.55}
+  #m1-next .m1-t{font-size:13px;font-weight:700}
+  #m1-next .m1-a{font-size:15px;font-weight:700}
+  @media (max-width:560px){#m1-next{right:12px;bottom:12px;padding:10px 14px}#m1-next .m1-k{display:none}}
+  @media print{#m1-next{display:none}}
+</style>
+<!-- ===== end Milestone 1 nav ===== -->
+
+</body>
+</html>

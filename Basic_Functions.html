@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Common Beginner Python Functions</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<style>
+:root{
+  --bg:#0F172A;
+  --panel:#111C32;
+  --panel2:#16233D;
+  --blue:#306998;
+  --gold:#FFD43B;
+  --green:#10B981;
+  --red:#EF4444;
+  --violet:#8B5CF6;
+  --text:#F8FAFC;
+  --muted:#94A3B8;
+  --line:rgba(148,163,184,.15);
+  --shadow:0 12px 35px rgba(0,0,0,.28);
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,Arial,sans-serif;
+}
+
+body{
+  background:
+    radial-gradient(circle at 15% 10%,rgba(48,105,152,.15),transparent 30%),
+    radial-gradient(circle at 85% 80%,rgba(139,92,246,.10),transparent 28%),
+    var(--bg);
+}
+
+button{
+  font:inherit;
+  color:inherit;
+}
+
+code,.code{
+  font-family:"Fira Code","JetBrains Mono",monospace;
+}
+
+.app{
+  width:100vw;
+  height:100vh;
+  display:grid;
+  grid-template-rows:52px 1fr 58px;
+  overflow:hidden;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:0 24px;
+  border-bottom:1px solid var(--line);
+  background:rgba(15,23,42,.92);
+  backdrop-filter:blur(12px);
+  z-index:20;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:max-content;
+  font-weight:800;
+  font-size:14px;
+}
+
+.python-logo{
+  width:27px;
+  height:27px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:linear-gradient(135deg,var(--blue),var(--gold));
+  color:#0F172A;
+  font-weight:900;
+  font-size:13px;
+}
+
+.progress-wrap{
+  flex:1;
+  height:6px;
+  border-radius:99px;
+  background:#1E293B;
+  overflow:hidden;
+}
+
+.progress{
+  height:100%;
+  width:4.17%;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--blue),var(--gold));
+  transition:width .4s ease;
+}
+
+.progress-label{
+  font-size:11px;
+  color:var(--muted);
+  min-width:65px;
+  text-align:right;
+}
+
+/* DECK */
+.deck{
+  position:relative;
+  min-height:0;
+  overflow:hidden;
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px 38px;
+  opacity:0;
+  visibility:hidden;
+  transform:translateX(30px) scale(.985);
+  transition:opacity .35s ease,transform .35s ease,visibility .35s;
+  overflow:hidden;
+}
+
+.slide.active{
+  opacity:1;
+  visibility:visible;
+  transform:translateX(0) scale(1);
+  z-index:2;
+}
+
+.slide-content{
+  width:min(1120px,100%);
+  height:100%;
+  max-height:calc(100vh - 128px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:0;
+}
+
+.kicker{
+  color:var(--gold);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  font-size:11px;
+  font-weight:800;
+  margin-bottom:5px;
+}
+
+h1{
+  font-size:clamp(24px,3vw,38px);
+  margin:0 0 7px;
+  line-height:1.1;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:14px;
+  margin:0 0 14px;
+}
+
+.highlight{color:var(--gold)}
+.blue{color:#60A5FA}
+.green{color:var(--green)}
+.red{color:var(--red)}
+.violet{color:#A78BFA}
+
+.grid{
+  display:grid;
+  gap:12px;
+}
+
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.grid-5{grid-template-columns:repeat(5,1fr)}
+.grid-6{grid-template-columns:repeat(6,1fr)}
+
+.card{
+  background:linear-gradient(145deg,rgba(22,35,61,.95),rgba(17,28,50,.95));
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:15px;
+  box-shadow:var(--shadow);
+  transition:.25s ease;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(48,105,152,.7);
+}
+
+.center{text-align:center}
+
+.icon{
+  font-size:28px;
+  margin-bottom:7px;
+}
+
+.big-code{
+  font-family:"Fira Code",monospace;
+  color:#FDE68A;
+  background:#0A1120;
+  border:1px solid rgba(255,212,59,.18);
+  border-radius:11px;
+  padding:13px 17px;
+  font-size:clamp(17px,2vw,25px);
+  display:inline-block;
+}
+
+.code-line{
+  font-family:"Fira Code",monospace;
+  color:#E2E8F0;
+  background:#09111F;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:9px 12px;
+  margin:5px 0;
+}
+
+.btn-row{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:9px;
+  margin-top:13px;
+}
+
+.btn{
+  cursor:pointer;
+  border:1px solid rgba(148,163,184,.2);
+  background:#17243C;
+  padding:9px 15px;
+  border-radius:9px;
+  font-size:13px;
+  font-weight:700;
+  transition:.2s ease;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  border-color:var(--blue);
+  box-shadow:0 0 16px rgba(48,105,152,.25);
+}
+
+.btn:active{transform:scale(.96)}
+
+.btn.primary{
+  background:var(--blue);
+  border-color:#477EAA;
+}
+
+.btn.gold{
+  background:rgba(255,212,59,.13);
+  border-color:rgba(255,212,59,.45);
+  color:var(--gold);
+}
+
+.btn.green{
+  background:rgba(16,185,129,.12);
+  border-color:rgba(16,185,129,.45);
+  color:#6EE7B7;
+}
+
+.btn.red{
+  background:rgba(239,68,68,.12);
+  border-color:rgba(239,68,68,.45);
+  color:#FCA5A5;
+}
+
+.feedback{
+  min-height:30px;
+  margin-top:10px;
+  padding:8px 12px;
+  border-radius:9px;
+  font-size:12px;
+  text-align:center;
+  display:none;
+  animation:pop .3s ease;
+}
+
+.feedback.show{display:block}
+.feedback.success{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.4);color:#6EE7B7}
+.feedback.error{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);color:#FCA5A5}
+.feedback.info{background:rgba(48,105,152,.14);border:1px solid rgba(48,105,152,.45);color:#93C5FD}
+
+@keyframes pop{
+  0%{opacity:0;transform:scale(.9)}
+  100%{opacity:1;transform:scale(1)}
+}
+
+/* TOOLBOX */
+.tool{
+  cursor:pointer;
+  text-align:center;
+  min-height:125px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.tool.revealed{
+  border-color:var(--gold);
+  box-shadow:0 0 20px rgba(255,212,59,.12);
+}
+
+.tool small{
+  color:var(--muted);
+  line-height:1.4;
+}
+
+.reveal-banner{
+  margin-top:13px;
+  padding:11px;
+  border:1px solid rgba(255,212,59,.3);
+  background:rgba(255,212,59,.08);
+  color:var(--gold);
+  border-radius:10px;
+  text-align:center;
+  font-weight:800;
+  display:none;
+}
+
+.reveal-banner.show{display:block}
+
+/* MCQ */
+.option-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.option{
+  cursor:pointer;
+  border:1px solid var(--line);
+  background:#142139;
+  border-radius:11px;
+  padding:13px 8px;
+  text-align:center;
+  font-weight:700;
+  font-family:"Fira Code",monospace;
+  transition:.2s;
+}
+
+.option:hover{border-color:var(--blue);transform:translateY(-2px)}
+.option.selected{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,212,59,.13)}
+.option.correct{border-color:var(--green)!important;background:rgba(16,185,129,.15)!important;box-shadow:0 0 20px rgba(16,185,129,.2)}
+.option.wrong{border-color:var(--red)!important;background:rgba(239,68,68,.14)!important;box-shadow:0 0 20px rgba(239,68,68,.2)}
+
+.multi-option{
+  cursor:pointer;
+  border:1px solid var(--line);
+  background:#142139;
+  border-radius:11px;
+  padding:11px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  transition:.25s;
+  font-family:"Fira Code",monospace;
+}
+
+.multi-option input{accent-color:var(--gold)}
+.multi-option.selected{border-color:var(--gold)}
+
+/* BEAM FEEDBACK */
+.beam-selected-correct{
+  border-color:var(--green)!important;
+  box-shadow:
+    0 0 0 2px rgba(16,185,129,.18),
+    0 0 18px rgba(16,185,129,.55),
+    inset 4px 0 0 var(--green)!important;
+}
+
+.beam-selected-wrong{
+  border-color:var(--red)!important;
+  box-shadow:
+    0 0 0 2px rgba(239,68,68,.18),
+    0 0 18px rgba(239,68,68,.5),
+    inset 4px 0 0 var(--red)!important;
+}
+
+.beam-missed{
+  border-color:var(--gold)!important;
+  box-shadow:
+    0 0 0 2px rgba(255,212,59,.16),
+    0 0 18px rgba(255,212,59,.4),
+    inset 4px 0 0 var(--gold)!important;
+}
+
+.beam-neutral{
+  opacity:.52;
+  filter:saturate(.5);
+  box-shadow:inset 3px 0 0 #64748B!important;
+}
+
+.legend{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:9px;
+  font-size:10px;
+  color:var(--muted);
+}
+
+.legend span{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+}
+
+.dot.green{background:var(--green)}
+.dot.red{background:var(--red)}
+.dot.gold{background:var(--gold)}
+.dot.gray{background:#64748B}
+
+/* FLOW */
+.flow{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin:16px 0;
+  flex-wrap:wrap;
+}
+
+.flow-box{
+  background:#121F35;
+  border:1px solid var(--line);
+  padding:14px 18px;
+  border-radius:11px;
+  font-family:"Fira Code",monospace;
+  font-weight:700;
+}
+
+.arrow{
+  color:var(--gold);
+  font-size:20px;
+  animation:pulse 1.3s infinite;
+}
+
+@keyframes pulse{
+  50%{transform:translateX(4px);opacity:.65}
+}
+
+/* DATA EXAMPLES */
+.type-row{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:10px;
+  margin:7px 0;
+}
+
+.type-value,.type-result{
+  background:#101A2D;
+  border:1px solid var(--line);
+  padding:9px 12px;
+  border-radius:9px;
+  font-family:"Fira Code",monospace;
+}
+
+.type-arrow{color:var(--gold);font-weight:900}
+
+/* NUMBER LINE */
+.numberline{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:0;
+  margin:15px auto;
+  max-width:850px;
+}
+
+.number{
+  width:39px;
+  height:45px;
+  display:grid;
+  place-items:center;
+  border-top:2px solid #475569;
+  color:var(--muted);
+  font-family:"Fira Code",monospace;
+  font-size:11px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.number:hover,.number.active{
+  color:var(--gold);
+  transform:translateY(-5px);
+  border-top-color:var(--gold);
+}
+
+/* CONVERSION */
+.machine{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin:15px 0;
+}
+
+.machine-value{
+  padding:14px 18px;
+  border-radius:12px;
+  background:#111D32;
+  border:1px solid var(--line);
+  font-family:"Fira Code",monospace;
+  font-size:20px;
+  font-weight:700;
+}
+
+.machine-function{
+  padding:10px 14px;
+  border-radius:10px;
+  color:#FDE68A;
+  background:rgba(255,212,59,.1);
+  border:1px solid rgba(255,212,59,.35);
+  font-family:"Fira Code",monospace;
+  font-weight:700;
+}
+
+/* FLIP */
+.flip{
+  perspective:800px;
+  cursor:pointer;
+  min-height:145px;
+}
+
+.flip-inner{
+  width:100%;
+  height:145px;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:.5s;
+}
+
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+
+.flip-front,.flip-back{
+  position:absolute;
+  inset:0;
+  backface-visibility:hidden;
+  border-radius:13px;
+  border:1px solid var(--line);
+  background:#132039;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.flip-back{
+  transform:rotateY(180deg);
+  border-color:var(--blue);
+  background:rgba(48,105,152,.12);
+}
+
+/* RANGE */
+.sequence{
+  display:flex;
+  justify-content:center;
+  gap:9px;
+  margin:15px 0;
+}
+
+.seq-box{
+  min-width:55px;
+  padding:12px;
+  background:#121F35;
+  border:1px solid rgba(48,105,152,.5);
+  border-radius:9px;
+  font-family:"Fira Code",monospace;
+  font-weight:700;
+  animation:seq .4s ease both;
+}
+
+@keyframes seq{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:none}
+}
+
+/* TOOLBOX GRID */
+.toolbox-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:9px;
+}
+
+.mini-tool{
+  cursor:pointer;
+  padding:12px 7px;
+  text-align:center;
+  background:#132039;
+  border:1px solid var(--line);
+  border-radius:10px;
+  transition:.2s;
+}
+
+.mini-tool:hover{
+  border-color:var(--violet);
+  transform:translateY(-3px);
+}
+
+.mini-tool b{
+  display:block;
+  font-family:"Fira Code",monospace;
+  color:var(--gold);
+  font-size:12px;
+  margin-top:4px;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(2,6,23,.75);
+  backdrop-filter:blur(7px);
+  z-index:100;
+  padding:20px;
+}
+
+.modal.show{display:flex}
+
+.modal-card{
+  width:min(450px,92vw);
+  background:#111C32;
+  border:1px solid rgba(139,92,246,.45);
+  border-radius:17px;
+  padding:22px;
+  box-shadow:0 25px 70px rgba(0,0,0,.55);
+  animation:modalIn .25s ease;
+  text-align:center;
+}
+
+@keyframes modalIn{
+  from{opacity:0;transform:scale(.9)}
+  to{opacity:1;transform:scale(1)}
+}
+
+/* SCENARIOS */
+.match-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  max-width:850px;
+  margin:auto;
+}
+
+.match-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  background:#132039;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:9px 11px;
+}
+
+.match-item select{
+  background:#0B1425;
+  color:white;
+  border:1px solid #334155;
+  padding:6px;
+  border-radius:7px;
+  font-family:"Fira Code",monospace;
+}
+
+/* MISSIONS */
+.missions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+}
+
+.mission{
+  padding:11px;
+  background:#132039;
+  border:1px solid var(--line);
+  border-radius:11px;
+}
+
+.mission.completed{
+  border-color:var(--green);
+  background:rgba(16,185,129,.1);
+}
+
+.mission-num{
+  font-size:10px;
+  color:var(--gold);
+  font-weight:800;
+  text-transform:uppercase;
+}
+
+.mission p{
+  font-size:12px;
+  margin:5px 0 8px;
+  color:#CBD5E1;
+}
+
+.mission select{
+  width:100%;
+  background:#0B1425;
+  color:white;
+  border:1px solid #334155;
+  border-radius:7px;
+  padding:6px;
+  font-family:"Fira Code",monospace;
+}
+
+/* CHEAT SHEET */
+.cheat{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.cheat-card{
+  background:#132039;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:13px;
+}
+
+.cheat-card h3{
+  margin:0 0 7px;
+  font-size:13px;
+}
+
+.cheat-card code{
+  color:var(--gold);
+  font-size:13px;
+}
+
+.cheat-card p{
+  color:var(--muted);
+  font-size:11px;
+  margin:6px 0 0;
+}
+
+/* FOOTER */
+.footer{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  border-top:1px solid var(--line);
+  background:rgba(15,23,42,.95);
+  z-index:20;
+}
+
+.nav-btn{
+  cursor:pointer;
+  min-width:105px;
+  padding:8px 13px;
+  border:1px solid var(--line);
+  background:#17243C;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:700;
+  transition:.2s;
+}
+
+.nav-btn:hover{
+  border-color:var(--blue);
+  transform:translateY(-1px);
+}
+
+.nav-btn:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.counter{
+  min-width:85px;
+  text-align:center;
+  color:var(--muted);
+  font-family:"Fira Code",monospace;
+  font-size:11px;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .app{grid-template-rows:46px 1fr 52px}
+  .header{padding:0 14px}
+  .brand{font-size:12px}
+  .slide{padding:12px 20px}
+  .slide-content{max-height:calc(100vh - 105px)}
+  .grid-5{grid-template-columns:repeat(3,1fr)}
+  .grid-6{grid-template-columns:repeat(3,1fr)}
+  .toolbox-grid{grid-template-columns:repeat(4,1fr)}
+  .missions{grid-template-columns:repeat(2,1fr)}
+  .cheat{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:600px){
+  .app{grid-template-rows:43px 1fr 50px}
+  .progress-label{display:none}
+  .slide{padding:9px 12px}
+  h1{font-size:23px}
+  .subtitle{font-size:11px;margin-bottom:9px}
+  .kicker{font-size:9px}
+  .grid,.grid-2,.grid-3,.grid-4,.grid-5,.grid-6{
+    grid-template-columns:repeat(2,1fr);
+    gap:7px;
+  }
+  .option-grid{grid-template-columns:repeat(2,1fr);gap:7px}
+  .card{padding:10px}
+  .tool{min-height:95px}
+  .icon{font-size:22px}
+  .machine{gap:5px}
+  .machine-value{font-size:14px;padding:10px}
+  .machine-function{font-size:12px;padding:8px}
+  .flow{gap:5px;margin:9px 0}
+  .flow-box{padding:9px;font-size:11px}
+  .arrow{font-size:14px}
+  .match-grid{grid-template-columns:1fr}
+  .missions{grid-template-columns:1fr 1fr}
+  .cheat{grid-template-columns:1fr 1fr}
+  .toolbox-grid{grid-template-columns:repeat(3,1fr)}
+  .footer{gap:6px}
+  .nav-btn{min-width:78px;padding:7px 8px;font-size:10px}
+  .counter{min-width:65px;font-size:9px}
+  .number{width:28px;font-size:8px}
+  .sequence{gap:4px}
+  .seq-box{min-width:42px;padding:9px;font-size:11px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+  <div class="brand">
+    <div class="python-logo">Py</div>
+    Common Beginner Python Functions
+  </div>
+  <div class="progress-wrap">
+    <div class="progress" id="progress"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">1 / 24</div>
+</header>
+
+<main class="deck" id="deck">
+
+<!-- 1 -->
+<section class="slide active">
+<div class="slide-content">
+<div class="kicker">Start Here</div>
+<h1>🛠️ Meet Python's <span class="highlight">Functions</span></h1>
+<p class="subtitle">Think of functions as ready-made tools that help Python do specific jobs.</p>
+
+<div class="grid grid-4">
+  <div class="card tool" onclick="revealTool(this)">
+    <div class="icon">🖨️</div><b>print()</b><small>Shows something on screen</small>
+  </div>
+  <div class="card tool" onclick="revealTool(this)">
+    <div class="icon">🔍</div><b>type()</b><small>Checks what type of data something is</small>
+  </div>
+  <div class="card tool" onclick="revealTool(this)">
+    <div class="icon">🔢</div><b>int()</b><small>Converts something into a whole number</small>
+  </div>
+  <div class="card tool" onclick="revealTool(this)">
+    <div class="icon">📏</div><b>len()</b><small>Counts characters/items</small>
+  </div>
+</div>
+
+<div class="reveal-banner" id="toolReveal">🚀 Python has ready-made tools called <b>FUNCTIONS!</b></div>
+</div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Function #1</div>
+<h1>🖨️ <span class="highlight">print()</span></h1>
+<p class="subtitle">What will appear on the screen?</p>
+<div class="big-code">print("Hello")</div>
+
+<div class="option-grid">
+  <button class="option" onclick="mcq(this,true,'printFeedback')">Hello</button>
+  <button class="option" onclick="mcq(this,false,'printFeedback')">"Hello"</button>
+  <button class="option" onclick="mcq(this,false,'printFeedback')">print</button>
+  <button class="option" onclick="mcq(this,false,'printFeedback')">Nothing</button>
+</div>
+<div class="feedback" id="printFeedback"></div>
+
+<div class="flow">
+  <div class="flow-box">🐍 Python</div>
+  <div class="arrow">→</div>
+  <div class="flow-box">print()</div>
+  <div class="arrow">→</div>
+  <div class="flow-box">🖥️ Hello</div>
+</div>
+</div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+<div class="slide-content">
+<div class="kicker">print()</div>
+<h1>What Can <span class="highlight">print()</span> Display?</h1>
+<p class="subtitle">Select all the values that Python can print.</p>
+
+<div class="grid grid-4" id="printTypes">
+  <div class="multi-option" data-correct="true" onclick="toggleMulti(this)">"Hello"</div>
+  <div class="multi-option" data-correct="true" onclick="toggleMulti(this)">25</div>
+  <div class="multi-option" data-correct="true" onclick="toggleMulti(this)">3.5</div>
+  <div class="multi-option" data-correct="true" onclick="toggleMulti(this)">True</div>
+</div>
+<div class="btn-row">
+<button class="btn primary" onclick="checkMulti('printTypes','printTypesFeedback')">Check Answers</button>
+</div>
+<div class="feedback" id="printTypesFeedback"></div>
+<div class="legend">
+<span><i class="dot green"></i> Selected + correct</span>
+<span><i class="dot red"></i> Selected + wrong</span>
+<span><i class="dot gold"></i> Missed</span>
+</div>
+</div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+<div class="slide-content">
+<div class="kicker">Function #2</div>
+<h1>🔍 Function #2 — <span class="highlight">type()</span></h1>
+<p class="subtitle">The <code>type()</code> function asks Python: <b>"What type of data is this?"</b></p>
+
+<div class="card">
+<div class="type-row"><div class="type-value">"Hello"</div><div class="type-arrow">→</div><div class="type-result green">str</div></div>
+<div class="type-row"><div class="type-value">25</div><div class="type-arrow">→</div><div class="type-result blue">int</div></div>
+<div class="type-row"><div class="type-value">25.5</div><div class="type-arrow">→</div><div class="type-result violet">float</div></div>
+<div class="type-row"><div class="type-value">True</div><div class="type-arrow">→</div><div class="type-result green">bool</div></div>
+</div>
+</div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Detective Mode</div>
+<h1>🕵️ Type Detective</h1>
+<p class="subtitle">Choose the correct data type for each function.</p>
+
+<div class="grid grid-2">
+<div class="card">
+<div class="code-line">type("Hello")</div>
+<div class="option-grid" style="grid-template-columns:repeat(2,1fr)">
+<button class="option" onclick="mcq(this,true,'t1')">str</button>
+<button class="option" onclick="mcq(this,false,'t1')">int</button>
+</div><div class="feedback" id="t1"></div>
+</div>
+
+<div class="card">
+<div class="code-line">type(25)</div>
+<div class="option-grid" style="grid-template-columns:repeat(2,1fr)">
+<button class="option" onclick="mcq(this,true,'t2')">int</button>
+<button class="option" onclick="mcq(this,false,'t2')">float</button>
+</div><div class="feedback" id="t2"></div>
+</div>
+
+<div class="card">
+<div class="code-line">type(2.5)</div>
+<div class="option-grid" style="grid-template-columns:repeat(2,1fr)">
+<button class="option" onclick="mcq(this,true,'t3')">float</button>
+<button class="option" onclick="mcq(this,false,'t3')">str</button>
+</div><div class="feedback" id="t3"></div>
+</div>
+
+<div class="card">
+<div class="code-line">type(False)</div>
+<div class="option-grid" style="grid-template-columns:repeat(2,1fr)">
+<button class="option" onclick="mcq(this,true,'t4')">bool</button>
+<button class="option" onclick="mcq(this,false,'t4')">int</button>
+</div><div class="feedback" id="t4"></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Function #3</div>
+<h1>📏 Function #3 — <span class="highlight">len()</span></h1>
+<p class="subtitle">What does <code>len("Hello")</code> do?</p>
+
+<div class="big-code">len("Hello")</div>
+
+<div class="option-grid">
+<button class="option" onclick="mcq(this,false,'lenFeedback')">Changes text</button>
+<button class="option" onclick="mcq(this,true,'lenFeedback')">Counts characters</button>
+<button class="option" onclick="mcq(this,false,'lenFeedback')">Prints it</button>
+<button class="option" onclick="mcq(this,false,'lenFeedback')">Deletes it</button>
+</div>
+<div class="feedback" id="lenFeedback"></div>
+
+<div class="sequence">
+<div class="seq-box">1 H</div>
+<div class="seq-box">2 e</div>
+<div class="seq-box">3 l</div>
+<div class="seq-box">4 l</div>
+<div class="seq-box">5 o</div>
+</div>
+<div class="green"><b>Output: 5</b></div>
+</div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Try It</div>
+<h1>📏 Count It!</h1>
+<p class="subtitle">Click each phrase to reveal its length.</p>
+
+<div class="grid grid-3">
+<div class="card"><div class="big-code">"Python"</div><div class="btn-row"><button class="btn" onclick="showText(this,'6')">Count</button></div><div class="feedback"></div></div>
+<div class="card"><div class="big-code">"Cat"</div><div class="btn-row"><button class="btn" onclick="showText(this,'3')">Count</button></div><div class="feedback"></div></div>
+<div class="card"><div class="big-code">"Hello World"</div><div class="btn-row"><button class="btn" onclick="showText(this,'11')">Count</button></div><div class="feedback"></div></div>
+</div>
+
+<div class="feedback info show">⚠️ <b>Important:</b> Spaces are counted as characters too!</div>
+</div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Conversion Basics</div>
+<h1>🔄 Python's Conversion Machine</h1>
+<p class="subtitle">Is <code>"25"</code> the same as <code>25</code>?</p>
+
+<div class="grid grid-2">
+<div class="card"><div class="big-code">"25"</div><p class="green">String — text</p></div>
+<div class="card"><div class="big-code">25</div><p class="blue">Integer — number</p></div>
+</div>
+
+<div class="btn-row">
+<button class="btn" onclick="mcq(this,true,'convertFeedback')">NO</button>
+<button class="btn" onclick="mcq(this,false,'convertFeedback')">YES</button>
+</div>
+<div class="feedback" id="convertFeedback"></div>
+</div>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Function #4</div>
+<h1>🔢 Function #4 — <span class="highlight">int()</span></h1>
+
+<div class="machine">
+<div class="machine-value">"25"</div>
+<div class="arrow">→</div>
+<div class="machine-function">int()</div>
+<div class="arrow">→</div>
+<div class="machine-value">25</div>
+</div>
+
+<p class="subtitle">Convert a value into a whole number.</p>
+<div class="big-code">int("10")</div>
+
+<div class="option-grid">
+<button class="option" onclick="mcq(this,false,'intFeedback')">"10"</button>
+<button class="option" onclick="mcq(this,true,'intFeedback')">10</button>
+<button class="option" onclick="mcq(this,false,'intFeedback')">10.0</button>
+<button class="option" onclick="mcq(this,false,'intFeedback')">True</button>
+</div>
+<div class="feedback" id="intFeedback"></div>
+</div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Function #5</div>
+<h1>🌊 Function #5 — <span class="highlight">float()</span></h1>
+
+<div class="machine">
+<div class="machine-value">"2.5"</div>
+<div class="arrow">→</div>
+<div class="machine-function">float()</div>
+<div class="arrow">→</div>
+<div class="machine-value">2.5</div>
+</div>
+
+<p class="subtitle">A float is a number that can contain a decimal point.</p>
+<div class="big-code">float("10")</div>
+
+<div class="btn-row">
+<button class="btn" onclick="mcq(this,false,'floatFeedback')">10</button>
+<button class="btn" onclick="mcq(this,true,'floatFeedback')">10.0</button>
+<button class="btn" onclick="mcq(this,false,'floatFeedback')">"10"</button>
+</div>
+<div class="feedback" id="floatFeedback"></div>
+</div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Function #6</div>
+<h1>💬 Function #6 — <span class="highlight">str()</span></h1>
+
+<div class="machine">
+<div class="machine-value">25</div>
+<div class="arrow">→</div>
+<div class="machine-function">str()</div>
+<div class="arrow">→</div>
+<div class="machine-value">"25"</div>
+</div>
+
+<p class="subtitle">Convert something into text.</p>
+
+<div class="card" style="max-width:650px;margin:auto">
+<h3>Which one is text?</h3>
+<div class="option-grid" style="grid-template-columns:1fr 1fr">
+<button class="option" onclick="mcq(this,false,'strFeedback')">25</button>
+<button class="option" onclick="mcq(this,true,'strFeedback')">"25"</button>
+</div>
+<div class="feedback" id="strFeedback"></div>
+</div>
+</div>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+<div class="slide-content">
+<div class="kicker">Challenge</div>
+<h1>🎯 Conversion Challenge</h1>
+<p class="subtitle">Choose the function that performs each conversion.</p>
+
+<div class="grid grid-3">
+<div class="card center">
+<div class="code-line">"50" → 50</div>
+<div class="btn-row">
+<button class="btn" onclick="mcq(this,true,'c1')">int()</button>
+<button class="btn" onclick="mcq(this,false,'c1')">str()</button>
+</div><div class="feedback" id="c1"></div>
+</div>
+
+<div class="card center">
+<div class="code-line">"3.5" → 3.5</div>
+<div class="btn-row">
+<button class="btn" onclick="mcq(this,true,'c2')">float()</button>
+<button class="btn" onclick="mcq(this,false,'c2')">int()</button>
+</div><div class="feedback" id="c2"></div>
+</div>
+
+<div class="card center">
+<div class="code-line">100 → "100"</div>
+<div class="btn-row">
+<button class="btn" onclick="mcq(this,true,'c3')">str()</button>
+<button class="btn" onclick="mcq(this,false,'c3')">float()</button>
+</div><div class="feedback" id="c3"></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Calculation Toolkit</div>
+<h1>🧮 Calculation Functions</h1>
+<p class="subtitle">Python also has functions that help us work with numbers.</p>
+
+<div class="grid grid-5">
+<div class="card center"><div class="icon">🎯</div><code>round()</code><small>Round numbers</small></div>
+<div class="card center"><div class="icon">📍</div><code>abs()</code><small>Distance from zero</small></div>
+<div class="card center"><div class="icon">🏆</div><code>max()</code><small>Find biggest</small></div>
+<div class="card center"><div class="icon">🐜</div><code>min()</code><small>Find smallest</small></div>
+<div class="card center"><div class="icon">➕</div><code>sum()</code><small>Add values</small></div>
+</div>
+</div>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Number Tool #1</div>
+<h1>🎯 <span class="highlight">round()</span></h1>
+<div class="big-code">round(3.67)</div>
+<p class="subtitle">Rounds a number to the nearest whole number.</p>
+
+<div class="option-grid">
+<button class="option" onclick="mcq(this,false,'roundFeedback')">3</button>
+<button class="option" onclick="mcq(this,true,'roundFeedback')">4</button>
+<button class="option" onclick="mcq(this,false,'roundFeedback')">3.67</button>
+<button class="option" onclick="mcq(this,false,'roundFeedback')">5</button>
+</div>
+<div class="feedback" id="roundFeedback"></div>
+
+<div class="grid grid-2" style="margin-top:10px">
+<div class="card"><code>round(8.2)</code> → <b class="green">8</b></div>
+<div class="card"><code>round(5.7)</code> → <b class="green">6</b></div>
+</div>
+</div>
+</section>
+
+<!-- 15 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Number Tool #2</div>
+<h1>📍 <span class="highlight">abs()</span> — Distance From Zero</h1>
+<p class="subtitle">The absolute value tells us how far a number is from zero.</p>
+
+<div class="numberline">
+<div class="number">-10</div><div class="number">-9</div><div class="number">-8</div><div class="number">-7</div><div class="number">-6</div>
+<div class="number">-5</div><div class="number">-4</div><div class="number">-3</div><div class="number">-2</div><div class="number">-1</div>
+<div class="number active">0</div>
+<div class="number">1</div><div class="number">2</div><div class="number">3</div><div class="number">4</div><div class="number">5</div>
+</div>
+
+<div class="big-code">abs(-8) → <span class="green">8</span></div>
+<p class="subtitle">📏 From -8 to 0 = 8 spaces. Distance is never negative.</p>
+</div>
+</section>
+
+<!-- 16 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Number Tool #3</div>
+<h1>🏆 <span class="highlight">max()</span></h1>
+<p class="subtitle">Which value is the biggest?</p>
+
+<div class="grid grid-3" id="maxCards">
+<div class="card center" onclick="chooseMax(this,4)"><div class="big-code">4</div></div>
+<div class="card center" onclick="chooseMax(this,9)"><div class="big-code">9</div></div>
+<div class="card center" onclick="chooseMax(this,2)"><div class="big-code">2</div></div>
+</div>
+
+<div class="big-code" style="margin-top:13px">max(4, 9, 2)</div>
+<div class="feedback" id="maxFeedback"></div>
+</div>
+</section>
+
+<!-- 17 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Number Tool #4</div>
+<h1>🐜 <span class="highlight">min()</span></h1>
+<p class="subtitle">Which value is the smallest?</p>
+
+<div class="grid grid-3" id="minCards">
+<div class="card center" onclick="chooseMin(this,4)"><div class="big-code">4</div></div>
+<div class="card center" onclick="chooseMin(this,9)"><div class="big-code">9</div></div>
+<div class="card center" onclick="chooseMin(this,2)"><div class="big-code">2</div></div>
+</div>
+
+<div class="big-code" style="margin-top:13px">min(4, 9, 2)</div>
+<div class="feedback" id="minFeedback"></div>
+</div>
+</section>
+
+<!-- 18 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Number Tool #5</div>
+<h1>➕ <span class="highlight">sum()</span></h1>
+
+<div class="flow">
+<div class="flow-box">sum([2, 3, 4])</div>
+<div class="arrow">→</div>
+<div class="flow-box">2 + 3 + 4</div>
+<div class="arrow">→</div>
+<div class="flow-box green">9</div>
+</div>
+
+<p class="subtitle">Quick calculation: <code>sum([5, 10, 15])</code></p>
+
+<div class="option-grid">
+<button class="option" onclick="mcq(this,false,'sumFeedback')">20</button>
+<button class="option" onclick="mcq(this,false,'sumFeedback')">25</button>
+<button class="option" onclick="mcq(this,true,'sumFeedback')">30</button>
+<button class="option" onclick="mcq(this,false,'sumFeedback')">35</button>
+</div>
+<div class="feedback" id="sumFeedback"></div>
+</div>
+</section>
+
+<!-- 19 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Function #12</div>
+<h1>🔢 <span class="highlight">range()</span></h1>
+<p class="subtitle">Let's discover what <code>range(5)</code> creates.</p>
+
+<div class="big-code">range(5)</div>
+<div class="sequence">
+<div class="seq-box">0</div>
+<div class="seq-box">1</div>
+<div class="seq-box">2</div>
+<div class="seq-box">3</div>
+<div class="seq-box">4</div>
+</div>
+
+<div class="card" style="max-width:700px;margin:auto">
+<b class="gold">Beginner Rule ⭐</b>
+<p style="margin:7px 0;color:var(--muted)">Starts at <b>0</b> and stops <b>BEFORE</b> the number inside!</p>
+</div>
+</div>
+</section>
+
+<!-- 20 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">Range Detective</div>
+<h1>🕵️ What Does <code>range(4)</code> Create?</h1>
+
+<div class="option-grid" style="grid-template-columns:1fr">
+<button class="option" onclick="mcq(this,false,'rangeFeedback')">A: 1, 2, 3, 4</button>
+<button class="option" onclick="mcq(this,true,'rangeFeedback')">B: 0, 1, 2, 3</button>
+<button class="option" onclick="mcq(this,false,'rangeFeedback')">C: 0, 1, 2, 3, 4</button>
+</div>
+<div class="feedback" id="rangeFeedback"></div>
+</div>
+</section>
+
+<!-- 21 -->
+<section class="slide">
+<div class="slide-content">
+<div class="kicker">Your Toolbox</div>
+<h1>🧰 Interactive Function Toolbox</h1>
+<p class="subtitle">Click any tool to open its quick explanation.</p>
+
+<div class="toolbox-grid">
+<div class="mini-tool" onclick="openTool('🖨️','print()','Display something on screen.','print(\"Hello\")')">🖨️<b>print()</b></div>
+<div class="mini-tool" onclick="openTool('🔍','type()','Check the type of data.','type(25)')">🔍<b>type()</b></div>
+<div class="mini-tool" onclick="openTool('📏','len()','Count characters/items.','len(\"Python\")')">📏<b>len()</b></div>
+<div class="mini-tool" onclick="openTool('🔢','int()','Convert to an integer.','int(\"25\")')">🔢<b>int()</b></div>
+<div class="mini-tool" onclick="openTool('🌊','float()','Convert to a float.','float(\"2.5\")')">🌊<b>float()</b></div>
+<div class="mini-tool" onclick="openTool('💬','str()','Convert to text.','str(25)')">💬<b>str()</b></div>
+<div class="mini-tool" onclick="openTool('🎯','round()','Round a number.','round(3.7)')">🎯<b>round()</b></div>
+<div class="mini-tool" onclick="openTool('📍','abs()','Find distance from zero.','abs(-8)')">📍<b>abs()</b></div>
+<div class="mini-tool" onclick="openTool('🏆','max()','Find the biggest value.','max(4,9,2)')">🏆<b>max()</b></div>
+<div class="mini-tool" onclick="openTool('🐜','min()','Find the smallest value.','min(4,9,2)')">🐜<b>min()</b></div>
+<div class="mini-tool" onclick="openTool('➕','sum()','Add values together.','sum([2,3,4])')">➕<b>sum()</b></div>
+<div class="mini-tool" onclick="openTool('🔢','range()','Create a number sequence.','range(5)')">🔢<b>range()</b></div>
+</div>
+</div>
+</section>
+
+<!-- 22 -->
+<section class="slide">
+<div class="slide-content">
+<div class="kicker">Matching Challenge</div>
+<h1>🎯 Situation Matcher</h1>
+<p class="subtitle">Match each situation to the correct function.</p>
+
+<div class="match-grid">
+<div class="match-item"><span>Display something on screen</span><select data-answer="print()"><option>Select</option><option>print()</option><option>type()</option><option>len()</option><option>max()</option><option>int()</option></select></div>
+<div class="match-item"><span>Check data type</span><select data-answer="type()"><option>Select</option><option>print()</option><option>type()</option><option>len()</option><option>max()</option><option>int()</option></select></div>
+<div class="match-item"><span>Count characters</span><select data-answer="len()"><option>Select</option><option>print()</option><option>type()</option><option>len()</option><option>max()</option><option>int()</option></select></div>
+<div class="match-item"><span>Find biggest number</span><select data-answer="max()"><option>Select</option><option>print()</option><option>type()</option><option>len()</option><option>max()</option><option>int()</option></select></div>
+<div class="match-item"><span>Convert text to integer</span><select data-answer="int()"><option>Select</option><option>print()</option><option>type()</option><option>len()</option><option>max()</option><option>int()</option></select></div>
+</div>
+
+<div class="btn-row">
+<button class="btn primary" onclick="checkMatcher()">Check Answers</button>
+</div>
+<div class="feedback" id="matchFeedback"></div>
+</div>
+</section>
+
+<!-- 23 -->
+<section class="slide">
+<div class="slide-content">
+<div class="kicker">Final Boss</div>
+<h1>🎮 Final Boss Missions</h1>
+<p class="subtitle">Complete all 6 missions. Score: <b id="bossScore">0 / 6</b></p>
+
+<div class="missions">
+<div class="mission"><div class="mission-num">Mission 1</div><p>Display "Welcome!"</p><select onchange="mission(this,'print()')"><option>Select</option><option>print()</option><option>type()</option><option>len()</option></select></div>
+<div class="mission"><div class="mission-num">Mission 2</div><p>Find type of 25.5</p><select onchange="mission(this,'type()')"><option>Select</option><option>print()</option><option>type()</option><option>len()</option></select></div>
+<div class="mission"><div class="mission-num">Mission 3</div><p>Count "Python"</p><select onchange="mission(this,'len()')"><option>Select</option><option>print()</option><option>type()</option><option>len()</option></select></div>
+<div class="mission"><div class="mission-num">Mission 4</div><p>Convert "42" to integer</p><select onchange="mission(this,'int()')"><option>Select</option><option>int()</option><option>str()</option><option>float()</option></select></div>
+<div class="mission"><div class="mission-num">Mission 5</div><p>Biggest of 4, 9, 2</p><select onchange="mission(this,'max()')"><option>Select</option><option>max()</option><option>min()</option><option>sum()</option></select></div>
+<div class="mission"><div class="mission-num">Mission 6</div><p>Add 2, 3, 4</p><select onchange="mission(this,'sum()')"><option>Select</option><option>sum()</option><option>max()</option><option>min()</option></select></div>
+</div>
+
+<div class="feedback" id="bossFeedback"></div>
+</div>
+</section>
+
+<!-- 24 -->
+<section class="slide">
+<div class="slide-content center">
+<div class="kicker">You Did It!</div>
+<h1>🏅 Function Master</h1>
+<p class="subtitle">Your beginner Python function cheat sheet</p>
+
+<div class="cheat">
+<div class="cheat-card"><h3>🖨️ SHOW</h3><code>print()</code><p>Display something</p></div>
+<div class="cheat-card"><h3>🔍 CHECK</h3><code>type()</code><p>Check data type</p></div>
+<div class="cheat-card"><h3>📏 COUNT</h3><code>len()</code><p>Count characters/items</p></div>
+<div class="cheat-card"><h3>🔄 CONVERT</h3><code>int() · float() · str()</code><p>Change data type</p></div>
+<div class="cheat-card"><h3>🧮 CALCULATE</h3><code>round() · abs()</code><p>Work with numbers</p></div>
+<div class="cheat-card"><h3>🏆 COMPARE</h3><code>max() · min()</code><p>Biggest / smallest</p></div>
+<div class="cheat-card"><h3>➕ ADD</h3><code>sum()</code><p>Add values</p></div>
+<div class="cheat-card"><h3>🔢 SEQUENCE</h3><code>range()</code><p>Create number sequences</p></div>
+<div class="cheat-card"><h3>🐍 REMEMBER</h3><code>function()</code><p>Functions are ready-made tools!</p></div>
+</div>
+
+<div class="btn-row">
+<button class="btn gold" onclick="celebrate()">🎉 Celebrate!</button>
+</div>
+<div class="feedback success show">🏆 You are now a Python Function Master!</div>
+</div>
+</section>
+
+</main>
+
+<footer class="footer">
+<button class="nav-btn" id="prevBtn" onclick="prevSlide()">← Previous</button>
+<div class="counter" id="counter">Slide 1 / 24</div>
+<button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+</footer>
+
+</div>
+
+<!-- TOOL MODAL -->
+<div class="modal" id="toolModal" onclick="closeTool(event)">
+<div class="modal-card" onclick="event.stopPropagation()">
+<div id="modalIcon" style="font-size:42px"></div>
+<h2 id="modalTitle"></h2>
+<p id="modalPurpose" style="color:var(--muted)"></p>
+<div class="big-code" id="modalCode"></div>
+<div class="btn-row">
+<button class="btn primary" onclick="closeTool()">Got it!</button>
+</div>
+</div>
+</div>
+
+<script>
+const slides=[...document.querySelectorAll(".slide")];
+let current=0;
+const total=slides.length;
+
+function showSlide(index){
+  if(index<0||index>=total)return;
+  slides[current].classList.remove("active");
+  current=index;
+  slides[current].classList.add("active");
+
+  document.getElementById("counter").textContent=`Slide ${current+1} / ${total}`;
+  document.getElementById("progressLabel").textContent=`${current+1} / ${total}`;
+  document.getElementById("progress").style.width=`${((current+1)/total)*100}%`;
+
+  document.getElementById("prevBtn").disabled=current===0;
+  document.getElementById("nextBtn").disabled=current===total-1;
+
+  if(current===23){
+    setTimeout(()=>celebrate(),500);
+  }
+}
+
+function nextSlide(){showSlide(current+1)}
+function prevSlide(){showSlide(current-1)}
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight")nextSlide();
+  if(e.key==="ArrowLeft")prevSlide();
+});
+
+let touchStart=0;
+document.addEventListener("touchstart",e=>{
+  touchStart=e.changedTouches[0].screenX;
+},{passive:true});
+
+document.addEventListener("touchend",e=>{
+  const diff=e.changedTouches[0].screenX-touchStart;
+  if(Math.abs(diff)>70){
+    if(diff<0)nextSlide();
+    else prevSlide();
+  }
+},{passive:true});
+
+/* TOOLBOX */
+function revealTool(el){
+  el.classList.toggle("revealed");
+  const revealed=document.querySelectorAll(".tool.revealed").length;
+  if(revealed===4){
+    document.getElementById("toolReveal").classList.add("show");
+  }
+}
+
+/* MCQ */
+function mcq(btn,correct,feedbackId){
+  const parent=btn.parentElement;
+  parent.querySelectorAll(".option,.btn").forEach(x=>{
+    x.classList.remove("selected","correct","wrong");
+  });
+
+  btn.classList.add("selected");
+
+  const feedback=document.getElementById(feedbackId);
+
+  if(correct){
+    btn.classList.add("correct");
+    feedback.className="feedback success show";
+    feedback.innerHTML="✅ Correct! Great job!";
+  }else{
+    btn.classList.add("wrong");
+    feedback.className="feedback error show";
+    feedback.innerHTML="❌ Not quite. Try thinking about what the function actually does.";
+  }
+}
+
+/* MULTI SELECT */
+function toggleMulti(el){
+  el.classList.toggle("selected");
+}
+
+function checkMulti(containerId,feedbackId){
+  const items=[...document.querySelectorAll(`#${containerId} .multi-option`)];
+  let score=0;
+
+  items.forEach(item=>{
+    item.classList.remove(
+      "beam-selected-correct",
+      "beam-selected-wrong",
+      "beam-missed",
+      "beam-neutral"
+    );
+
+    const selected=item.classList.contains("selected");
+    const correct=item.dataset.correct==="true";
+
+    if(selected&&correct){
+      item.classList.add("beam-selected-correct");
+      score++;
+    }else if(selected&&!correct){
+      item.classList.add("beam-selected-wrong");
+    }else if(!selected&&correct){
+      item.classList.add("beam-missed");
+    }else{
+      item.classList.add("beam-neutral");
+    }
+  });
+
+  const feedback=document.getElementById(feedbackId);
+
+  if(score===items.filter(x=>x.dataset.correct==="true").length){
+    feedback.className="feedback success show";
+    feedback.innerHTML="✅ Perfect! print() can display ALL of these data types.";
+  }else{
+    feedback.className="feedback error show";
+    feedback.innerHTML="🔎 Look at the colored beams. Green = correct selection, red = wrong selection, gold = something you missed.";
+  }
+}
+
+/* COUNT */
+function showText(btn,value){
+  const fb=btn.parentElement.nextElementSibling;
+  fb.className="feedback success show";
+  fb.innerHTML=`📏 Length = <b>${value}</b>`;
+}
+
+/* MAX / MIN */
+function chooseMax(el,value){
+  const cards=[...document.querySelectorAll("#maxCards .card")];
+  cards.forEach(c=>c.classList.remove("beam-selected-correct","beam-selected-wrong"));
+  const fb=document.getElementById("maxFeedback");
+
+  if(value===9){
+    el.classList.add("beam-selected-correct");
+    fb.className="feedback success show";
+    fb.innerHTML="🏆 Correct! 9 is the biggest number.";
+  }else{
+    el.classList.add("beam-selected-wrong");
+    fb.className="feedback error show";
+    fb.innerHTML="❌ Try again. Which number is biggest?";
+  }
+}
+
+function chooseMin(el,value){
+  const cards=[...document.querySelectorAll("#minCards .card")];
+  cards.forEach(c=>c.classList.remove("beam-selected-correct","beam-selected-wrong"));
+  const fb=document.getElementById("minFeedback");
+
+  if(value===2){
+    el.classList.add("beam-selected-correct");
+    fb.className="feedback success show";
+    fb.innerHTML="🐜 Correct! 2 is the smallest number.";
+  }else{
+    el.classList.add("beam-selected-wrong");
+    fb.className="feedback error show";
+    fb.innerHTML="❌ Try again. Which number is smallest?";
+  }
+}
+
+/* TOOL MODAL */
+function openTool(icon,title,purpose,code){
+  document.getElementById("modalIcon").textContent=icon;
+  document.getElementById("modalTitle").textContent=title;
+  document.getElementById("modalPurpose").textContent=purpose;
+  document.getElementById("modalCode").textContent=code;
+  document.getElementById("toolModal").classList.add("show");
+}
+
+function closeTool(e){
+  if(e && e.target!==document.getElementById("toolModal"))return;
+  document.getElementById("toolModal").classList.remove("show");
+}
+
+/* MATCHER */
+function checkMatcher(){
+  const selects=[...document.querySelectorAll(".match-item select")];
+  let correct=0;
+
+  selects.forEach(select=>{
+    select.parentElement.classList.remove(
+      "beam-selected-correct",
+      "beam-selected-wrong",
+      "beam-missed"
+    );
+
+    if(select.value===select.dataset.answer){
+      correct++;
+      select.parentElement.classList.add("beam-selected-correct");
+    }else{
+      select.parentElement.classList.add("beam-selected-wrong");
+    }
+  });
+
+  const fb=document.getElementById("matchFeedback");
+
+  if(correct===selects.length){
+    fb.className="feedback success show";
+    fb.innerHTML="🎯 Perfect match! You know which function to use.";
+  }else{
+    fb.className="feedback error show";
+    fb.innerHTML=`You got ${correct}/${selects.length}. Check the red beams and try again.`;
+  }
+}
+
+/* BOSS */
+let bossCompleted=0;
+
+function mission(select,answer){
+  const missionBox=select.closest(".mission");
+
+  if(missionBox.classList.contains("completed"))return;
+
+  if(select.value===answer){
+    missionBox.classList.add("completed");
+    bossCompleted++;
+  }else{
+    missionBox.style.borderColor="var(--red)";
+    setTimeout(()=>{
+      if(!missionBox.classList.contains("completed"))
+        missionBox.style.borderColor="";
+    },700);
+  }
+
+  document.getElementById("bossScore").textContent=`${bossCompleted} / 6`;
+
+  const fb=document.getElementById("bossFeedback");
+
+  if(bossCompleted===6){
+    fb.className="feedback success show";
+    fb.innerHTML="🏆 FINAL BOSS DEFEATED! You mastered the functions!";
+    celebrate();
+  }else{
+    fb.className="feedback info show";
+    fb.innerHTML=`⚡ ${bossCompleted}/6 missions completed. Keep going!`;
+  }
+}
+
+/* CELEBRATION */
+function celebrate(){
+  if(typeof confetti==="function"){
+    confetti({
+      particleCount:160,
+      spread:100,
+      origin:{y:.65}
+    });
+
+    setTimeout(()=>{
+      confetti({
+        particleCount:100,
+        spread:70,
+        origin:{x:.2,y:.6}
+      });
+    },250);
+
+    setTimeout(()=>{
+      confetti({
+        particleCount:100,
+        spread:70,
+        origin:{x:.8,y:.6}
+      });
+    },450);
+  }
+}
+
+/* INITIAL */
+showSlide(0);
+</script>
+
+<!-- ===== Milestone 1: next-lesson button (added) ===== -->
+<a id="m1-next" href="Input_Variables.html" aria-label="Next lesson: Input and Variables">
+  <span class="m1-k">Next</span>
+  <span class="m1-t">Input &amp; Variables</span>
+  <span class="m1-a" aria-hidden="true">&rarr;</span>
+</a>
+<style>
+  #m1-next{
+    position:fixed;right:18px;bottom:18px;z-index:2147483001;
+    display:flex;align-items:center;gap:10px;
+    padding:11px 18px;border-radius:999px;line-height:1;
+    font-family:"Fira Code","SF Mono",Menlo,Consolas,monospace;
+    text-decoration:none;color:#0F172A;
+    background:linear-gradient(135deg,#FFD43B,#ffe680);
+    box-shadow:0 10px 30px -10px rgba(0,0,0,.65),0 0 0 1px rgba(255,212,59,.35);
+    transition:transform .16s ease,box-shadow .16s ease;
+  }
+  #m1-next:hover{transform:translateY(-2px);box-shadow:0 16px 36px -10px rgba(0,0,0,.75),0 0 0 1px rgba(255,212,59,.55)}
+  #m1-next:focus-visible{outline:2px solid #FFD43B;outline-offset:3px}
+  #m1-next .m1-k{font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;opacity:.55}
+  #m1-next .m1-t{font-size:13px;font-weight:700}
+  #m1-next .m1-a{font-size:15px;font-weight:700}
+  @media (max-width:560px){#m1-next{right:12px;bottom:12px;padding:10px 14px}#m1-next .m1-k{display:none}}
+  @media print{#m1-next{display:none}}
+</style>
+<!-- ===== end Milestone 1 nav ===== -->
+
+</body>
+</html>
