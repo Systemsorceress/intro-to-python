@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Built-in Functions — Coding Quiz</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #eef2f7;
+        color: #172033;
+    }
+
+    .app {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+        background: #172033;
+        color: white;
+        padding: 18px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .brand h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .brand p {
+        margin: 5px 0 0;
+        color: #b9c3d4;
+        font-size: 14px;
+    }
+
+    .score-box {
+        background: #26334c;
+        border-radius: 12px;
+        padding: 10px 18px;
+        text-align: center;
+        min-width: 100px;
+    }
+
+    .score-box strong {
+        display: block;
+        font-size: 22px;
+    }
+
+    .score-box span {
+        font-size: 12px;
+        color: #c5cedd;
+    }
+
+    /* PROGRESS */
+    .progress-area {
+        background: white;
+        padding: 12px 28px;
+        border-bottom: 1px solid #dce2ea;
+    }
+
+    .progress-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .progress-bar {
+        height: 9px;
+        background: #e4e8ee;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: #4f46e5;
+        transition: width .3s;
+    }
+
+    /* MAIN */
+    main {
+        width: min(1200px, 94%);
+        margin: 25px auto;
+        flex: 1;
+    }
+
+    .challenge-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .question-number {
+        color: #4f46e5;
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .challenge-title {
+        margin: 0;
+        font-size: 28px;
+    }
+
+    .function-badge {
+        background: #e9e7ff;
+        color: #4338ca;
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-family: monospace;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .workspace {
+        display: grid;
+        grid-template-columns: 0.85fr 1.15fr;
+        gap: 20px;
+    }
+
+    .card {
+        background: white;
+        border: 1px solid #dce2ea;
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 4px 15px rgba(20, 30, 50, .05);
+    }
+
+    .instructions h2,
+    .editor-card h2 {
+        margin-top: 0;
+        font-size: 18px;
+    }
+
+    .question {
+        font-size: 17px;
+        line-height: 1.65;
+    }
+
+    .given-code {
+        background: #f1f3f7;
+        border-left: 4px solid #6366f1;
+        border-radius: 8px;
+        padding: 13px;
+        margin: 15px 0;
+        font-family: Consolas, monospace;
+        white-space: pre-wrap;
+    }
+
+    .goal {
+        background: #eefbf4;
+        border: 1px solid #bce6cd;
+        color: #166534;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 14px;
+        margin-top: 15px;
+    }
+
+    /* EDITOR */
+    .editor-wrap {
+        background: #111827;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #273246;
+    }
+
+    .editor-top {
+        background: #1f2937;
+        padding: 9px 13px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: #aeb9ca;
+        font-size: 12px;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #6b7280;
+    }
+
+    textarea {
+        width: 100%;
+        min-height: 250px;
+        resize: vertical;
+        border: none;
+        outline: none;
+        padding: 18px;
+        background: #111827;
+        color: #e5e7eb;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 16px;
+        line-height: 1.6;
+        tab-size: 4;
+    }
+
+    .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-top: 13px;
+    }
+
+    button {
+        border: none;
+        border-radius: 9px;
+        padding: 11px 16px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 14px;
+        transition: transform .1s, opacity .2s;
+    }
+
+    button:hover {
+        transform: translateY(-1px);
+    }
+
+    .run-btn {
+        background: #2563eb;
+        color: white;
+    }
+
+    .check-btn {
+        background: #16a34a;
+        color: white;
+    }
+
+    .hint-btn {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .reset-btn {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .next-btn {
+        background: #4f46e5;
+        color: white;
+        display: none;
+    }
+
+    .solution-btn {
+        background: #fff7ed;
+        color: #9a3412;
+        display: none;
+    }
+
+    /* OUTPUT */
+    .output-title {
+        margin-top: 20px;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .terminal {
+        background: #0b1120;
+        color: #d1fae5;
+        min-height: 100px;
+        border-radius: 10px;
+        padding: 14px;
+        font-family: Consolas, monospace;
+        white-space: pre-wrap;
+        overflow-x: auto;
+    }
+
+    .terminal.empty {
+        color: #64748b;
+    }
+
+    .feedback {
+        margin-top: 12px;
+        padding: 13px;
+        border-radius: 10px;
+        display: none;
+        line-height: 1.5;
+    }
+
+    .feedback.success {
+        display: block;
+        background: #ecfdf5;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+    }
+
+    .feedback.error {
+        display: block;
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .feedback.info {
+        display: block;
+        background: #eff6ff;
+        color: #1e40af;
+        border: 1px solid #bfdbfe;
+    }
+
+    .hint {
+        display: none;
+        margin-top: 12px;
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        color: #854d0e;
+        padding: 13px;
+        border-radius: 10px;
+        line-height: 1.5;
+    }
+
+    /* FINAL */
+    .final-screen {
+        display: none;
+        text-align: center;
+        padding: 45px 20px;
+    }
+
+    .final-icon {
+        font-size: 70px;
+    }
+
+    .final-screen h2 {
+        font-size: 34px;
+        margin: 10px 0;
+    }
+
+    .final-score {
+        font-size: 48px;
+        font-weight: bold;
+        color: #4f46e5;
+        margin: 15px;
+    }
+
+    .review {
+        max-width: 700px;
+        margin: 25px auto;
+        text-align: left;
+    }
+
+    .review-item {
+        padding: 13px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .correct {
+        color: #16a34a;
+        font-weight: bold;
+    }
+
+    .incorrect {
+        color: #dc2626;
+        font-weight: bold;
+    }
+
+    .restart {
+        background: #4f46e5;
+        color: white;
+        padding: 13px 25px;
+    }
+
+    @media(max-width: 850px) {
+        .workspace {
+            grid-template-columns: 1fr;
+        }
+
+        header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .challenge-header {
+            flex-direction: column;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+    <div class="brand">
+        <h1>🐍 Python Built-in Functions</h1>
+        <p>Write Python code • Run it • Check it • Learn from your mistakes</p>
+    </div>
+
+    <div class="score-box">
+        <strong id="score">0</strong>
+        <span>POINTS</span>
+    </div>
+</header>
+
+<div class="progress-area">
+    <div class="progress-top">
+        <span id="progressText">Question 1 of 14</span>
+        <span id="percent">0%</span>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+</div>
+
+<main id="quizScreen">
+
+    <div class="challenge-header">
+        <div>
+            <div class="question-number" id="questionNumber">CODING CHALLENGE 01</div>
+            <h1 class="challenge-title" id="challengeTitle"></h1>
+        </div>
+
+        <div class="function-badge" id="functionBadge"></div>
+    </div>
+
+    <div class="workspace">
+
+        <!-- INSTRUCTIONS -->
+        <section class="card instructions">
+
+            <h2>🎯 Your Task</h2>
+
+            <div class="question" id="questionText"></div>
+
+            <div class="given-code" id="givenCode"></div>
+
+            <div class="goal">
+                <strong>💡 Your goal:</strong><br>
+                Write Python code that produces the required output.
+            </div>
+
+            <div class="hint" id="hintBox"></div>
+
+        </section>
+
+        <!-- CODING AREA -->
+        <section class="card editor-card">
+
+            <h2>💻 Write Your Python Code</h2>
+
+            <div class="editor-wrap">
+
+                <div class="editor-top">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span style="margin-left:7px;">main.py</span>
+                </div>
+
+                <textarea id="codeEditor" spellcheck="false"></textarea>
+
+            </div>
+
+            <div class="buttons">
+
+                <button class="run-btn" onclick="runCode()">
+                    ▶ Run Code
+                </button>
+
+                <button class="check-btn" onclick="checkAnswer()">
+                    ✓ Check Answer
+                </button>
+
+                <button class="hint-btn" onclick="showHint()">
+                    💡 Hint
+                </button>
+
+                <button class="solution-btn" id="solutionBtn" onclick="showSolution()">
+                    👀 Show Solution
+                </button>
+
+                <button class="reset-btn" onclick="resetQuestion()">
+                    ↺ Reset
+                </button>
+
+                <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
+                    Next Challenge →
+                </button>
+
+            </div>
+
+            <div class="output-title">Terminal Output</div>
+
+            <div class="terminal empty" id="output">
+                Click "Run Code" to see your output...
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<!-- FINAL SCREEN -->
+
+<section class="final-screen" id="finalScreen">
+
+    <div class="final-icon">🎉</div>
+
+    <h2>Quiz Complete!</h2>
+
+    <p>You completed all the Python coding challenges.</p>
+
+    <div class="final-score" id="finalScore">0 / 140</div>
+
+    <p id="finalMessage"></p>
+
+    <div class="review card">
+        <h3>📊 Challenge Review</h3>
+        <div id="reviewList"></div>
+    </div>
+
+    <button class="restart" onclick="restartQuiz()">
+        🔄 Try Again
+    </button>
+
+</section>
+
+</div>
+
+<script>
+
+/* ============================================================
+   CHALLENGES
+============================================================ */
+
+const challenges = [
+
+    {
+        title: "Print a Message",
+        function: "print()",
+        question: `
+            Write a Python program that prints exactly:
+            <strong>Hello, Python!</strong>
+        `,
+        given: `# Write your code below`,
+        starter: `# Write your code below\n`,
+        expected: ["Hello, Python!"],
+        required: ["print"],
+        hint: "Use the print() function and put the message inside quotation marks.",
+        solution: `print("Hello, Python!")`
+    },
+
+    {
+        title: "Print a Variable",
+        function: "print()",
+        question: `
+            A variable called <strong>name</strong> already contains
+            the value <strong>"Malaika"</strong>.<br><br>
+            Print the value of the variable.
+        `,
+        given: `name = "Malaika"`,
+        starter: `name = "Malaika"\n\n# Print the variable`,
+        expected: ["Malaika"],
+        required: ["print"],
+        hint: "You don't need quotation marks around the variable name.",
+        solution: `name = "Malaika"\nprint(name)`
+    },
+
+    {
+        title: "Find the Data Type",
+        function: "type()",
+        question: `
+            The variable <strong>age</strong> contains the number 15.
+            Use <strong>type()</strong> to find its data type and print it.
+        `,
+        given: `age = 15`,
+        starter: `age = 15\n\n# Find and print the type of age`,
+        expected: ["<class 'int'>"],
+        required: ["type", "print"],
+        hint: "Put the variable inside type(), then put that inside print().",
+        solution: `age = 15\nprint(type(age))`
+    },
+
+    {
+        title: "Convert Text to an Integer",
+        function: "int()",
+        question: `
+            The value <strong>"45"</strong> is currently a string.
+            Convert it into an integer and print the result.
+        `,
+        given: `score_text = "45"`,
+        starter: `score_text = "45"\n\n# Convert score_text to an integer and print it`,
+        expected: ["45"],
+        required: ["int", "print"],
+        hint: "Use int(score_text).",
+        solution: `score_text = "45"\nprint(int(score_text))`
+    },
+
+    {
+        title: "Count Characters",
+        function: "len()",
+        question: `
+            Use <strong>len()</strong> to find how many characters
+            are in the word <strong>"Programming"</strong>.
+        `,
+        given: `word = "Programming"`,
+        starter: `word = "Programming"\n\n# Print the length of word`,
+        expected: ["11"],
+        required: ["len", "print"],
+        hint: "len(word) gives the number of characters.",
+        solution: `word = "Programming"\nprint(len(word))`
+    },
+
+    {
+        title: "Count Items in a List",
+        function: "len()",
+        question: `
+            Find how many animals are in the list and print the answer.
+        `,
+        given: `animals = ["cat", "dog", "fish", "bird"]`,
+        starter: `animals = ["cat", "dog", "fish", "bird"]\n\n# How many items are in the list?`,
+        expected: ["4"],
+        required: ["len", "print"],
+        hint: "len() works with lists too.",
+        solution: `animals = ["cat", "dog", "fish", "bird"]\nprint(len(animals))`
+    },
+
+    {
+        title: "Round a Decimal",
+        function: "round()",
+        question: `
+            The temperature is <strong>23.67</strong>.
+            Round it to the nearest whole number and print the result.
+        `,
+        given: `temperature = 23.67`,
+        starter: `temperature = 23.67\n\n# Round temperature and print it`,
+        expected: ["24"],
+        required: ["round", "print"],
+        hint: "Use round(temperature).",
+        solution: `temperature = 23.67\nprint(round(temperature))`
+    },
+
+    {
+        title: "Find the Absolute Value",
+        function: "abs()",
+        question: `
+            A temperature change is <strong>-35</strong>.
+            Use abs() to print its positive distance from zero.
+        `,
+        given: `change = -35`,
+        starter: `change = -35\n\n# Print the absolute value`,
+        expected: ["35"],
+        required: ["abs", "print"],
+        hint: "abs(-35) removes the negative sign.",
+        solution: `change = -35\nprint(abs(change))`
+    },
+
+    {
+        title: "Find the Biggest Number",
+        function: "max()",
+        question: `
+            Use <strong>max()</strong> to find and print the biggest
+            number in this list.
+        `,
+        given: `numbers = [45, 12, 90, 33, 67]`,
+        starter: `numbers = [45, 12, 90, 33, 67]\n\n# Print the biggest number`,
+        expected: ["90"],
+        required: ["max", "print"],
+        hint: "Use max(numbers).",
+        solution: `numbers = [45, 12, 90, 33, 67]\nprint(max(numbers))`
+    },
+
+    {
+        title: "Find the Smallest Number",
+        function: "min()",
+        question: `
+            Use <strong>min()</strong> to find and print the smallest
+            number in the list.
+        `,
+        given: `numbers = [45, 12, 90, 33, 67]`,
+        starter: `numbers = [45, 12, 90, 33, 67]\n\n# Print the smallest number`,
+        expected: ["12"],
+        required: ["min", "print"],
+        hint: "Use min(numbers).",
+        solution: `numbers = [45, 12, 90, 33, 67]\nprint(min(numbers))`
+    },
+
+    {
+        title: "Add All the Numbers",
+        function: "sum()",
+        question: `
+            Use <strong>sum()</strong> to add every number in the list
+            and print the total.
+        `,
+        given: `numbers = [10, 20, 30, 40]`,
+        starter: `numbers = [10, 20, 30, 40]\n\n# Print the total`,
+        expected: ["100"],
+        required: ["sum", "print"],
+        hint: "sum(numbers) adds all the values.",
+        solution: `numbers = [10, 20, 30, 40]\nprint(sum(numbers))`
+    },
+
+    {
+        title: "Function Combination Challenge",
+        function: "max() • min() • sum()",
+        question: `
+            Use three built-in functions to print:<br><br>
+            1. The biggest number<br>
+            2. The smallest number<br>
+            3. The total
+        `,
+        given: `numbers = [12, -7, 25, 9]`,
+        starter: `numbers = [12, -7, 25, 9]\n\n# Print the biggest number\n# Print the smallest number\n# Print the total`,
+        expected: ["25", "-7", "39"],
+        required: ["max", "min", "sum", "print"],
+        hint: "You need max(numbers), min(numbers), and sum(numbers).",
+        solution: `numbers = [12, -7, 25, 9]\nprint(max(numbers))\nprint(min(numbers))\nprint(sum(numbers))`
+    },
+
+    {
+        title: "Data Cleanup Challenge",
+        function: "int() • round()",
+        question: `
+            Convert the age from text into an integer and round the
+            height to the nearest whole number.<br><br>
+            Print both results on separate lines.
+        `,
+        given: `age_text = "21"\nheight = 167.84`,
+        starter: `age_text = "21"\nheight = 167.84\n\n# Print the integer age\n# Print the rounded height`,
+        expected: ["21", "168"],
+        required: ["int", "round", "print"],
+        hint: "Use int(age_text) and round(height).",
+        solution: `age_text = "21"\nheight = 167.84\nprint(int(age_text))\nprint(round(height))`
+    },
+
+    {
+        title: "Debug the Code",
+        function: "max()",
+        question: `
+            The code below is supposed to print the <strong>biggest</strong>
+            number, but the wrong built-in function has been used.<br><br>
+            Fix the code.
+        `,
+        given: `numbers = [4, 8, 15, 16, 23, 42]\nprint(min(numbers))`,
+        starter: `numbers = [4, 8, 15, 16, 23, 42]\nprint(min(numbers))`,
+        expected: ["42"],
+        required: ["max", "print"],
+        hint: "The question asks for the biggest number. Which function does that?",
+        solution: `numbers = [4, 8, 15, 16, 23, 42]\nprint(max(numbers))`
+    }
+
+];
+
+
+/* ============================================================
+   QUIZ STATE
+============================================================ */
+
+let currentQuestion = 0;
+let score = 0;
+let attempts = 0;
+let completed = [];
+let solved = false;
+
+
+/* ============================================================
+   LOAD QUESTION
+============================================================ */
+
+function loadQuestion() {
+
+    solved = false;
+    attempts = 0;
+
+    const q = challenges[currentQuestion];
+
+    document.getElementById("questionNumber").textContent =
+        `CODING CHALLENGE ${String(currentQuestion + 1).padStart(2, "0")}`;
+
+    document.getElementById("challengeTitle").textContent = q.title;
+
+    document.getElementById("functionBadge").textContent = q.function;
+
+    document.getElementById("questionText").innerHTML = q.question;
+
+    document.getElementById("givenCode").textContent = q.given;
+
+    document.getElementById("codeEditor").value = q.starter;
+
+    document.getElementById("output").textContent =
+        'Click "Run Code" to see your output...';
+
+    document.getElementById("output").className = "terminal empty";
+
+    document.getElementById("feedback").className = "feedback";
+    document.getElementById("feedback").innerHTML = "";
+
+    document.getElementById("hintBox").style.display = "none";
+
+    document.getElementById("solutionBtn").style.display = "none";
+
+    document.getElementById("nextBtn").style.display = "none";
+
+    updateProgress();
+}
+
+
+/* ============================================================
+   PROGRESS
+============================================================ */
+
+function updateProgress() {
+
+    const percentage =
+        Math.round((currentQuestion / challenges.length) * 100);
+
+    document.getElementById("progressText").textContent =
+        `Question ${currentQuestion + 1} of ${challenges.length}`;
+
+    document.getElementById("percent").textContent =
+        percentage + "%";
+
+    document.getElementById("progressFill").style.width =
+        percentage + "%";
+
+    document.getElementById("score").textContent = score;
+}
+
+
+/* ============================================================
+   PYTHON-LITE INTERPRETER
+============================================================ */
+
+/*
+   This is intentionally a small Python practice engine.
+
+   It supports the functions used in this quiz:
+
+   print()
+   type()
+   int()
+   len()
+   round()
+   abs()
+   max()
+   min()
+   sum()
+
+   It also supports:
+   variables
+   strings
+   numbers
+   lists
+   arithmetic
+   parentheses
+*/
+
+
+function tokenize(text) {
+
+    const tokens = [];
+
+    let i = 0;
+
+    while (i < text.length) {
+
+        if (/\s/.test(text[i])) {
+            i++;
+            continue;
+        }
+
+        if (text[i] === "#") {
+            while (i < text.length && text[i] !== "\n") i++;
+            continue;
+        }
+
+        if (text[i] === '"' || text[i] === "'") {
+
+            const quote = text[i];
+            let value = "";
+            i++;
+
+            while (i < text.length && text[i] !== quote) {
+
+                if (text[i] === "\\" && i + 1 < text.length) {
+                    i++;
+                    value += text[i];
+                } else {
+                    value += text[i];
+                }
+
+                i++;
+            }
+
+            i++;
+
+            tokens.push({
+                type: "string",
+                value: value
+            });
+
+            continue;
+        }
+
+        const numberMatch = text.slice(i).match(
+            /^-?\d+(?:\.\d+)?/
+        );
+
+        if (numberMatch) {
+
+            tokens.push({
+                type: "number",
+                value: Number(numberMatch[0])
+            });
+
+            i += numberMatch[0].length;
+            continue;
+        }
+
+        const identifierMatch = text.slice(i).match(
+            /^[A-Za-z_][A-Za-z0-9_]*/
+        );
+
+        if (identifierMatch) {
+
+            tokens.push({
+                type: "identifier",
+                value: identifierMatch[0]
+            });
+
+            i += identifierMatch[0].length;
+            continue;
+        }
+
+        const twoChar = text.slice(i, i + 2);
+
+        if (["//", "**"].includes(twoChar)) {
+
+            tokens.push({
+                type: "operator",
+                value: twoChar
+            });
+
+            i += 2;
+            continue;
+        }
+
+        if ("+-*/%(),[]".includes(text[i])) {
+
+            tokens.push({
+                type: "operator",
+                value: text[i]
+            });
+
+            i++;
+            continue;
+        }
+
+        throw new Error(`Unsupported character: ${text[i]}`);
+    }
+
+    return tokens;
+}
+
+
+class Parser {
+
+    constructor(tokens, variables) {
+        this.tokens = tokens;
+        this.position = 0;
+        this.variables = variables;
+    }
+
+    peek() {
+        return this.tokens[this.position];
+    }
+
+    consume() {
+        return this.tokens[this.position++];
+    }
+
+    expect(value) {
+
+        const token = this.consume();
+
+        if (!token || token.value !== value) {
+            throw new Error(`Expected "${value}"`);
+        }
+    }
+
+    parse() {
+        return this.parseExpression();
+    }
+
+    parseExpression() {
+
+        let left = this.parseTerm();
+
+        while (this.peek() &&
+              ["+", "-"].includes(this.peek().value)) {
+
+            const op = this.consume().value;
+
+            const right = this.parseTerm();
+
+            if (op === "+") {
+
+                if (
+                    typeof left === "string" ||
+                    typeof right === "string"
+                ) {
+                    left = String(left) + String(right);
+                } else {
+                    left = left + right;
+                }
+
+            } else {
+                left = left - right;
+            }
+        }
+
+        return left;
+    }
+
+    parseTerm() {
+
+        let left = this.parseFactor();
+
+        while (
+            this.peek() &&
+            ["*", "/", "//", "%"].includes(this.peek().value)
+        ) {
+
+            const op = this.consume().value;
+            const right = this.parseFactor();
+
+            if (op === "*") left = left * right;
+            if (op === "/") left = left / right;
+            if (op === "//") left = Math.floor(left / right);
+            if (op === "%") left = left % right;
+        }
+
+        return left;
+    }
+
+    parseFactor() {
+
+        if (
+            this.peek() &&
+            ["+", "-"].includes(this.peek().value)
+        ) {
+
+            const op = this.consume().value;
+            const value = this.parseFactor();
+
+            return op === "-" ? -value : value;
+        }
+
+        return this.parsePrimary();
+    }
+
+    parsePrimary() {
+
+        const token = this.consume();
+
+        if (!token) {
+            throw new Error("Unexpected end of expression.");
+        }
+
+        if (token.type === "number") {
+            return token.value;
+        }
+
+        if (token.type === "string") {
+            return token.value;
+        }
+
+        if (token.value === "(") {
+
+            const value = this.parseExpression();
+
+            this.expect(")");
+
+            return value;
+        }
+
+        if (token.value === "[") {
+
+            const array = [];
+
+            if (this.peek() && this.peek().value !== "]") {
+
+                while (true) {
+
+                    array.push(this.parseExpression());
+
+                    if (
+                        this.peek() &&
+                        this.peek().value === ","
+                    ) {
+                        this.consume();
+
+                        if (
+                            this.peek() &&
+                            this.peek().value === "]"
+                        ) break;
+
+                        continue;
+                    }
+
+                    break;
+                }
+            }
+
+            this.expect("]");
+
+            return array;
+        }
+
+        if (token.type === "identifier") {
+
+            const name = token.value;
+
+            if (
+                this.peek() &&
+                this.peek().value === "("
+            ) {
+
+                this.consume();
+
+                const args = [];
+
+                if (
+                    this.peek() &&
+                    this.peek().value !== ")"
+                ) {
+
+                    while (true) {
+
+                        args.push(this.parseExpression());
+
+                        if (
+                            this.peek() &&
+                            this.peek().value === ","
+                        ) {
+                            this.consume();
+                            continue;
+                        }
+
+                        break;
+                    }
+                }
+
+                this.expect(")");
+
+                return callFunction(name, args);
+            }
+
+            if (name in this.variables) {
+                return this.variables[name];
+            }
+
+            throw new Error(`Variable "${name}" is not defined.`);
+        }
+
+        throw new Error(`Unexpected token "${token.value}"`);
+    }
+}
+
+
+/* ============================================================
+   PYTHON FUNCTIONS
+============================================================ */
+
+function callFunction(name, args) {
+
+    switch (name) {
+
+        case "type":
+
+            if (args.length !== 1)
+                throw new Error("type() needs one argument.");
+
+            return pythonType(args[0]);
+
+
+        case "int":
+
+            if (args.length !== 1)
+                throw new Error("int() needs one argument.");
+
+            if (typeof args[0] === "string") {
+                return parseInt(args[0], 10);
+            }
+
+            return Math.trunc(args[0]);
+
+
+        case "len":
+
+            if (args.length !== 1)
+                throw new Error("len() needs one argument.");
+
+            if (
+                typeof args[0] === "string" ||
+                Array.isArray(args[0])
+            ) {
+                return args[0].length;
+            }
+
+            throw new Error("len() works with strings and lists.");
+
+
+        case "round":
+
+            if (args.length < 1 || args.length > 2)
+                throw new Error("round() needs one or two arguments.");
+
+            let number = args[0];
+
+            if (args.length === 1) {
+                return Math.round(number);
+            }
+
+            const decimals = args[1];
+            const factor = Math.pow(10, decimals);
+
+            return Math.round(number * factor) / factor;
+
+
+        case "abs":
+
+            if (args.length !== 1)
+                throw new Error("abs() needs one argument.");
+
+            return Math.abs(args[0]);
+
+
+        case "max":
+
+            if (args.length === 1 && Array.isArray(args[0])) {
+                return Math.max(...args[0]);
+            }
+
+            return Math.max(...args);
+
+
+        case "min":
+
+            if (args.length === 1 && Array.isArray(args[0])) {
+                return Math.min(...args[0]);
+            }
+
+            return Math.min(...args);
+
+
+        case "sum":
+
+            if (args.length !== 1 || !Array.isArray(args[0]))
+                throw new Error("sum() needs a list.");
+
+            return args[0].reduce(
+                (total, value) => total + Number(value),
+                0
+            );
+
+
+        default:
+            throw new Error(
+                `"${name}()" is not supported in this quiz.`
+            );
+    }
+}
+
+
+function pythonType(value) {
+
+    if (typeof value === "number") {
+
+        if (Number.isInteger(value))
+            return "<class 'int'>";
+
+        return "<class 'float'>";
+    }
+
+    if (typeof value === "string")
+        return "<class 'str'>";
+
+    if (Array.isArray(value))
+        return "<class 'list'>";
+
+    return "<class 'object'>";
+}
+
+
+/* ============================================================
+   FORMAT PYTHON VALUES
+============================================================ */
+
+function formatValue(value) {
+
+    if (typeof value === "number") {
+
+        if (Number.isInteger(value))
+            return String(value);
+
+        return String(value);
+    }
+
+    if (Array.isArray(value)) {
+
+        return "[" +
+            value.map(formatValue).join(", ") +
+            "]";
+    }
+
+    return String(value);
+}
+
+
+/* ============================================================
+   RUN PYTHON-LITE CODE
+============================================================ */
+
+function executePython(code) {
+
+    const variables = {};
+    const output = [];
+
+    const lines = code.split("\n");
+
+    for (let rawLine of lines) {
+
+        let line = rawLine.trim();
+
+        if (!line || line.startsWith("#"))
+            continue;
+
+        try {
+
+            /*
+                Assignment:
+                name = expression
+            */
+
+            const assignmentMatch =
+                line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+)$/);
+
+            if (assignmentMatch) {
+
+                const variableName = assignmentMatch[1];
+                const expression = assignmentMatch[2];
+
+                const tokens = tokenize(expression);
+
+                const parser =
+                    new Parser(tokens, variables);
+
+                variables[variableName] =
+                    parser.parse();
+
+                continue;
+            }
+
+
+            /*
+                print(...)
+            */
+
+            const printMatch =
+                line.match(/^print\s*\((.*)\)$/);
+
+            if (printMatch) {
+
+                const inside = printMatch[1];
+
+                const tokens = tokenize(inside);
+
+                /*
+                    Parse comma-separated print arguments.
+                */
+
+                const args = [];
+
+                let start = 0;
+                let depth = 0;
+
+                for (let i = 0; i < tokens.length; i++) {
+
+                    if (
+                        tokens[i].value === "(" ||
+                        tokens[i].value === "["
+                    ) depth++;
+
+                    if (
+                        tokens[i].value === ")" ||
+                        tokens[i].value === "]"
+                    ) depth--;
+
+                    if (
+                        tokens[i].value === "," &&
+                        depth === 0
+                    ) {
+
+                        const part =
+                            tokens.slice(start, i);
+
+                        const parser =
+                            new Parser(part, variables);
+
+                        args.push(parser.parse());
+
+                        start = i + 1;
+                    }
+                }
+
+                if (start < tokens.length) {
+
+                    const part =
+                        tokens.slice(start);
+
+                    const parser =
+                        new Parser(part, variables);
+
+                    args.push(parser.parse());
+                }
+
+                output.push(
+                    args.map(formatValue).join(" ")
+                );
+
+                continue;
+            }
+
+
+            /*
+                Allow a standalone function expression.
+            */
+
+            const tokens = tokenize(line);
+
+            const parser =
+                new Parser(tokens, variables);
+
+            parser.parse();
+
+        } catch (error) {
+
+            throw new Error(
+                `Line: "${line}"\n${error.message}`
+            );
+        }
+    }
+
+    return output;
+}
+
+
+/* ============================================================
+   RUN BUTTON
+============================================================ */
+
+function runCode() {
+
+    const code =
+        document.getElementById("codeEditor").value;
+
+    const outputElement =
+        document.getElementById("output");
+
+    const feedback =
+        document.getElementById("feedback");
+
+    try {
+
+        const output = executePython(code);
+
+        outputElement.textContent =
+            output.length
+                ? output.join("\n")
+                : "(No output)";
+
+        outputElement.className = "terminal";
+
+        feedback.className = "feedback info";
+
+        feedback.innerHTML =
+            "▶ Code ran successfully. Check the terminal output.";
+
+    } catch (error) {
+
+        outputElement.textContent =
+            "ERROR:\n" + error.message;
+
+        outputElement.className = "terminal";
+
+        feedback.className = "feedback error";
+
+        feedback.innerHTML =
+            "⚠️ Your code has an error. Read the message in the terminal and try again.";
+    }
+}
+
+
+/* ============================================================
+   CHECK ANSWER
+============================================================ */
+
+function checkAnswer() {
+
+    const code =
+        document.getElementById("codeEditor").value;
+
+    const q = challenges[currentQuestion];
+
+    const feedback =
+        document.getElementById("feedback");
+
+    attempts++;
+
+    try {
+
+        const output = executePython(code);
+
+        document.getElementById("output").textContent =
+            output.length
+                ? output.join("\n")
+                : "(No output)";
+
+        document.getElementById("output").className =
+            "terminal";
+
+
+        /* Check required functions */
+
+        const missingFunctions = q.required.filter(
+            fn => !new RegExp(
+                "\\b" + fn + "\\s*\\(",
+                "i"
+            ).test(code)
+        );
+
+
+        if (missingFunctions.length > 0) {
+
+            feedback.className =
+                "feedback error";
+
+            feedback.innerHTML =
+                `❌ Your output may be close, but this challenge requires:
+                <strong>${missingFunctions.join(", ")}()</strong>.`;
+
+            if (attempts >= 2) {
+                document.getElementById("solutionBtn").style.display =
+                    "inline-block";
+            }
+
+            return;
+        }
+
+
+        /* Compare outputs */
+
+        const actual =
+            output.map(x => String(x).trim());
+
+        const expected =
+            q.expected.map(x => String(x).trim());
+
+        const correct =
+            actual.length === expected.length &&
+            actual.every(
+                (value, index) =>
+                    value === expected[index]
+            );
+
+
+        if (correct) {
+
+            if (!solved) {
+
+                solved = true;
+                score += 10;
+
+                completed[currentQuestion] = true;
+            }
+
+            feedback.className =
+                "feedback success";
+
+            feedback.innerHTML =
+                `🎉 <strong>Correct!</strong><br>
+                 Excellent — your code produced the required output.`;
+
+            document.getElementById("nextBtn").style.display =
+                "inline-block";
+
+            document.getElementById("solutionBtn").style.display =
+                "none";
+
+            updateProgress();
+
+        } else {
+
+            feedback.className =
+                "feedback error";
+
+            feedback.innerHTML =
+                `❌ <strong>Not quite.</strong><br>
+                 Your output is not the expected output. Check your code and try again.`;
+
+            if (attempts >= 2) {
+
+                document.getElementById("solutionBtn").style.display =
+                    "inline-block";
+            }
+        }
+
+    } catch (error) {
+
+        feedback.className =
+            "feedback error";
+
+        feedback.innerHTML =
+            `⚠️ <strong>Code error.</strong><br>
+             Fix the error shown in the terminal and try again.`;
+
+        document.getElementById("output").textContent =
+            "ERROR:\n" + error.message;
+
+        document.getElementById("output").className =
+            "terminal";
+
+        if (attempts >= 2) {
+
+            document.getElementById("solutionBtn").style.display =
+                "inline-block";
+        }
+    }
+}
+
+
+/* ============================================================
+   HINT
+============================================================ */
+
+function showHint() {
+
+    const hintBox =
+        document.getElementById("hintBox");
+
+    const q = challenges[currentQuestion];
+
+    hintBox.innerHTML =
+        `<strong>💡 Hint:</strong> ${q.hint}`;
+
+    hintBox.style.display = "block";
+}
+
+
+/* ============================================================
+   SOLUTION
+============================================================ */
+
+function showSolution() {
+
+    const q = challenges[currentQuestion];
+
+    const feedback =
+        document.getElementById("feedback");
+
+    feedback.className =
+        "feedback info";
+
+    feedback.innerHTML =
+        `<strong>Solution:</strong><br>
+        <pre style="margin:8px 0 0;font-family:monospace;white-space:pre-wrap;">${escapeHTML(q.solution)}</pre>`;
+
+    document.getElementById("codeEditor").value =
+        q.solution;
+}
+
+
+function escapeHTML(text) {
+
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
+
+
+/* ============================================================
+   RESET QUESTION
+============================================================ */
+
+function resetQuestion() {
+
+    const q = challenges[currentQuestion];
+
+    document.getElementById("codeEditor").value =
+        q.starter;
+
+    document.getElementById("output").textContent =
+        'Click "Run Code" to see your output...';
+
+    document.getElementById("output").className =
+        "terminal empty";
+
+    document.getElementById("feedback").className =
+        "feedback";
+
+    document.getElementById("feedback").innerHTML = "";
+
+    document.getElementById("hintBox").style.display =
+        "none";
+
+    document.getElementById("solutionBtn").style.display =
+        "none";
+
+    attempts = 0;
+}
+
+
+/* ============================================================
+   NEXT QUESTION
+============================================================ */
+
+function nextQuestion() {
+
+    if (currentQuestion < challenges.length - 1) {
+
+        currentQuestion++;
+
+        loadQuestion();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    } else {
+
+        showFinalScreen();
+    }
+}
+
+
+/* ============================================================
+   FINAL SCREEN
+============================================================ */
+
+function showFinalScreen() {
+
+    document.getElementById("quizScreen").style.display =
+        "none";
+
+    document.querySelector(".progress-area").style.display =
+        "none";
+
+    document.getElementById("finalScreen").style.display =
+        "block";
+
+    document.getElementById("finalScore").textContent =
+        `${score} / ${challenges.length * 10}`;
+
+    const percentage =
+        Math.round(
+            (score / (challenges.length * 10)) * 100
+        );
+
+    let message = "";
+
+    if (percentage === 100) {
+        message =
+            "🏆 Perfect! You mastered all of the functions.";
+    } else if (percentage >= 80) {
+        message =
+            "🌟 Great work! You have a strong understanding of these functions.";
+    } else if (percentage >= 60) {
+        message =
+            "👍 Good effort! Review the functions you found difficult.";
+    } else {
+        message =
+            "💪 Keep practising. Coding gets easier with repetition!";
+    }
+
+    document.getElementById("finalMessage").textContent =
+        message;
+
+    const reviewList =
+        document.getElementById("reviewList");
+
+    reviewList.innerHTML = "";
+
+    challenges.forEach((q, index) => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "review-item";
+
+        const wasCorrect =
+            completed[index] === true;
+
+        div.innerHTML = `
+            <span>
+                ${index + 1}. ${escapeHTML(q.title)}
+            </span>
+
+            <span class="${wasCorrect ? "correct" : "incorrect"}">
+                ${wasCorrect ? "✓ Correct" : "✗ Not solved"}
+            </span>
+        `;
+
+        reviewList.appendChild(div);
+    });
+}
+
+
+/* ============================================================
+   RESTART
+============================================================ */
+
+function restartQuiz() {
+
+    currentQuestion = 0;
+    score = 0;
+    attempts = 0;
+    completed = [];
+    solved = false;
+
+    document.getElementById("quizScreen").style.display =
+        "block";
+
+    document.querySelector(".progress-area").style.display =
+        "block";
+
+    document.getElementById("finalScreen").style.display =
+        "none";
+
+    loadQuestion();
+}
+
+
+/* ============================================================
+   KEYBOARD SHORTCUT
+============================================================ */
+
+document
+    .getElementById("codeEditor")
+    .addEventListener("keydown", function(event) {
+
+        /* TAB inserts spaces */
+
+        if (event.key === "Tab") {
+
+            event.preventDefault();
+
+            const start = this.selectionStart;
+            const end = this.selectionEnd;
+
+            this.value =
+                this.value.substring(0, start) +
+                "    " +
+                this.value.substring(end);
+
+            this.selectionStart =
+                this.selectionEnd =
+                    start + 4;
+        }
+
+
+        /* CTRL + ENTER = RUN */
+
+        if (
+            event.ctrlKey &&
+            event.key === "Enter"
+        ) {
+
+            event.preventDefault();
+
+            runCode();
+        }
+
+    });
+
+
+/* ============================================================
+   START
+============================================================ */
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
