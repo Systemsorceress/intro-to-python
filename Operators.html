@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐍 Python Operators & Expressions - Interactive Lesson</title>
+    <style>
+        /* CSS RESET & VARIABLES */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card-dark: #1e293b;
+            --bg-light: #f8fafc;
+            --card-light: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --py-blue: #306998;
+            --py-blue-light: #4b8bbe;
+            --py-yellow: #ffd43b;
+            --py-yellow-dark: #f59e0b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            --border-color: #cbd5e1;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-code: Consolas, "Courier New", Courier, monospace;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* HEADER / PROGRESS BAR */
+        header {
+            background-color: rgba(15, 23, 42, 0.95);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #334155;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--py-yellow);
+        }
+
+        .progress-container {
+            flex-grow: 1;
+            max-width: 400px;
+            margin: 0 20px;
+            background: #334155;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 5%;
+            background: linear-gradient(90deg, var(--py-blue-light), var(--py-yellow));
+            transition: width 0.3s ease;
+        }
+
+        .score-badge {
+            background: #1e293b;
+            border: 1px solid var(--py-yellow);
+            color: var(--py-yellow);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* SLIDE CONTAINER */
+        main {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            transform: translateX(30px);
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        /* SLIDE TYPES */
+        .slide-dark {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        .slide-card {
+            background-color: var(--card-light);
+            color: var(--text-dark);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
+        }
+
+        .slide-title-banner {
+            background: linear-gradient(135deg, var(--py-blue), #1e3a8a);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--py-blue);
+        }
+
+        .slide-dark h2 {
+            color: var(--py-yellow);
+        }
+
+        p {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* CODE DISPLAY */
+        pre, code {
+            font-family: var(--font-code);
+        }
+
+        .code-block {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin: 15px 0;
+            border-left: 4px solid var(--py-yellow);
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-keyword { color: #f472b6; font-weight: bold; }
+        .code-func { color: #38bdf8; }
+        .code-str { color: #4ade80; }
+        .code-num { color: #fbbf24; }
+        .code-op { color: #f43f5e; font-weight: bold; }
+        .code-comment { color: #94a3b8; italic; }
+
+        /* INTERACTIVE GRID & CARDS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .interactive-card {
+            background: #f1f5f9;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .interactive-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--py-blue);
+            box-shadow: var(--shadow);
+        }
+
+        .card-symbol {
+            font-family: var(--font-code);
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--py-blue);
+            margin-bottom: 5px;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: #475569;
+        }
+
+        .card-detail {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #cbd5e1;
+            font-size: 0.9rem;
+            color: #0f172a;
+            display: none;
+            background: #e2e8f0;
+            border-radius: 4px;
+            padding: 8px;
+        }
+
+        /* BUTTONS & QUIZ OPTIONS */
+        .btn {
+            background-color: var(--py-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--py-blue-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-yellow {
+            background-color: var(--py-yellow);
+            color: #0f172a;
+        }
+
+        .btn-yellow:hover {
+            background-color: #facc15;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--py-blue);
+            color: var(--py-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--py-blue);
+            color: white;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .option-btn {
+            background-color: #f8fafc;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 14px 20px;
+            text-align: left;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #0f172a;
+        }
+
+        .option-btn:hover {
+            border-color: var(--py-blue-light);
+            background-color: #f1f5f9;
+        }
+
+        .option-btn.correct {
+            background-color: #dcfce7 !important;
+            border-color: var(--accent-green) !important;
+            color: #166534 !important;
+            font-weight: bold;
+        }
+
+        .option-btn.incorrect {
+            background-color: #fee2e2 !important;
+            border-color: var(--accent-red) !important;
+            color: #991b1b !important;
+        }
+
+        .feedback-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback-box.correct {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .feedback-box.incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        /* CONSOLE SIMULATOR */
+        .console-box {
+            background-color: #020617;
+            color: #38bdf8;
+            font-family: var(--font-code);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+            border: 1px solid #1e293b;
+        }
+
+        .console-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .console-input {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: var(--font-code);
+            font-size: 1rem;
+            flex-grow: 1;
+        }
+
+        .console-input:focus {
+            outline: none;
+            border-color: var(--py-yellow);
+        }
+
+        .console-output {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #1e293b;
+            color: #4ade80;
+            white-space: pre-wrap;
+            min-height: 24px;
+        }
+
+        /* VARIABLE VISUALIZER */
+        .var-visualizer {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .var-box {
+            border: 2px dashed var(--py-blue);
+            background: white;
+            border-radius: 8px;
+            padding: 15px 25px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .var-name {
+            font-size: 0.85rem;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .var-value {
+            font-size: 1.8rem;
+            font-family: var(--font-code);
+            font-weight: bold;
+            color: var(--py-blue);
+        }
+
+        /* NAVIGATION CONTROLS */
+        footer {
+            background-color: rgba(15, 23, 42, 0.95);
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid #334155;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            background-color: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--py-blue);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            color: #94a3b8;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        /* CODE WRITING EXERCISES */
+        .code-input-line {
+            width: 280px;
+            font-family: var(--font-code);
+            font-size: 1.05rem;
+            background: #0f172a;
+            color: #fbbf24;
+            border: 1px solid #334155;
+            border-radius: 4px;
+            padding: 6px 10px;
+            resize: none;
+        }
+
+        .code-input-line:focus {
+            outline: none;
+            border-color: var(--py-yellow);
+        }
+
+        .given-vars {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+
+        .given-var-chip {
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-family: var(--font-code);
+            font-size: 0.95rem;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            .slide-card {
+                padding: 20px;
+            }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER: TITLE, PROGRESS, SCORE -->
+    <header>
+        <div class="logo">
+            <span>🐍</span>
+            <span>Python Interactive</span>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="score-badge">
+            <span>⭐ Score:</span>
+            <span id="currentScore">0</span>
+        </div>
+    </header>
+
+    <!-- MAIN SLIDE CONTAINER -->
+    <main id="slideContainer">
+
+        <!-- SLIDE 1: TITLE -->
+        <div class="slide slide-dark active" data-slide="1">
+            <div style="text-align: center; max-width: 700px;">
+                <div style="font-size: 4rem; margin-bottom: 10px;">🐍</div>
+                <h1 style="color: var(--py-yellow);">Operators & Expressions</h1>
+                <p style="font-size: 1.4rem; color: #94a3b8; margin-bottom: 30px;">
+                    Make Python calculate, compare, and update values interactively!
+                </p>
+                <div style="background: #1e293b; border-radius: 8px; padding: 20px; margin-bottom: 30px; border: 1px solid #334155;">
+                    <p style="margin: 0; color: #cbd5e1; font-size: 1rem;">
+                        <strong>Topics:</strong> Arithmetic • Comparisons • Variables • Assignment • Expressions • Input • Writing Code
+                    </p>
+                </div>
+                <button class="btn btn-yellow" onclick="nextSlide()" style="font-size: 1.2rem; padding: 15px 35px;">
+                    Start Lesson ➔
+                </button>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: WHAT IS AN OPERATOR -->
+        <div class="slide" data-slide="2">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 1: ARITHMETIC</span>
+                        <span>1 / 4</span>
+                    </div>
+                    <h2>What is an Operator?</h2>
+                    <p>An <strong>operator</strong> is a special symbol that tells Python to perform a specific mathematical or logical action on values.</p>
+                    
+                    <div class="grid-4">
+                        <div class="interactive-card">
+                            <div class="card-symbol">+</div>
+                            <div class="card-desc">Add</div>
+                            <div style="font-family: var(--font-code); margin-top: 5px; font-weight: bold;">5 + 3 → 8</div>
+                        </div>
+                        <div class="interactive-card">
+                            <div class="card-symbol">-</div>
+                            <div class="card-desc">Subtract</div>
+                            <div style="font-family: var(--font-code); margin-top: 5px; font-weight: bold;">5 - 3 → 2</div>
+                        </div>
+                        <div class="interactive-card">
+                            <div class="card-symbol">*</div>
+                            <div class="card-desc">Multiply</div>
+                            <div style="font-family: var(--font-code); margin-top: 5px; font-weight: bold;">5 * 3 → 15</div>
+                        </div>
+                        <div class="interactive-card">
+                            <div class="card-symbol">/</div>
+                            <div class="card-desc">Divide</div>
+                            <div style="font-family: var(--font-code); margin-top: 5px; font-weight: bold;">6 / 3 → 2.0</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 25px; background: #f8fafc; border: 2px dashed #cbd5e1; padding: 15px; border-radius: 8px;">
+                        <p style="margin-bottom: 10px; font-weight: bold;">🤔 Think Interaction:</p>
+                        <p>Why does Python display <code>2.0</code> instead of <code>2</code> for <code>6 / 3</code>?</p>
+                        <button class="btn btn-outline" onclick="toggleReveal('think1')">Click to Reveal Answer</button>
+                        <div id="think1" style="display:none; margin-top: 10px; color: var(--py-blue); font-weight: 500;">
+                            💡 Standard division (<code>/</code>) in Python <strong>always</strong> returns a decimal number (a float)!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: SPECIAL ARITHMETIC OPERATORS -->
+        <div class="slide" data-slide="3">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 1: ARITHMETIC</span>
+                        <span>2 / 4</span>
+                    </div>
+                    <h2>Special Arithmetic Operators</h2>
+                    <p>Python has three unique operators that are extremely useful for programming calculations!</p>
+                    <p><em>Click on each card below to see what it does:</em></p>
+
+                    <div class="grid-3">
+                        <div class="interactive-card" onclick="toggleCardDetail('floor-card')">
+                            <div class="card-symbol">//</div>
+                            <div class="card-desc"><strong>Floor Division</strong></div>
+                            <div class="card-detail" id="floor-card">
+                                Divides and chops off the decimal!
+                                <br><code>7 // 2</code> gives <strong>3</strong>
+                            </div>
+                        </div>
+                        <div class="interactive-card" onclick="toggleCardDetail('mod-card')">
+                            <div class="card-symbol">%</div>
+                            <div class="card-desc"><strong>Modulus</strong></div>
+                            <div class="card-detail" id="mod-card">
+                                Finds the <strong>remainder</strong>!
+                                <br><code>7 % 2</code> gives <strong>1</strong>
+                            </div>
+                        </div>
+                        <div class="interactive-card" onclick="toggleCardDetail('pow-card')">
+                            <div class="card-symbol">**</div>
+                            <div class="card-desc"><strong>Exponentiation</strong></div>
+                            <div class="card-detail" id="pow-card">
+                                Raises to the power!
+                                <br><code>2 ** 3</code> (2³) gives <strong>8</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: PREDICT THE OUTPUT - ARITHMETIC -->
+        <div class="slide" data-slide="4">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 1: ARITHMETIC</span>
+                        <span>3 / 4</span>
+                    </div>
+                    <h2>🎯 Predict the Output</h2>
+                    <p>Look at the Python code below:</p>
+                    <div class="code-block">
+                        <span class="code-func">print</span>(<span class="code-num">17</span> <span class="code-op">//</span> <span class="code-num">5</span>)<br>
+                        <span class="code-func">print</span>(<span class="code-num">17</span> <span class="code-op">%</span> <span class="code-num">5</span>)
+                    </div>
+                    <p><strong>What will Python display in the console?</strong></p>
+
+                    <div class="quiz-options" id="quiz-s4">
+                        <button class="option-btn" onclick="checkQuiz(4, 'A', true)">
+                            <span>A. 3 and 2</span>
+                        </button>
+                        <button class="option-btn" onclick="checkQuiz(4, 'B', false)">
+                            <span>B. 3 and 3</span>
+                        </button>
+                        <button class="option-btn" onclick="checkQuiz(4, 'C', false)">
+                            <span>C. 2 and 3</span>
+                        </button>
+                        <button class="option-btn" onclick="checkQuiz(4, 'D', false)">
+                            <span>D. 3.4 and 2</span>
+                        </button>
+                    </div>
+                    <div class="feedback-box" id="feedback-s4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: COMPARISON OPERATORS -->
+        <div class="slide" data-slide="5">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 2: COMPARISON</span>
+                        <span>1 / 2</span>
+                    </div>
+                    <h2>Comparison Operators</h2>
+                    <p>Comparison operators compare two values. Python answers with a Boolean value: <strong>True</strong> or <strong>False</strong>.</p>
+
+                    <div class="grid-2">
+                        <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <code>==</code> Equal to (<code>5 == 5</code> → <strong>True</strong>)
+                        </div>
+                        <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <code>!=</code> Not equal to (<code>5 != 3</code> → <strong>True</strong>)
+                        </div>
+                        <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <code>&gt;</code> Greater than (<code>7 &gt; 4</code> → <strong>True</strong>)
+                        </div>
+                        <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <code>&lt;</code> Less than (<code>2 &lt; 8</code> → <strong>True</strong>)
+                        </div>
+                        <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <code>&gt;=</code> Greater than or equal (<code>5 &gt;= 5</code> → <strong>True</strong>)
+                        </div>
+                        <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <code>&lt;=</code> Less than or equal (<code>4 &lt;= 7</code> → <strong>True</strong>)
+                        </div>
+                    </div>
+                    <p style="font-size: 0.95rem; color: #64748b; margin-top: 10px;">⚠️ <em>Remember: <code>=</code> is for assignment, while <code>==</code> is for checking equality!</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: TRUE OR FALSE QUIZ -->
+        <div class="slide" data-slide="6">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 2: COMPARISON</span>
+                        <span>2 / 2</span>
+                    </div>
+                    <h2>🧠 True or False Check</h2>
+                    <p>Determine whether the expression below evaluates to <strong>True</strong> or <strong>False</strong>:</p>
+                    
+                    <div class="code-block" style="text-align: center; font-size: 1.4rem;">
+                        12 &lt;= 12
+                    </div>
+
+                    <div style="display: flex; gap: 20px; justify-content: center; margin: 20px 0;" id="quiz-s6">
+                        <button class="btn btn-yellow" style="padding: 15px 40px; font-size: 1.2rem;" onclick="checkQuiz(6, 'TRUE', true)">TRUE</button>
+                        <button class="btn btn-outline" style="padding: 15px 40px; font-size: 1.2rem;" onclick="checkQuiz(6, 'FALSE', false)">FALSE</button>
+                    </div>
+                    <div class="feedback-box" id="feedback-s6"></div>
+
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #cbd5e1;">
+                        <p><strong>Extra Practice:</strong> What does <code>10 != 10</code> evaluate to?</p>
+                        <button class="btn btn-outline" onclick="toggleReveal('ex-s6')">Show Answer</button>
+                        <div id="ex-s6" style="display:none; margin-top: 8px; font-weight: bold; color: var(--accent-red);">
+                            <strong>False!</strong> Because 10 IS equal to 10.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: OPERATORS + VARIABLES -->
+        <div class="slide" data-slide="7">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 3: VARIABLES</span>
+                        <span>1 / 2</span>
+                    </div>
+                    <h2>Operators with Variables</h2>
+                    <p>Variables hold stored values. You can use operators with variable names!</p>
+
+                    <div class="code-block">
+                        price = <span class="code-num">500</span><br>
+                        quantity = <span class="code-num">3</span><br><br>
+                        total = price * quantity<br>
+                        <span class="code-func">print</span>(total)
+                    </div>
+
+                    <div class="var-visualizer">
+                        <div class="var-box">
+                            <div class="var-name">price</div>
+                            <div class="var-value">500</div>
+                        </div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--py-blue);">×</div>
+                        <div class="var-box">
+                            <div class="var-name">quantity</div>
+                            <div class="var-value">3</div>
+                        </div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--py-blue);">=</div>
+                        <div class="var-box" style="border-color: var(--accent-green);">
+                            <div class="var-name">total</div>
+                            <div class="var-value" id="tracerResult">?</div>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="document.getElementById('tracerResult').innerText = '1500';">
+                        🔍 Trace & Calculate Step
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: BUILD THE EXPRESSION -->
+        <div class="slide" data-slide="8">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 3: VARIABLES</span>
+                        <span>2 / 2</span>
+                    </div>
+                    <h2>🧩 Build the Expression</h2>
+                    <p>Pick the correct operator to complete the total apples expression:</p>
+
+                    <div class="code-block">
+                        apples = <span class="code-num">10</span><br>
+                        more_apples = <span class="code-num">5</span><br><br>
+                        total = apples <span style="background: #334155; padding: 2px 8px; border-radius: 4px; color: var(--py-yellow);" id="blank1">___</span> more_apples
+                    </div>
+
+                    <p><strong>Which operator gives the combined total?</strong></p>
+                    <div style="display: flex; gap: 10px; margin: 15px 0;" id="quiz-s8">
+                        <button class="btn btn-outline" onclick="selectOperator('+')">+</button>
+                        <button class="btn btn-outline" onclick="selectOperator('-')">-</button>
+                        <button class="btn btn-outline" onclick="selectOperator('*')">*</button>
+                        <button class="btn btn-outline" onclick="selectOperator('/')">/</button>
+                    </div>
+                    <div class="feedback-box" id="feedback-s8"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: ASSIGNMENT OPERATORS -->
+        <div class="slide" data-slide="9">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 4: ASSIGNMENT</span>
+                        <span>1 / 2</span>
+                    </div>
+                    <h2>Shortcut Assignment Operators</h2>
+                    <p>Assignment operators update stored variable values quickly:</p>
+
+                    <div class="grid-2">
+                        <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px;">
+                            <h3><code>+=</code> (Add and assign)</h3>
+                            <div class="code-block">score += <span class="code-num">5</span></div>
+                            <p style="font-size: 0.95rem;">Same as: <code>score = score + 5</code></p>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px;">
+                            <h3><code>-=</code> (Subtract and assign)</h3>
+                            <div class="code-block">score -= <span class="code-num">3</span></div>
+                            <p style="font-size: 0.95rem;">Same as: <code>score = score - 3</code></p>
+                        </div>
+                    </div>
+
+                    <div class="var-visualizer" style="margin-top: 20px;">
+                        <div>
+                            <p style="font-weight: bold; margin-bottom: 5px;">Variable Box: <code>score</code></p>
+                            <div class="var-box">
+                                <div class="var-value" id="simScoreVal">10</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <button class="btn btn-outline" onclick="updateSimScore(5)">Run <code>score += 5</code></button>
+                            <button class="btn btn-outline" onclick="updateSimScore(-3)">Run <code>score -= 3</code></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: QUICK CHALLENGE -->
+        <div class="slide" data-slide="10">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 4: ASSIGNMENT</span>
+                        <span>2 / 2</span>
+                    </div>
+                    <h2>⚡ Quick Challenge</h2>
+                    <p>Trace the value of <code>points</code> through this program:</p>
+
+                    <div class="code-block">
+                        points = <span class="code-num">20</span><br>
+                        points += <span class="code-num">10</span><br>
+                        points -= <span class="code-num">5</span><br><br>
+                        <span class="code-func">print</span>(points)
+                    </div>
+
+                    <p><strong>What is the final printed value?</strong></p>
+                    <div class="quiz-options" id="quiz-s10">
+                        <button class="option-btn" onclick="checkQuiz(10, 'A', false)">A. 20</button>
+                        <button class="option-btn" onclick="checkQuiz(10, 'B', false)">B. 30</button>
+                        <button class="option-btn" onclick="checkQuiz(10, 'C', true)">C. 25</button>
+                        <button class="option-btn" onclick="checkQuiz(10, 'D', false)">D. 15</button>
+                    </div>
+                    <div class="feedback-box" id="feedback-s10"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: COMBINING VALUES & EXPRESSIONS -->
+        <div class="slide" data-slide="11">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 5: EXPRESSIONS</span>
+                        <span>1 / 2</span>
+                    </div>
+                    <h2>Combining Values & Order of Operations</h2>
+                    <p>Expressions can combine numbers, variables, and operators. Python follows math order rules (PEMDAS), so <strong>parentheses <code>()</code></strong> run first!</p>
+
+                    <div class="code-block">
+                        a = <span class="code-num">10</span><br>
+                        b = <span class="code-num">4</span><br><br>
+                        result = (a + b) * <span class="code-num">2</span><br>
+                        <span class="code-func">print</span>(result)
+                    </div>
+
+                    <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                        <p style="font-weight: bold; color: var(--py-blue);">Calculation Steps:</p>
+                        <ol style="margin-left: 20px; line-height: 1.8;">
+                            <li>Parentheses first: <code>(10 + 4)</code> → <strong>14</strong></li>
+                            <li>Multiplication next: <code>14 * 2</code> → <strong>28</strong></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: WHICH EXPRESSION -->
+        <div class="slide" data-slide="12">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 5: EXPRESSIONS</span>
+                        <span>2 / 2</span>
+                    </div>
+                    <h2>🔍 Which Expression?</h2>
+                    <p>Which expression correctly calculates the <strong>average</strong> of 20 and 30?</p>
+
+                    <div class="quiz-options" id="quiz-s12">
+                        <button class="option-btn" onclick="checkQuiz(12, 'A', false)">
+                            <span>A. <code>20 + 30 / 2</code> (Gives 35.0 due to division priority!)</span>
+                        </button>
+                        <button class="option-btn" onclick="checkQuiz(12, 'B', true)">
+                            <span>B. <code>(20 + 30) / 2</code> (Adds first, then divides → 25.0)</span>
+                        </button>
+                        <button class="option-btn" onclick="checkQuiz(12, 'C', false)">
+                            <span>C. <code>20 * 30 / 2</code> (Multiplies instead of adding)</span>
+                        </button>
+                    </div>
+                    <div class="feedback-box" id="feedback-s12"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: WHAT IS INPUT() -->
+        <div class="slide" data-slide="13">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 6: USER INPUT</span>
+                        <span>1 / 3</span>
+                    </div>
+                    <h2>What is <code>input()</code>?</h2>
+                    <p>The <code>input()</code> function allows users to enter information into the program while it runs!</p>
+
+                    <div class="code-block">
+                        name = <span class="code-func">input</span>(<span class="code-str">"What is your name? "</span>)<br>
+                        <span class="code-func">print</span>(<span class="code-str">"Hello,"</span>, name)
+                    </div>
+
+                    <div class="console-box">
+                        <div>What is your name?</div>
+                        <div class="console-input-group">
+                            <input type="text" id="consoleNameInput" class="console-input" placeholder="Type your name here...">
+                            <button class="btn btn-yellow" onclick="runNameConsole()">Run</button>
+                        </div>
+                        <div class="console-output" id="consoleNameOutput"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: INPUT GIVES TEXT -->
+        <div class="slide" data-slide="14">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 6: USER INPUT</span>
+                        <span>2 / 3</span>
+                    </div>
+                    <h2><code>input()</code> Gives Text!</h2>
+                    <p>⚠️ <strong>Crucial Beginner Rule:</strong> <code>input()</code> always returns a <strong>String (text)</strong>!</p>
+                    
+                    <div style="background: #f1f5f9; padding: 20px; border-radius: 8px; text-align: center; margin: 15px 0;">
+                        <div style="display: flex; justify-content: space-around; align-items: center; font-family: var(--font-code);">
+                            <div>input() → <span style="color: var(--accent-red); font-weight: bold;">"14"</span> (Text)</div>
+                            <div style="font-size: 1.5rem;">➔</div>
+                            <div><span class="code-func">int</span>() → <span style="color: var(--accent-green); font-weight: bold;">14</span> (Number)</div>
+                        </div>
+                    </div>
+
+                    <p>To perform math with input numbers, wrap it with <code>int()</code>:</p>
+                    <div class="code-block">
+                        age = <span class="code-func">int</span>(<span class="code-func">input</span>(<span class="code-str">"Enter your age: "</span>))
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: AGE CALCULATOR -->
+        <div class="slide" data-slide="15">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 6: USER INPUT</span>
+                        <span>3 / 3</span>
+                    </div>
+                    <h2>🎂 Age Calculator Simulation</h2>
+                    <p>Test live input conversion with <code>int(input())</code>:</p>
+
+                    <div class="code-block">
+                        age = <span class="code-func">int</span>(<span class="code-func">input</span>(<span class="code-str">"Enter your age: "</span>))<br>
+                        next_year = age + <span class="code-num">1</span><br>
+                        <span class="code-func">print</span>(<span class="code-str">"Next year you will be:"</span>, next_year)
+                    </div>
+
+                    <div class="console-box">
+                        <label>Enter your age:</label>
+                        <div class="console-input-group">
+                            <input type="number" id="ageInput" class="console-input" placeholder="e.g. 14">
+                            <button class="btn btn-yellow" onclick="runAgeCalc()">Run Program</button>
+                        </div>
+                        <div class="console-output" id="ageOutput"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: SHOPPING CALCULATOR -->
+        <div class="slide" data-slide="16">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 7: PRACTICE</span>
+                        <span>1 / 5</span>
+                    </div>
+                    <h2>🛒 Shopping Calculator</h2>
+                    <p>Fill in the missing expression code to compute the total price:</p>
+
+                    <div class="code-block">
+                        price = <span class="code-func">int</span>(<span class="code-func">input</span>(<span class="code-str">"Price: "</span>))<br>
+                        quantity = <span class="code-func">int</span>(<span class="code-func">input</span>(<span class="code-str">"Quantity: "</span>))<br><br>
+                        total = <input type="text" id="shopCodeInput" style="width: 160px; font-family: var(--font-code); padding: 4px;" placeholder="missing code"><br>
+                        <span class="code-func">print</span>(<span class="code-str">"Total:"</span>, total)
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <button class="btn" onclick="checkShoppingCode()">Check Code Answer</button>
+                    </div>
+                    <div class="feedback-box" id="feedback-s16"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 17: RECTANGLE CALCULATOR -->
+        <div class="slide" data-slide="17">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 7: PRACTICE</span>
+                        <span>2 / 5</span>
+                    </div>
+                    <h2>📐 Rectangle Area Calculator</h2>
+                    <p>Complete and run the code formula: <code>Area = length × width</code></p>
+
+                    <div class="code-block">
+                        length = <span class="code-num">8</span><br>
+                        width = <span class="code-num">5</span><br>
+                        area = length * width
+                    </div>
+
+                    <div class="console-box">
+                        <div class="console-input-group">
+                            <input type="number" id="rectL" class="console-input" placeholder="Length (e.g. 8)">
+                            <input type="number" id="rectW" class="console-input" placeholder="Width (e.g. 5)">
+                            <button class="btn btn-yellow" onclick="runRectCalc()">Calculate Area</button>
+                        </div>
+                        <div class="console-output" id="rectOutput"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 18: DIVISION CHALLENGE -->
+        <div class="slide" data-slide="18">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 7: PRACTICE</span>
+                        <span>3 / 5</span>
+                    </div>
+                    <h2>🍫 Chocolate Division Challenge</h2>
+                    <p>Share chocolates equally using integer division <code>//</code> and modulus <code>%</code>!</p>
+
+                    <div class="console-box">
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="number" id="chocCount" class="console-input" placeholder="Chocolates (e.g. 17)">
+                            <input type="number" id="studCount" class="console-input" placeholder="Students (e.g. 5)">
+                        </div>
+                        <button class="btn btn-yellow" onclick="runChocShare()">Distribute Chocolates</button>
+                        <div class="console-output" id="chocOutput"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 19: DEBUG THE CODE -->
+        <div class="slide" data-slide="19">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 7: PRACTICE</span>
+                        <span>4 / 5</span>
+                    </div>
+                    <h2>🐞 Debug the Bug!</h2>
+                    <p>Find the bug in this Python snippet:</p>
+
+                    <div class="code-block">
+                        age = <span class="code-func">input</span>(<span class="code-str">"Enter your age: "</span>)<br>
+                        next_year = age + <span class="code-num">1</span><br>
+                        <span class="code-func">print</span>(next_year)
+                    </div>
+
+                    <div class="quiz-options" id="quiz-s19">
+                        <button class="option-btn" onclick="checkQuiz(19, 'A', false)">A. The print() function name is spelled wrong.</button>
+                        <button class="option-btn" onclick="checkQuiz(19, 'B', true)">B. age is a string; cannot add an integer directly to text!</button>
+                        <button class="option-btn" onclick="checkQuiz(19, 'C', false)">C. Python does not support the + symbol.</button>
+                    </div>
+                    <div class="feedback-box" id="feedback-s19"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 20: FINAL CHALLENGE -->
+        <div class="slide" data-slide="20">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 7: PRACTICE</span>
+                        <span>5 / 5</span>
+                    </div>
+                    <h2>🏆 Mini Calculator Challenge</h2>
+                    <p>Enter two numbers to compute all basic operations at once:</p>
+
+                    <div class="console-box">
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="number" id="calcNum1" class="console-input" placeholder="First Number">
+                            <input type="number" id="calcNum2" class="console-input" placeholder="Second Number">
+                        </div>
+                        <button class="btn btn-yellow" onclick="runMiniCalc()">Run Full Suite</button>
+                        <div class="console-output" id="calcOutput"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 21: WRITE THE CODE - PERIMETER -->
+        <div class="slide" data-slide="21">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 8: WRITE THE CODE</span>
+                        <span>1 / 3</span>
+                    </div>
+                    <h2>✍️ Write the Code: Perimeter</h2>
+                    <p>A rectangle has the values shown below. The perimeter formula is <strong>2 × (length + width)</strong>. Type the Python <strong>expression</strong> that computes it (just the right-hand side, no <code>=</code>).</p>
+
+                    <div class="given-vars">
+                        <div class="given-var-chip">length = 8</div>
+                        <div class="given-var-chip">width = 5</div>
+                    </div>
+
+                    <div class="code-block">
+                        length = <span class="code-num">8</span><br>
+                        width = <span class="code-num">5</span><br>
+                        perimeter = <textarea id="expr-21" rows="1" class="code-input-line" placeholder="e.g. 2 * (length + width)"></textarea>
+                    </div>
+                    <p style="font-size: 0.95rem; color: #64748b;">Use only Python operators: <code>+ - * / // % ** ( )</code> and the variable names given.</p>
+
+                    <button class="btn btn-yellow" onclick="runCodeEx(21, 'expr-21', {length: 8, width: 5}, 26)">▶ Run My Code</button>
+                    <div class="feedback-box" id="codeOut-21"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 22: WRITE THE CODE - DISCOUNT -->
+        <div class="slide" data-slide="22">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 8: WRITE THE CODE</span>
+                        <span>2 / 3</span>
+                    </div>
+                    <h2>✍️ Write the Code: Discount Price</h2>
+                    <p>A shirt costs <code>price</code> dollars and is <code>discount</code> percent off. Write the expression for the <strong>final price</strong> after subtracting the discount amount.</p>
+
+                    <div class="given-vars">
+                        <div class="given-var-chip">price = 200</div>
+                        <div class="given-var-chip">discount = 15</div>
+                    </div>
+
+                    <div class="code-block">
+                        price = <span class="code-num">200</span><br>
+                        discount = <span class="code-num">15</span><br>
+                        final_price = <textarea id="expr-22" rows="1" class="code-input-line" placeholder="e.g. price - (price * discount / 100)"></textarea>
+                    </div>
+                    <p style="font-size: 0.95rem; color: #64748b;">Hint: the discount amount is <code>price * discount / 100</code>. Then subtract it from <code>price</code>.</p>
+
+                    <button class="btn btn-yellow" onclick="runCodeEx(22, 'expr-22', {price: 200, discount: 15}, 170)">▶ Run My Code</button>
+                    <div class="feedback-box" id="codeOut-22"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 23: WRITE THE CODE - AVERAGE -->
+        <div class="slide" data-slide="23">
+            <div class="slide-card">
+                <div>
+                    <div class="slide-title-banner">
+                        <span>PART 8: WRITE THE CODE</span>
+                        <span>3 / 3</span>
+                    </div>
+                    <h2>✍️ Write the Code: Test Average</h2>
+                    <p>A student scored three tests: <code>a</code>, <code>b</code>, and <code>c</code>. Write the expression that calculates the <strong>average</strong> of all three scores.</p>
+
+                    <div class="given-vars">
+                        <div class="given-var-chip">a = 80</div>
+                        <div class="given-var-chip">b = 90</div>
+                        <div class="given-var-chip">c = 100</div>
+                    </div>
+
+                    <div class="code-block">
+                        a = <span class="code-num">80</span><br>
+                        b = <span class="code-num">90</span><br>
+                        c = <span class="code-num">100</span><br>
+                        average = <textarea id="expr-23" rows="1" class="code-input-line" placeholder="e.g. (a + b + c) / 3"></textarea>
+                    </div>
+                    <p style="font-size: 0.95rem; color: #64748b;">Remember: add all three scores first, then divide by how many there are — use parentheses!</p>
+
+                    <button class="btn btn-yellow" onclick="runCodeEx(23, 'expr-23', {a: 80, b: 90, c: 100}, 90)">▶ Run My Code</button>
+                    <div class="feedback-box" id="codeOut-23"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 24: EXIT TICKET & SCORE -->
+        <div class="slide slide-dark" data-slide="24">
+            <div style="text-align: center; max-width: 700px; width: 100%;">
+                <h1 style="color: var(--py-yellow);">🏁 Lesson Complete!</h1>
+                <p style="font-size: 1.3rem; color: #94a3b8;">Your Final Performance Summary:</p>
+
+                <div style="background: #1e293b; border-radius: 12px; padding: 30px; margin: 25px 0; border: 2px solid var(--py-yellow);">
+                    <div style="font-size: 3.5rem; font-weight: bold; color: var(--py-yellow);" id="finalScoreDisplay">0 / 60</div>
+                    <p style="margin-top: 10px; color: #cbd5e1;" id="scoreMessage">Great effort!</p>
+                </div>
+
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn btn-yellow" onclick="resetAll()">🔄 Restart Presentation</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER NAVIGATION CONTROLS -->
+    <footer>
+        <button class="nav-btn" id="prevBtn" onclick="prevSlide()">◄ Previous</button>
+        <div class="slide-counter" id="slideCounter">Slide 1 of 24</div>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next ►</button>
+    </footer>
+
+    <!-- JAVASCRIPT STATE AND NAVIGATION LOGIC -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 24;
+        let score = 0;
+        const answeredSlides = new Set();
+
+        // Initialize state on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNavigation();
+            
+            // Setup Keyboard Navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') nextSlide();
+                if (e.key === 'ArrowLeft') prevSlide();
+            });
+        });
+
+        function updateNavigation() {
+            // Update active slide visibility
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+                if (parseInt(slide.dataset.slide) === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            // Update footer controls
+            document.getElementById('slideCounter').innerText = `Slide ${currentSlide} of ${totalSlides}`;
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // Update Progress Bar
+            const progressPercent = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+            // Update Final Score Card on Last Slide
+            if (currentSlide === totalSlides) {
+                document.getElementById('finalScoreDisplay').innerText = `${score} pts`;
+                let msg = "Keep practicing Python!";
+                if (score >= 80) msg = "🌟 Outstanding Python Master!";
+                else if (score >= 50) msg = "👍 Great Job! You passed with flying colors!";
+                document.getElementById('scoreMessage').innerText = msg;
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateNavigation();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateNavigation();
+            }
+        }
+
+        function addScore(points) {
+            score += points;
+            document.getElementById('currentScore').innerText = score;
+        }
+
+        function toggleReveal(elementId) {
+            const el = document.getElementById(elementId);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleCardDetail(cardId) {
+            const el = document.getElementById(cardId);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function checkQuiz(slideNum, optionSelected, isCorrect) {
+            const feedbackBox = document.getElementById(`feedback-s${slideNum}`);
+            const optionsGroup = document.getElementById(`quiz-s${slideNum}`);
+            
+            if (feedbackBox) {
+                feedbackBox.style.display = 'block';
+                if (isCorrect) {
+                    feedbackBox.className = 'feedback-box correct';
+                    feedbackBox.innerHTML = '✓ <strong>Correct!</strong> Excellent deduction!';
+                    if (!answeredSlides.has(slideNum)) {
+                        addScore(10);
+                        answeredSlides.add(slideNum);
+                    }
+                } else {
+                    feedbackBox.className = 'feedback-box incorrect';
+                    feedbackBox.innerHTML = '❌ <strong>Not quite.</strong> Think about the operator rules and try again!';
+                }
+            }
+        }
+
+        function selectOperator(op) {
+            document.getElementById('blank1').innerText = op;
+            const feedback = document.getElementById('feedback-s8');
+            feedback.style.display = 'block';
+            if (op === '+') {
+                feedback.className = 'feedback-box correct';
+                feedback.innerHTML = '✓ <strong>Correct!</strong> <code>10 + 5</code> gives total 15 apples!';
+                if (!answeredSlides.has(8)) {
+                    addScore(10);
+                    answeredSlides.add(8);
+                }
+            } else {
+                feedback.className = 'feedback-box incorrect';
+                feedback.innerHTML = '❌ Try again! We need to join both amounts together.';
+            }
+        }
+
+        let simScore = 10;
+        function updateSimScore(amount) {
+            simScore += amount;
+            document.getElementById('simScoreVal').innerText = simScore;
+        }
+
+        function runNameConsole() {
+            const val = document.getElementById('consoleNameInput').value;
+            const out = document.getElementById('consoleNameOutput');
+            if (val.trim() === '') {
+                out.innerText = 'Python error: Input cannot be empty!';
+                out.style.color = '#ef4444';
+            } else {
+                out.innerText = `Python received text: "${val}"\nHello, ${val}`;
+                out.style.color = '#4ade80';
+            }
+        }
+
+        function runAgeCalc() {
+            const ageVal = parseInt(document.getElementById('ageInput').value);
+            const out = document.getElementById('ageOutput');
+            if (isNaN(ageVal)) {
+                out.innerText = 'ValueError: invalid literal for int()';
+                out.style.color = '#ef4444';
+            } else {
+                out.innerText = `Next year you will be: ${ageVal + 1}`;
+                out.style.color = '#4ade80';
+            }
+        }
+
+        function checkShoppingCode() {
+            const code = document.getElementById('shopCodeInput').value.trim();
+            const feedback = document.getElementById('feedback-s16');
+            feedback.style.display = 'block';
+            if (code === 'price * quantity' || code === 'quantity * price') {
+                feedback.className = 'feedback-box correct';
+                feedback.innerHTML = '✓ <strong>Perfect!</strong> <code>total = price * quantity</code> correctly calculates the sum!';
+                if (!answeredSlides.has(16)) {
+                    addScore(10);
+                    answeredSlides.add(16);
+                }
+            } else {
+                feedback.className = 'feedback-box incorrect';
+                feedback.innerHTML = '❌ Incorrect expression. Remember: multiply price by quantity using <code>*</code>!';
+            }
+        }
+
+        function runRectCalc() {
+            const l = parseFloat(document.getElementById('rectL').value);
+            const w = parseFloat(document.getElementById('rectW').value);
+            const out = document.getElementById('rectOutput');
+            if (isNaN(l) || isNaN(w)) {
+                out.innerText = 'Please enter valid numerical lengths and widths!';
+                out.style.color = '#ef4444';
+            } else {
+                out.innerText = `Area = ${l * w}`;
+                out.style.color = '#4ade80';
+            }
+        }
+
+        function runChocShare() {
+            const choc = parseInt(document.getElementById('chocCount').value);
+            const stud = parseInt(document.getElementById('studCount').value);
+            const out = document.getElementById('chocOutput');
+            if (isNaN(choc) || isNaN(stud) || stud === 0) {
+                out.innerText = 'Please enter valid positive numbers (students cannot be 0)!';
+                out.style.color = '#ef4444';
+            } else {
+                const each = Math.floor(choc / stud);
+                const rem = choc % stud;
+                out.innerText = `Each student gets: ${each} chocolate(s) (via //)\nChocolates left over: ${rem} (via %)`;
+                out.style.color = '#4ade80';
+            }
+        }
+
+        function runMiniCalc() {
+            const n1 = parseFloat(document.getElementById('calcNum1').value);
+            const n2 = parseFloat(document.getElementById('calcNum2').value);
+            const out = document.getElementById('calcOutput');
+            if (isNaN(n1) || isNaN(n2)) {
+                out.innerText = 'Please enter two numbers!';
+                out.style.color = '#ef4444';
+            } else {
+                out.innerText = `Addition (+): ${n1 + n2}\nSubtraction (-): ${n1 - n2}\nMultiplication (*): ${n1 * n2}\nDivision (/): ${n2 !== 0 ? (n1 / n2) : 'ZeroDivisionError'}`;
+                out.style.color = '#4ade80';
+            }
+        }
+
+        // ---- MINI PYTHON EXPRESSION EVALUATOR (for the "Write the Code" slides) ----
+        // Supports: + - * / // % ** ( ) numbers and given variable names.
+        // This is a small, safe recursive-descent evaluator - no eval() of arbitrary strings.
+        function pyTokenize(expr, allowedVars) {
+            const tokens = [];
+            let i = 0;
+            while (i < expr.length) {
+                const ch = expr[i];
+                if (/\s/.test(ch)) { i++; continue; }
+                if (ch === '*' && expr[i + 1] === '*') { tokens.push({ t: '**' }); i += 2; continue; }
+                if (ch === '/' && expr[i + 1] === '/') { tokens.push({ t: '//' }); i += 2; continue; }
+                if ('+-*/%()'.includes(ch)) { tokens.push({ t: ch }); i++; continue; }
+                if (/[0-9.]/.test(ch)) {
+                    let num = '';
+                    while (i < expr.length && /[0-9.]/.test(expr[i])) { num += expr[i]; i++; }
+                    tokens.push({ t: 'num', v: parseFloat(num) });
+                    continue;
+                }
+                if (/[a-zA-Z_]/.test(ch)) {
+                    let name = '';
+                    while (i < expr.length && /[a-zA-Z0-9_]/.test(expr[i])) { name += expr[i]; i++; }
+                    if (!(name in allowedVars)) throw new Error(`Unknown name "${name}"`);
+                    tokens.push({ t: 'num', v: allowedVars[name] });
+                    continue;
+                }
+                throw new Error(`Unexpected character "${ch}"`);
+            }
+            return tokens;
+        }
+
+        function pyEvalExpr(expr, vars) {
+            if (!expr || !expr.trim()) throw new Error('Type an expression first');
+            const tokens = pyTokenize(expr, vars);
+            let pos = 0;
+            const peek = () => tokens[pos];
+            const next = () => tokens[pos++];
+
+            function parseAtom() {
+                const tok = next();
+                if (!tok) throw new Error('Unexpected end of expression');
+                if (tok.t === 'num') return tok.v;
+                if (tok.t === '(') {
+                    const val = parseAddSub();
+                    if (!peek() || peek().t !== ')') throw new Error('Missing closing parenthesis');
+                    next();
+                    return val;
+                }
+                if (tok.t === '-') return -parseUnary();
+                throw new Error('Invalid expression');
+            }
+            function parsePow() {
+                const base = parseAtom();
+                if (peek() && peek().t === '**') { next(); return Math.pow(base, parseUnary()); }
+                return base;
+            }
+            function parseUnary() {
+                if (peek() && peek().t === '-') { next(); return -parseUnary(); }
+                return parsePow();
+            }
+            function parseMulDiv() {
+                let val = parseUnary();
+                while (peek() && ['*', '/', '//', '%'].includes(peek().t)) {
+                    const op = next().t;
+                    const rhs = parseUnary();
+                    if (op === '*') val = val * rhs;
+                    else if (op === '/') val = val / rhs;
+                    else if (op === '//') val = Math.floor(val / rhs);
+                    else if (op === '%') val = val % rhs;
+                }
+                return val;
+            }
+            function parseAddSub() {
+                let val = parseMulDiv();
+                while (peek() && ['+', '-'].includes(peek().t)) {
+                    const op = next().t;
+                    const rhs = parseMulDiv();
+                    val = op === '+' ? val + rhs : val - rhs;
+                }
+                return val;
+            }
+
+            const result = parseAddSub();
+            if (pos < tokens.length) throw new Error('Unexpected extra characters');
+            return result;
+        }
+
+        function runCodeEx(slideNum, inputId, vars, expected, tolerance = 0.01) {
+            const raw = document.getElementById(inputId).value;
+            const outEl = document.getElementById(`codeOut-${slideNum}`);
+            outEl.style.display = 'block';
+            try {
+                const val = pyEvalExpr(raw, vars);
+                if (Math.abs(val - expected) < tolerance) {
+                    outEl.className = 'feedback-box correct';
+                    outEl.innerHTML = `✓ <strong>Correct!</strong> Your code ran and printed <code>${val}</code> — nice work!`;
+                    if (!answeredSlides.has(slideNum)) {
+                        addScore(10);
+                        answeredSlides.add(slideNum);
+                    }
+                } else {
+                    outEl.className = 'feedback-box incorrect';
+                    outEl.innerHTML = `❌ Your code ran and printed <code>${val}</code>, but the expected answer is <code>${expected}</code>. Check your formula and try again!`;
+                }
+            } catch (e) {
+                outEl.className = 'feedback-box incorrect';
+                outEl.innerHTML = `❌ <strong>Error:</strong> ${e.message}. Only use <code>+ - * / // % ** ( )</code> and the given variable names.`;
+            }
+        }
+
+        function resetAll() {
+            score = 0;
+            currentSlide = 1;
+            answeredSlides.clear();
+            document.getElementById('currentScore').innerText = '0';
+            updateNavigation();
+        }
+    </script>
+</body>
+</html>

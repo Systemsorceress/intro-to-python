@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐍 Python Debugging Lab</title>
+    <style>
+        :root {
+            --py-blue: #3776AB;
+            --py-yellow: #FFD343;
+            --dark-navy: #17212B;
+            --card-bg: #FFFFFF;
+            --bg-color: #F0F4F8;
+            --text-main: #101820;
+            --text-muted: #5A6A7E;
+            --code-bg: #0D1117;
+            --code-text: #E6EDE3;
+            --correct-green: #2ECC71;
+            --correct-bg: #E8F8F0;
+            --incorrect-red: #E74C3C;
+            --incorrect-bg: #FDEDEC;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(23, 33, 43, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: var(--dark-navy);
+            color: #FFFFFF;
+            padding: 24px 20px 20px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--py-yellow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        header p {
+            color: var(--py-yellow);
+            font-size: 0.95rem;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .progress-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border-left: 6px solid var(--py-blue);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: var(--dark-navy);
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-bg {
+            background: #E2E8F0;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--py-blue), #4A90E2);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid #E1E8ED;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .question-card.challenge-card {
+            border: 2px solid var(--py-yellow);
+            background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF5 100%);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .bug-tag {
+            background-color: var(--dark-navy);
+            color: var(--py-yellow);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .challenge-badge {
+            background-color: var(--py-yellow);
+            color: var(--dark-navy);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--dark-navy);
+            margin-bottom: 12px;
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            border-left: 4px solid var(--py-blue);
+            margin-bottom: 16px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .mcq-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .mcq-label:hover {
+            border-color: var(--py-blue);
+            background-color: #F8FAFC;
+        }
+
+        .mcq-label input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--py-blue);
+            width: 18px;
+            height: 18px;
+        }
+
+        .text-fix-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #CBD5E1;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            resize: vertical;
+            background: #FAFAFA;
+        }
+
+        .text-fix-input:focus {
+            outline: none;
+            border-color: var(--py-blue);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(55, 118, 171, 0.15);
+        }
+
+        .hint-btn {
+            background: none;
+            border: none;
+            color: var(--py-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 4px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .hint-btn:hover {
+            text-decoration: underline;
+        }
+
+        .hint-box {
+            display: none;
+            background-color: #FFFBEB;
+            border: 1px solid #FDE68A;
+            border-left: 4px solid var(--py-yellow);
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #78350F;
+            margin-bottom: 16px;
+        }
+
+        .feedback-box {
+            display: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 12px;
+        }
+
+        .feedback-box.correct {
+            display: block;
+            background-color: var(--correct-bg);
+            color: #1E8449;
+            border: 1px solid var(--correct-green);
+        }
+
+        .feedback-box.incorrect {
+            display: block;
+            background-color: var(--incorrect-bg);
+            color: #C0392B;
+            border: 1px solid var(--incorrect-red);
+        }
+
+        .actions-area {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin: 32px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-check {
+            background-color: var(--py-blue);
+            color: #FFFFFF;
+        }
+
+        .btn-check:hover {
+            background-color: #2B5C87;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(55, 118, 171, 0.25);
+        }
+
+        .btn-reset {
+            background-color: #64748B;
+            color: #FFFFFF;
+        }
+
+        .btn-reset:hover {
+            background-color: #475569;
+            transform: translateY(-2px);
+        }
+
+        .score-card {
+            display: none;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--py-blue);
+            margin-top: 24px;
+        }
+
+        .score-card.visible {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .score-percentage {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--py-blue);
+            margin: 12px 0;
+        }
+
+        .score-msg {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-navy);
+            margin-bottom: 8px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.5rem; }
+            .container { padding: 12px; }
+            .question-card { padding: 16px; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🐍 Python Debugging Lab</h1>
+        <p>Find the bug • Explain it • Fix the code</p>
+    </header>
+
+    <div class="container">
+        <!-- Progress Tracker -->
+        <div class="progress-card">
+            <div class="progress-header">
+                <span>Worksheet Progress</span>
+                <span id="progress-text">0 / 20 Answered</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Questions Dynamic Container -->
+        <div id="questions-container"></div>
+
+        <!-- Control Action Buttons -->
+        <div class="actions-area">
+            <button class="btn btn-check" onclick="checkWorksheet()">✓ Check Worksheet</button>
+            <button class="btn btn-reset" onclick="resetWorksheet()">↻ Reset Worksheet</button>
+        </div>
+
+        <!-- Evaluation Report View -->
+        <div class="score-card" id="score-report">
+            <h2 style="color: var(--dark-navy);">🎉 Debugging Report</h2>
+            <div class="score-percentage" id="score-percentage">0%</div>
+            <div class="score-msg" id="score-message">Your report will appear here.</div>
+            <p id="score-detail" style="color: var(--text-muted);">You fixed 0 out of 20 debugging challenges.</p>
+        </div>
+    </div>
+
+    <script>
+        const questionsData = [
+            {
+                id: 1,
+                title: "BUG 1 — print()",
+                code: 'print("Hello"',
+                question: "What is wrong with this code?",
+                type: "mcq",
+                options: [
+                    "Missing closing parenthesis )",
+                    "Missing variable",
+                    "print() cannot use text",
+                    "Nothing"
+                ],
+                correctAnswer: 0,
+                hint: "Look carefully at the brackets. Every open bracket ( must have a matching closing bracket )."
+            },
+            {
+                id: 2,
+                title: "BUG 2 — print syntax",
+                code: 'print Hello',
+                question: "Which correction is needed?",
+                type: "mcq",
+                options: [
+                    'print("Hello")',
+                    'print Hello()',
+                    'Print("Hello")',
+                    'print[Hello]'
+                ],
+                correctAnswer: 0,
+                hint: "Text in print() must be enclosed inside quotation marks and parentheses."
+            },
+            {
+                id: 3,
+                title: "BUG 3 — quotation marks",
+                code: 'print("My name is Ahmed)',
+                question: "What is the error?",
+                type: "mcq",
+                options: [
+                    "Missing closing quotation mark",
+                    "Missing variable",
+                    "Wrong function",
+                    "No error"
+                ],
+                correctAnswer: 0,
+                hint: "Quotes must always come in matching pairs around text strings."
+            },
+            {
+                id: 4,
+                title: "BUG 4 — variable capitalization",
+                code: 'name = "Ali"\nprint(Name)',
+                question: "Type the corrected print line.",
+                type: "text",
+                rows: 1,
+                expected: ['print(name)'],
+                hint: "Python is case-sensitive. 'Name' and 'name' are treated as two totally different names."
+            },
+            {
+                id: 5,
+                title: "BUG 5 — spaces in variable names",
+                code: 'student name = "Sara"\nprint(student name)',
+                question: "What should the variable be called? (Enter the variable name only)",
+                type: "text",
+                rows: 1,
+                expected: ['student_name'],
+                hint: "Variable names cannot contain spaces. Use an underscore (_) instead."
+            },
+            {
+                id: 6,
+                title: "BUG 6 — input()",
+                code: 'name = input(Enter your name: )',
+                question: "What is missing?",
+                type: "mcq",
+                options: [
+                    "Quotation marks around the prompt",
+                    "An int()",
+                    "A second variable",
+                    "A semicolon"
+                ],
+                correctAnswer: 0,
+                hint: "Prompts inside input() are text strings and must be inside quotes."
+            },
+            {
+                id: 7,
+                title: "BUG 7 — variable name",
+                code: 'name = input("Enter your name: ")\nprint("Hello", Name)',
+                question: "Type the corrected print line.",
+                type: "text",
+                rows: 1,
+                expected: ['print("Hello", name)', "print('Hello', name)", 'print("Hello",name)'],
+                hint: "Check the casing of the variable inside the print statement."
+            },
+            {
+                id: 8,
+                title: "BUG 8 — input gives a string",
+                code: 'age = input("Enter your age: ")\nprint(age + 5)',
+                question: "Why can this cause an error?",
+                type: "mcq",
+                options: [
+                    "input() returns text (str)",
+                    "age is always a float",
+                    "print() cannot add",
+                    "5 is a string"
+                ],
+                correctAnswer: 0,
+                hint: "Look at what type of value input() returns to Python by default."
+            },
+            {
+                id: 9,
+                title: "BUG 9 — int()",
+                code: 'age = input("Enter your age: ")\n# make age an integer',
+                question: "Type the missing conversion line.",
+                type: "text",
+                rows: 1,
+                expected: ['age = int(age)'],
+                hint: "Use int() around the age variable and reassign it to age."
+            },
+            {
+                id: 10,
+                title: "BUG 10 — string + integer",
+                code: 'number = int(input("Enter a number: "))\nprint("Your number is " + number)',
+                question: "What is the issue with + here?",
+                type: "mcq",
+                options: [
+                    "A string and integer cannot be joined directly",
+                    "int() is not allowed",
+                    "print() needs two brackets",
+                    "number is a variable error"
+                ],
+                correctAnswer: 0,
+                hint: "The + operator expects either two numbers or two strings, not a mix of both!"
+            },
+            {
+                id: 11,
+                title: "BUG 11 — type()",
+                code: 'age = 14\nprint(type(age))',
+                question: "What type will Python report?",
+                type: "mcq",
+                options: [
+                    "int",
+                    "str",
+                    "float",
+                    "bool"
+                ],
+                correctAnswer: 0,
+                hint: "14 is a whole number without quotes or decimals."
+            },
+            {
+                id: 12,
+                title: "BUG 12 — type() and capitalization",
+                code: 'age = input("Enter your age: ")\nprint(type(Age))',
+                question: "Type the corrected print line.",
+                type: "text",
+                rows: 1,
+                expected: ['print(type(age))'],
+                hint: "Check the exact spelling and capital letters of variable 'age'."
+            },
+            {
+                id: 13,
+                title: "BUG 13 — len()",
+                code: 'name = "Malaika"\nprint(len(Name))',
+                question: "What is wrong?",
+                type: "mcq",
+                options: [
+                    "Python is case-sensitive: Name ≠ name",
+                    "len() cannot use strings",
+                    "Malaika is too long",
+                    "Nothing"
+                ],
+                correctAnswer: 0,
+                hint: "Variable names must match their defined casing perfectly."
+            },
+            {
+                id: 14,
+                title: "BUG 14 — function capitalization",
+                code: 'name = input("Enter your name: ")\nlength = Len(name)\nprint(length)',
+                question: "Type the corrected assignment line.",
+                type: "text",
+                rows: 1,
+                expected: ['length = len(name)'],
+                hint: "Python built-in function names like len() must be written in lowercase."
+            },
+            {
+                id: 15,
+                title: "BUG 15 — case sensitivity",
+                code: 'Name = "Sara"\nprint(name)',
+                question: "Why is this a problem?",
+                type: "mcq",
+                options: [
+                    "Variable names are case-sensitive",
+                    "Strings cannot be printed",
+                    "Name is a function",
+                    "print() is case-sensitive only"
+                ],
+                correctAnswer: 0,
+                hint: "'Name' with capital N is not the same variable as 'name'."
+            },
+            {
+                id: 16,
+                title: "BUG 16 — converting input",
+                code: 'age = input("Age: ")\nprint(age + 2)',
+                question: "Which fix is correct?",
+                type: "mcq",
+                options: [
+                    "print(int(age) + 2)",
+                    "print(str(age) + 2)",
+                    'print(age + "2")',
+                    "print(float(age))"
+                ],
+                correctAnswer: 0,
+                hint: "Convert 'age' to an integer using int() before adding numbers."
+            },
+            {
+                id: 17,
+                title: "BUG 17 — identify no error",
+                code: 'number = int(input("Number: "))\nprint(number + 2)',
+                question: "Does this code have an error?",
+                type: "mcq",
+                options: [
+                    "No",
+                    "Yes, input is missing",
+                    "Yes, int() cannot be used",
+                    "Yes, print cannot add"
+                ],
+                correctAnswer: 0,
+                hint: "Read line by line. The input is properly wrapped in int() and printed correctly!"
+            },
+            {
+                id: 18,
+                title: "BUG 18 — identify data type",
+                code: 'x = "5"\nprint(type(x))',
+                question: "What type is x?",
+                type: "mcq",
+                options: [
+                    "str",
+                    "int",
+                    "float",
+                    "bool"
+                ],
+                correctAnswer: 0,
+                hint: "Notice the quotation marks around '5'. Anything inside quotes is a string!"
+            },
+            {
+                id: 19,
+                title: "BUG 19 — multi-error debugging",
+                code: 'name = input("Enter your name: ")\nage = input("Enter your age: ")\n\nnext_age = age + 1\n\nprint("Hello", Name)\nprint("Next year you will be", next_age)',
+                question: "Fix the two main bugs. (Enter both corrected lines, one per line)",
+                type: "text",
+                rows: 2,
+                expected: [
+                    ['next_age = int(age) + 1', 'print("Hello", name)'],
+                    ['next_age = int(age) + 1', "print('Hello', name)"]
+                ],
+                hint: "Bug 1: Convert age to int before adding 1. Bug 2: Name should be lowercase 'name'."
+            },
+            {
+                id: 20,
+                title: "BUG 20 — Final Debugging Challenge ⭐",
+                code: 'name = input("Enter your name: ")\nage = input("Enter your age: ")\ncity = input(Enter your city: )\n\nage_next_year = age + 1\n\nprint("Name:", Name)\nprint("Age:", age)\nprint("Next year:", age_next_year)\nprint("City:", city)\nprint("Name length:", Len(name))',
+                question: "Find and fix the three main bugs. (Type the 3 corrected lines, one per line)",
+                type: "text",
+                rows: 3,
+                isChallenge: true,
+                expected: [
+                    ['city = input("Enter your city: ")', 'age_next_year = int(age) + 1', 'print("Name:", name)'],
+                    ['city = input(\'Enter your city: \')', 'age_next_year = int(age) + 1', 'print("Name:", name)']
+                ],
+                hint: "1. Prompt quotes in city input. 2. int(age) conversion for calculation. 3. Fix case sensitivity in 'Name'."
+            }
+        ];
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            questionsData.forEach((q) => {
+                const card = document.createElement('div');
+                card.className = `question-card ${q.isChallenge ? 'challenge-card' : ''}`;
+                card.id = `q-card-${q.id}`;
+
+                let inputHTML = '';
+
+                if (q.type === 'mcq') {
+                    inputHTML = `<div class="mcq-options">`;
+                    q.options.forEach((opt, optIndex) => {
+                        inputHTML += `
+                            <label class="mcq-label">
+                                <input type="radio" name="q_${q.id}" value="${optIndex}" onchange="updateProgress()">
+                                ${escapeHTML(opt)}
+                            </label>
+                        `;
+                    });
+                    inputHTML += `</div>`;
+                } else {
+                    inputHTML = `
+                        <textarea class="text-fix-input" id="input_${q.id}" rows="${q.rows || 1}" 
+                            placeholder="Type corrected line(s) here..." oninput="updateProgress()"></textarea>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="bug-tag">${q.title}</span>
+                        ${q.isChallenge ? '<span class="challenge-badge">FINAL CHALLENGE ⭐</span>' : ''}
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="code-block">${escapeHTML(q.code)}</div>
+                    ${inputHTML}
+                    <button class="hint-btn" onclick="toggleHint(${q.id})">💡 Need a hint?</button>
+                    <div class="hint-box" id="hint_${q.id}">${q.hint}</div>
+                    <div class="feedback-box" id="feedback_${q.id}"></div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function toggleHint(id) {
+            const hintBox = document.getElementById(`hint_${id}`);
+            if (hintBox.style.display === 'block') {
+                hintBox.style.display = 'none';
+            } else {
+                hintBox.style.display = 'block';
+            }
+        }
+
+        function updateProgress() {
+            let answeredCount = 0;
+
+            questionsData.forEach(q => {
+                if (q.type === 'mcq') {
+                    const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+                    if (selected) answeredCount++;
+                } else {
+                    const val = document.getElementById(`input_${q.id}`).value.trim();
+                    if (val.length > 0) answeredCount++;
+                }
+            });
+
+            document.getElementById('progress-text').innerText = `${answeredCount} / 20 Answered`;
+            const fillPct = (answeredCount / 20) * 100;
+            document.getElementById('progress-fill').style.width = `${fillPct}%`;
+        }
+
+        function normalizeCodeLine(line) {
+            return line
+                .trim()
+                .replace(/\s+/g, ' ')
+                .replace(/\s*([=()+,-])\s*/g, '$1')
+                .replace(/'/g, '"');
+        }
+
+        function checkWorksheet() {
+            let score = 0;
+
+            questionsData.forEach((q) => {
+                const feedbackEl = document.getElementById(`feedback_${q.id}`);
+                let isCorrect = false;
+
+                if (q.type === 'mcq') {
+                    const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+                    if (selected && parseInt(selected.value) === q.correctAnswer) {
+                        isCorrect = true;
+                    }
+                } else {
+                    const userInputRaw = document.getElementById(`input_${q.id}`).value;
+                    const userLines = userInputRaw.split('\n').map(l => normalizeCodeLine(l)).filter(l => l.length > 0);
+
+                    if (Array.isArray(q.expected[0])) {
+                        // Multi-line sets matching
+                        isCorrect = q.expected.some(expSet => {
+                            if (expSet.length !== userLines.length) return false;
+                            return expSet.every((expLine, idx) => normalizeCodeLine(expLine) === userLines[idx]);
+                        });
+                    } else {
+                        // Single line options matching
+                        isCorrect = q.expected.some(expLine => {
+                            return userLines.length === 1 && normalizeCodeLine(expLine) === userLines[0];
+                        });
+                    }
+                }
+
+                if (isCorrect) {
+                    score++;
+                    feedbackEl.className = "feedback-box correct";
+                    feedbackEl.innerHTML = "✓ Correct! Great debugging.";
+                } else {
+                    feedbackEl.className = "feedback-box incorrect";
+                    feedbackEl.innerHTML = "✗ Not quite. Check the hint and try again.";
+                }
+            });
+
+            // Display Report Card Results
+            const reportCard = document.getElementById('score-report');
+            const scorePct = Math.round((score / 20) * 100);
+            
+            document.getElementById('score-percentage').innerText = `${scorePct}%`;
+            document.getElementById('score-detail').innerText = `You fixed ${score} out of 20 debugging challenges.`;
+
+            const msgEl = document.getElementById('score-message');
+            if (score === 20) {
+                msgEl.innerText = "🐍 Debugging Master! You fixed every bug!";
+            } else if (score >= 15) {
+                msgEl.innerText = "Great job! You're a strong code detective!";
+            } else if (score >= 10) {
+                msgEl.innerText = "Good debugging work!";
+            } else {
+                msgEl.innerText = "Keep debugging and try again!";
+            }
+
+            reportCard.className = "score-card visible";
+            reportCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetWorksheet() {
+            // Uncheck MCQs
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(r => r.checked = false);
+
+            // Clear text inputs
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(t => t.value = '');
+
+            // Hide hints & feedback
+            questionsData.forEach(q => {
+                const hint = document.getElementById(`hint_${q.id}`);
+                const feedback = document.getElementById(`feedback_${q.id}`);
+                if (hint) hint.style.display = 'none';
+                if (feedback) {
+                    feedback.className = 'feedback-box';
+                    feedback.style.display = 'none';
+                }
+            });
+
+            // Hide Score card
+            const reportCard = document.getElementById('score-report');
+            reportCard.className = "score-card";
+
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize Page on Load
+        window.onload = function() {
+            renderQuestions();
+            updateProgress();
+        };
+    </script>
+</body>
+</html>
