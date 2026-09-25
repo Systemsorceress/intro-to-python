@@ -850,44 +850,10 @@
             </div>
         </div>
 
-        <!-- SLIDE 9: ASSIGNMENT OPERATORS -->
-        <div class="slide" data-slide="9">
-            <div class="slide-card">
-                <div>
-                    <div class="slide-title-banner">
-                        <span>PART 4: ASSIGNMENT</span>
-                        <span>1 / 2</span>
-                    </div>
-                    <h2>Shortcut Assignment Operators</h2>
-                    <p>Assignment operators update stored variable values quickly:</p>
-
-                    <div class="grid-2">
-                        <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px;">
-                            <h3><code>+=</code> (Add and assign)</h3>
-                            <div class="code-block">score += <span class="code-num">5</span></div>
-                            <p style="font-size: 0.95rem;">Same as: <code>score = score + 5</code></p>
-                        </div>
-                        <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px;">
-                            <h3><code>-=</code> (Subtract and assign)</h3>
-                            <div class="code-block">score -= <span class="code-num">3</span></div>
-                            <p style="font-size: 0.95rem;">Same as: <code>score = score - 3</code></p>
-                        </div>
-                    </div>
-
-                    <div class="var-visualizer" style="margin-top: 20px;">
-                        <div>
-                            <p style="font-weight: bold; margin-bottom: 5px;">Variable Box: <code>score</code></p>
-                            <div class="var-box">
-                                <div class="var-value" id="simScoreVal">10</div>
-                            </div>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <button class="btn btn-outline" onclick="updateSimScore(5)">Run <code>score += 5</code></button>
-                            <button class="btn btn-outline" onclick="updateSimScore(-3)">Run <code>score -= 3</code></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- SLIDE 9: OPERATORS PRACTICE -->
+        <div class="slide slide-dark" data-slide="9">
+            <iframe src="Operators_Practice.html" title="Python Operators Interactive Lesson"
+                style="width: 100%; max-width: 900px; height: 100%; border: none; border-radius: var(--radius); background: #0b1020;"></iframe>
         </div>
 
         <!-- SLIDE 10: QUICK CHALLENGE -->
@@ -1413,12 +1379,6 @@
                 feedback.className = 'feedback-box incorrect';
                 feedback.innerHTML = '❌ Try again! We need to join both amounts together.';
             }
-        }
-
-        let simScore = 10;
-        function updateSimScore(amount) {
-            simScore += amount;
-            document.getElementById('simScoreVal').innerText = simScore;
         }
 
         function runNameConsole() {

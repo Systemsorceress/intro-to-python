@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Python Operators Interactive Lesson</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b1020;
+    color: #e5e7eb;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 25px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.python-logo {
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    border-radius: 16px;
+    background: linear-gradient(
+        135deg,
+        #3776ab 50%,
+        #ffd343 50%
+    );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 35px;
+    font-weight: bold;
+    color: white;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+}
+
+h1 {
+    color: #ffd343;
+    margin: 12px 0 5px;
+}
+
+.subtitle {
+    color: #94a3b8;
+}
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.progress span {
+    height: 7px;
+    flex: 1;
+    background: #1e293b;
+    border-radius: 20px;
+}
+
+.progress span.active {
+    background: linear-gradient(
+        90deg,
+        #3776ab,
+        #ffd343
+    );
+}
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+    background: #111827;
+    border: 1px solid #263449;
+    border-radius: 18px;
+    padding: 25px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.35);
+}
+
+.question-number {
+    color: #ffd343;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.question {
+    font-size: 21px;
+    line-height: 1.5;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.question b {
+    color: #ffd343;
+    font-family: Consolas, monospace;
+}
+
+/* =========================
+   CODE EDITOR
+========================= */
+
+.editor-label {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 7px;
+}
+
+textarea {
+    width: 100%;
+    height: 135px;
+
+    resize: vertical;
+
+    background: #0a0f1c;
+    color: #f8fafc;
+
+    border: 2px solid #334155;
+    border-radius: 12px;
+
+    padding: 16px;
+
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 18px;
+
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #3776ab;
+
+    box-shadow:
+        0 0 0 3px rgba(55,118,171,0.2);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    border-radius: 9px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#runBtn {
+    background: #3776ab;
+    color: white;
+}
+
+#runBtn:hover {
+    background: #2d6593;
+}
+
+#hintBtn {
+    background: #263449;
+    color: #e5e7eb;
+}
+
+#hintBtn:hover {
+    background: #334155;
+}
+
+#nextBtn {
+    display: none;
+    background: #ffd343;
+    color: #111827;
+}
+
+#nextBtn:hover {
+    background: #e5b92f;
+}
+
+/* =========================
+   FEEDBACK
+========================= */
+
+.feedback {
+    display: none;
+    margin-top: 15px;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.feedback.correct {
+    display: block;
+    background: rgba(34,197,94,0.12);
+    border: 1px solid #22c55e;
+    color: #86efac;
+}
+
+.feedback.wrong {
+    display: block;
+    background: rgba(239,68,68,0.12);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+}
+
+/* =========================
+   HINT
+========================= */
+
+.hint {
+    display: none;
+
+    margin-bottom: 15px;
+    padding: 12px 15px;
+
+    background: #172033;
+    border-left: 4px solid #ffd343;
+
+    border-radius: 7px;
+
+    color: #cbd5e1;
+}
+
+/* =========================
+   VISUAL WORKSPACE
+========================= */
+
+.workspace {
+    display: none;
+
+    margin-top: 25px;
+    padding: 22px;
+
+    background: #0b1220;
+
+    border: 1px solid #263449;
+    border-radius: 15px;
+}
+
+.workspace-title {
+    color: #94a3b8;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.boxes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.variable-box,
+.result-box {
+    min-width: 155px;
+
+    text-align: center;
+
+    padding: 18px;
+
+    border-radius: 13px;
+
+    background: #111827;
+
+    animation: appear 0.4s ease;
+}
+
+.variable-box {
+    border: 2px solid #3776ab;
+}
+
+.result-box {
+    border: 2px solid #ffd343;
+}
+
+.label {
+    color: #94a3b8;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.name {
+    font-family: Consolas, monospace;
+    color: #7dd3fc;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.value {
+    color: #ffd343;
+    font-size: 34px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.arrow {
+    font-size: 30px;
+    color: #64748b;
+}
+
+.calculation {
+    text-align: center;
+
+    margin-top: 20px;
+
+    font-family: Consolas, monospace;
+    font-size: 20px;
+    font-weight: bold;
+
+    color: #7dd3fc;
+}
+
+/* =========================
+   EXPLANATION
+========================= */
+
+.explanation {
+    display: none;
+
+    margin-top: 20px;
+    padding: 15px;
+
+    background: #171d2b;
+
+    border-left: 4px solid #3776ab;
+
+    border-radius: 8px;
+
+    line-height: 1.6;
+
+    color: #cbd5e1;
+}
+
+.explanation b {
+    color: #ffd343;
+    font-family: Consolas, monospace;
+}
+
+/* =========================
+   FINISHED
+========================= */
+
+.finished {
+    display: none;
+
+    text-align: center;
+
+    background: #111827;
+
+    border: 2px solid #22c55e;
+
+    padding: 30px;
+
+    border-radius: 18px;
+
+    margin-top: 20px;
+}
+
+.finished h2 {
+    color: #ffd343;
+}
+
+.code {
+    display: inline-block;
+
+    background: #0a0f1c;
+    color: #7dd3fc;
+
+    padding: 12px 18px;
+
+    border-radius: 8px;
+
+    font-family: Consolas, monospace;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes appear {
+
+    from {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px) {
+
+    .container {
+        padding: 15px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .question {
+        font-size: 18px;
+    }
+
+    textarea {
+        font-size: 16px;
+    }
+
+}
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <div class="python-logo">
+            🐍
+        </div>
+
+        <h1>Python Operators</h1>
+
+        <div class="subtitle">
+            Write the code • Run it • See what Python does
+        </div>
+
+    </div>
+
+
+    <div class="progress" id="progress"></div>
+
+
+    <div class="card" id="lessonCard">
+
+        <div
+            class="question-number"
+            id="questionNumber">
+            Question 1
+        </div>
+
+
+        <div
+            class="question"
+            id="question">
+        </div>
+
+
+        <div
+            class="hint"
+            id="hint">
+        </div>
+
+
+        <div class="editor-label">
+            💻 Python code
+        </div>
+
+
+        <textarea
+            id="codeInput"
+            placeholder="Type your Python code here..."
+        ></textarea>
+
+
+        <div class="buttons">
+
+            <button
+                id="runBtn"
+                type="button">
+                ▶ Run Code
+            </button>
+
+            <button
+                id="hintBtn"
+                type="button">
+                💡 Hint
+            </button>
+
+            <button
+                id="nextBtn"
+                type="button">
+                Next →
+            </button>
+
+        </div>
+
+
+        <div
+            id="feedback"
+            class="feedback">
+        </div>
+
+
+        <div
+            id="workspace"
+            class="workspace">
+
+            <div class="workspace-title">
+                🧠 What happened in Python?
+            </div>
+
+            <div
+                id="boxes"
+                class="boxes">
+            </div>
+
+            <div
+                id="calculation"
+                class="calculation">
+            </div>
+
+        </div>
+
+
+        <div
+            id="explanation"
+            class="explanation">
+        </div>
+
+    </div>
+
+
+    <div
+        id="finished"
+        class="finished">
+
+        <h2>🎉 Lesson Complete!</h2>
+
+        <p>
+            You have practiced Python's basic
+            arithmetic and assignment operators.
+        </p>
+
+        <p>
+            Remember:
+        </p>
+
+        <div class="code">
+            + &nbsp; - &nbsp; * &nbsp; / &nbsp; += &nbsp; -=
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   QUESTIONS
+========================================= */
+
+const questions = [
+
+    /* =====================
+       ADDITION
+    ===================== */
+
+    {
+        question:
+        "Make a variable called <b>num1</b> and assign the value <b>10</b> to it.",
+
+        hint:
+        "Use the = operator.",
+
+        answer:
+        "num1 = 10",
+
+        type:
+        "create"
+    },
+
+
+    {
+        question:
+        "Use <b>+</b> to add <b>10</b> to num1. Do NOT store the result yet.",
+
+        hint:
+        "Write: num1 + 10",
+
+        answer:
+        "num1 + 10",
+
+        type:
+        "plus"
+    },
+
+
+    {
+        question:
+        "Store the result of <b>num1 + 10</b> back inside num1.",
+
+        hint:
+        "Use both = and +.",
+
+        answer:
+        "num1 = num1 + 10",
+
+        type:
+        "assignAdd"
+    },
+
+
+    {
+        question:
+        "Use the shortcut <b>+=</b> to add <b>10</b> to num1.",
+
+        hint:
+        "Write: num1 += 10",
+
+        answer:
+        "num1 += 10",
+
+        type:
+        "plusEqual"
+    },
+
+
+    /* =====================
+       SUBTRACTION
+    ===================== */
+
+    {
+        question:
+        "Create a variable called <b>num2</b> and assign the value <b>30</b> to it.",
+
+        hint:
+        "Use num2 = 30",
+
+        answer:
+        "num2 = 30",
+
+        type:
+        "subCreate"
+    },
+
+
+    {
+        question:
+        "Use <b>-</b> to subtract <b>8</b> from num2. Do NOT store the result yet.",
+
+        hint:
+        "Write: num2 - 8",
+
+        answer:
+        "num2 - 8",
+
+        type:
+        "minus"
+    },
+
+
+    {
+        question:
+        "Store the result of <b>num2 - 8</b> back inside num2.",
+
+        hint:
+        "Use num2 = num2 - 8",
+
+        answer:
+        "num2 = num2 - 8",
+
+        type:
+        "assignMinus"
+    },
+
+
+    {
+        question:
+        "Use the shortcut <b>-=</b> to subtract <b>5</b> from num2.",
+
+        hint:
+        "Write: num2 -= 5",
+
+        answer:
+        "num2 -= 5",
+
+        type:
+        "minusEqual"
+    },
+
+
+    /* =====================
+       MULTIPLICATION
+    ===================== */
+
+    {
+        question:
+        "Create a variable called <b>num3</b> and assign the value <b>6</b> to it.",
+
+        hint:
+        "Use num3 = 6",
+
+        answer:
+        "num3 = 6",
+
+        type:
+        "multiplyCreate"
+    },
+
+
+    {
+        question:
+        "Use <b>*</b> to multiply num3 by <b>4</b>. Do NOT store the result yet.",
+
+        hint:
+        "Write: num3 * 4",
+
+        answer:
+        "num3 * 4",
+
+        type:
+        "multiply"
+    },
+
+
+    {
+        question:
+        "Store the result of <b>num3 * 4</b> back inside num3.",
+
+        hint:
+        "Use num3 = num3 * 4",
+
+        answer:
+        "num3 = num3 * 4",
+
+        type:
+        "assignMultiply"
+    },
+
+
+    {
+        question:
+        "Use the shortcut <b>*=</b> to multiply num3 by <b>2</b>.",
+
+        hint:
+        "Write: num3 *= 2",
+
+        answer:
+        "num3 *= 2",
+
+        type:
+        "multiplyEqual"
+    },
+
+
+    /* =====================
+       DIVISION
+    ===================== */
+
+    {
+        question:
+        "Create a variable called <b>num4</b> and assign the value <b>40</b> to it.",
+
+        hint:
+        "Use num4 = 40",
+
+        answer:
+        "num4 = 40",
+
+        type:
+        "divideCreate"
+    },
+
+
+    {
+        question:
+        "Use <b>/</b> to divide num4 by <b>5</b>. Do NOT store the result yet.",
+
+        hint:
+        "Write: num4 / 5",
+
+        answer:
+        "num4 / 5",
+
+        type:
+        "divide"
+    },
+
+
+    {
+        question:
+        "Store the result of <b>num4 / 5</b> back inside num4.",
+
+        hint:
+        "Use num4 = num4 / 5",
+
+        answer:
+        "num4 = num4 / 5",
+
+        type:
+        "assignDivide"
+    },
+
+
+    {
+        question:
+        "Use the shortcut <b>/=</b> to divide num4 by <b>2</b>.",
+
+        hint:
+        "Write: num4 /= 2",
+
+        answer:
+        "num4 /= 2",
+
+        type:
+        "divideEqual"
+    },
+
+
+    /* =====================
+       PRACTICE
+    ===================== */
+
+    {
+        question:
+        "🧠 Practice: Create <b>score</b> with the value <b>100</b>.",
+
+        hint:
+        "Use score = 100",
+
+        answer:
+        "score = 100",
+
+        type:
+        "scoreCreate"
+    },
+
+
+    {
+        question:
+        "🧠 Practice: Subtract <b>25</b> from score using <b>-=</b>.",
+
+        hint:
+        "Start with score.",
+
+        answer:
+        "score -= 25",
+
+        type:
+        "scoreMinus"
+    },
+
+
+    {
+        question:
+        "🧠 Practice: Create <b>items</b> with the value <b>5</b>.",
+
+        hint:
+        "Use items = 5",
+
+        answer:
+        "items = 5",
+
+        type:
+        "itemsCreate"
+    },
+
+
+    {
+        question:
+        "🧠 Practice: Multiply items by <b>3</b> using <b>*=</b>.",
+
+        hint:
+        "Start with items.",
+
+        answer:
+        "items *= 3",
+
+        type:
+        "itemsMultiply"
+    },
+
+
+    {
+        question:
+        "🏆 Final Challenge: Create <b>money</b> with the value <b>200</b>.",
+
+        hint:
+        "Use money = 200",
+
+        answer:
+        "money = 200",
+
+        type:
+        "moneyCreate"
+    },
+
+
+    {
+        question:
+        "🏆 Final Challenge: Divide money by <b>4</b> using <b>/=</b>.",
+
+        hint:
+        "Start with money.",
+
+        answer:
+        "money /= 4",
+
+        type:
+        "moneyDivide"
+    }
+
+];
+
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const questionNumber =
+    document.getElementById("questionNumber");
+
+const question =
+    document.getElementById("question");
+
+const codeInput =
+    document.getElementById("codeInput");
+
+const runBtn =
+    document.getElementById("runBtn");
+
+const hintBtn =
+    document.getElementById("hintBtn");
+
+const nextBtn =
+    document.getElementById("nextBtn");
+
+const feedback =
+    document.getElementById("feedback");
+
+const hint =
+    document.getElementById("hint");
+
+const workspace =
+    document.getElementById("workspace");
+
+const boxes =
+    document.getElementById("boxes");
+
+const calculation =
+    document.getElementById("calculation");
+
+const explanation =
+    document.getElementById("explanation");
+
+const progress =
+    document.getElementById("progress");
+
+const lessonCard =
+    document.getElementById("lessonCard");
+
+const finished =
+    document.getElementById("finished");
+
+
+let currentQuestion = 0;
+
+
+/* =========================================
+   NORMALIZE
+========================================= */
+
+function cleanCode(code) {
+
+    return code
+        .trim()
+        .replace(/\s+/g, "");
+
+}
+
+
+/* =========================================
+   PROGRESS
+========================================= */
+
+function createProgress() {
+
+    progress.innerHTML = "";
+
+    questions.forEach(() => {
+
+        const bar =
+            document.createElement("span");
+
+        progress.appendChild(bar);
+
+    });
+
+}
+
+
+function updateProgress() {
+
+    const bars =
+        progress.querySelectorAll("span");
+
+    bars.forEach((bar, index) => {
+
+        if (index <= currentQuestion) {
+
+            bar.classList.add("active");
+
+        } else {
+
+            bar.classList.remove("active");
+
+        }
+
+    });
+
+}
+
+
+/* =========================================
+   LOAD QUESTION
+========================================= */
+
+function loadQuestion() {
+
+    const q =
+        questions[currentQuestion];
+
+    questionNumber.textContent =
+        "Question " + (currentQuestion + 1);
+
+    question.innerHTML =
+        q.question;
+
+    codeInput.value =
+        "";
+
+    codeInput.disabled =
+        false;
+
+    runBtn.disabled =
+        false;
+
+    hintBtn.disabled =
+        false;
+
+    nextBtn.style.display =
+        "none";
+
+    feedback.style.display =
+        "none";
+
+    feedback.className =
+        "feedback";
+
+    hint.style.display =
+        "none";
+
+    explanation.style.display =
+        "none";
+
+    workspace.style.display =
+        "none";
+
+    boxes.innerHTML =
+        "";
+
+    calculation.innerHTML =
+        "";
+
+    updateProgress();
+
+    codeInput.focus();
+
+}
+
+
+/* =========================================
+   HINT
+========================================= */
+
+hintBtn.addEventListener(
+    "click",
+    function() {
+
+        hint.textContent =
+            "💡 " +
+            questions[currentQuestion].hint;
+
+        hint.style.display =
+            "block";
+
+    }
+);
+
+
+/* =========================================
+   RUN CODE
+========================================= */
+
+runBtn.addEventListener(
+    "click",
+    function() {
+
+        const q =
+            questions[currentQuestion];
+
+        const studentCode =
+            cleanCode(codeInput.value);
+
+        const correctCode =
+            cleanCode(q.answer);
+
+
+        if (studentCode === "") {
+
+            feedback.textContent =
+                "⚠️ Please type your code first.";
+
+            feedback.className =
+                "feedback wrong";
+
+            feedback.style.display =
+                "block";
+
+            return;
+        }
+
+
+        if (studentCode !== correctCode) {
+
+            feedback.textContent =
+                "❌ Not quite. Check your Python code and try again.";
+
+            feedback.className =
+                "feedback wrong";
+
+            feedback.style.display =
+                "block";
+
+            return;
+        }
+
+
+        feedback.textContent =
+            "✅ Correct! Python ran your code.";
+
+        feedback.className =
+            "feedback correct";
+
+        feedback.style.display =
+            "block";
+
+
+        showVisualization(q.type);
+
+
+        codeInput.disabled =
+            true;
+
+        runBtn.disabled =
+            true;
+
+        hintBtn.disabled =
+            true;
+
+        nextBtn.style.display =
+            "inline-block";
+
+    }
+);
+
+
+/* =========================================
+   VISUALIZATION
+========================================= */
+
+function showVisualization(type) {
+
+    workspace.style.display =
+        "block";
+
+    boxes.innerHTML =
+        "";
+
+    calculation.innerHTML =
+        "";
+
+    explanation.style.display =
+        "none";
+
+
+    /* ADDITION */
+
+    if (type === "create") {
+
+        variableBox("num1", 10, "Variable");
+
+        calculation.textContent =
+            "num1 = 10";
+
+        explain(
+            "Python created num1 and stored 10 inside it."
+        );
+    }
+
+
+    else if (type === "plus") {
+
+        variableBox("num1", 10, "Variable");
+
+        arrow();
+
+        resultBox("Result", 20);
+
+        calculation.textContent =
+            "10 + 10 = 20";
+
+        explain(
+            "The + operator calculates 20, but num1 is still 10."
+        );
+    }
+
+
+    else if (type === "assignAdd") {
+
+        variableBox("num1", 10, "Before");
+
+        arrow();
+
+        resultBox("Calculation", 20);
+
+        arrow();
+
+        variableBox("num1", 20, "After");
+
+        calculation.textContent =
+            "10 + 10 = 20 → store 20";
+
+        explain(
+            "Python calculates 10 + 10, then = stores 20 inside num1."
+        );
+    }
+
+
+    else if (type === "plusEqual") {
+
+        variableBox("num1", 20, "Before");
+
+        arrow();
+
+        variableBox("num1", 30, "After");
+
+        calculation.textContent =
+            "20 + 10 = 30";
+
+        explain(
+            "num1 += 10 is a shortcut for num1 = num1 + 10."
+        );
+    }
+
+
+    /* SUBTRACTION */
+
+    else if (type === "subCreate") {
+
+        variableBox("num2", 30, "Variable");
+
+        calculation.textContent =
+            "num2 = 30";
+
+        explain(
+            "num2 now contains 30."
+        );
+    }
+
+
+    else if (type === "minus") {
+
+        variableBox("num2", 30, "Variable");
+
+        arrow();
+
+        resultBox("Result", 22);
+
+        calculation.textContent =
+            "30 - 8 = 22";
+
+        explain(
+            "The - operator calculates 22, but num2 is still 30."
+        );
+    }
+
+
+    else if (type === "assignMinus") {
+
+        variableBox("num2", 30, "Before");
+
+        arrow();
+
+        resultBox("Calculation", 22);
+
+        arrow();
+
+        variableBox("num2", 22, "After");
+
+        calculation.textContent =
+            "30 - 8 = 22 → store 22";
+
+        explain(
+            "The result 22 is stored back inside num2."
+        );
+    }
+
+
+    else if (type === "minusEqual") {
+
+        variableBox("num2", 22, "Before");
+
+        arrow();
+
+        variableBox("num2", 17, "After");
+
+        calculation.textContent =
+            "22 - 5 = 17";
+
+        explain(
+            "num2 -= 5 is a shortcut for num2 = num2 - 5."
+        );
+    }
+
+
+    /* MULTIPLICATION */
+
+    else if (type === "multiplyCreate") {
+
+        variableBox("num3", 6, "Variable");
+
+        calculation.textContent =
+            "num3 = 6";
+
+        explain(
+            "num3 now contains 6."
+        );
+    }
+
+
+    else if (type === "multiply") {
+
+        variableBox("num3", 6, "Variable");
+
+        arrow();
+
+        resultBox("Result", 24);
+
+        calculation.textContent =
+            "6 * 4 = 24";
+
+        explain(
+            "The * operator multiplies 6 by 4 to produce 24."
+        );
+    }
+
+
+    else if (type === "assignMultiply") {
+
+        variableBox("num3", 6, "Before");
+
+        arrow();
+
+        resultBox("Calculation", 24);
+
+        arrow();
+
+        variableBox("num3", 24, "After");
+
+        calculation.textContent =
+            "6 * 4 = 24 → store 24";
+
+        explain(
+            "The multiplication result is stored back inside num3."
+        );
+    }
+
+
+    else if (type === "multiplyEqual") {
+
+        variableBox("num3", 24, "Before");
+
+        arrow();
+
+        variableBox("num3", 48, "After");
+
+        calculation.textContent =
+            "24 * 2 = 48";
+
+        explain(
+            "num3 *= 2 is a shortcut for num3 = num3 * 2."
+        );
+    }
+
+
+    /* DIVISION */
+
+    else if (type === "divideCreate") {
+
+        variableBox("num4", 40, "Variable");
+
+        calculation.textContent =
+            "num4 = 40";
+
+        explain(
+            "num4 now contains 40."
+        );
+    }
+
+
+    else if (type === "divide") {
+
+        variableBox("num4", 40, "Variable");
+
+        arrow();
+
+        resultBox("Result", 8);
+
+        calculation.textContent =
+            "40 / 5 = 8";
+
+        explain(
+            "The / operator divides 40 by 5 to produce 8."
+        );
+    }
+
+
+    else if (type === "assignDivide") {
+
+        variableBox("num4", 40, "Before");
+
+        arrow();
+
+        resultBox("Calculation", 8);
+
+        arrow();
+
+        variableBox("num4", 8, "After");
+
+        calculation.textContent =
+            "40 / 5 = 8 → store 8";
+
+        explain(
+            "The division result is stored back inside num4."
+        );
+    }
+
+
+    else if (type === "divideEqual") {
+
+        variableBox("num4", 8, "Before");
+
+        arrow();
+
+        variableBox("num4", 4, "After");
+
+        calculation.textContent =
+            "8 / 2 = 4";
+
+        explain(
+            "num4 /= 2 is a shortcut for num4 = num4 / 2."
+        );
+    }
+
+
+    /* PRACTICE */
+
+    else if (type === "scoreCreate") {
+
+        variableBox("score", 100, "Variable");
+
+        calculation.textContent =
+            "score = 100";
+    }
+
+
+    else if (type === "scoreMinus") {
+
+        variableBox("score", 100, "Before");
+
+        arrow();
+
+        variableBox("score", 75, "After");
+
+        calculation.textContent =
+            "100 - 25 = 75";
+
+        explain(
+            "score changed from 100 to 75."
+        );
+    }
+
+
+    else if (type === "itemsCreate") {
+
+        variableBox("items", 5, "Variable");
+
+        calculation.textContent =
+            "items = 5";
+    }
+
+
+    else if (type === "itemsMultiply") {
+
+        variableBox("items", 5, "Before");
+
+        arrow();
+
+        variableBox("items", 15, "After");
+
+        calculation.textContent =
+            "5 * 3 = 15";
+
+        explain(
+            "items changed from 5 to 15."
+        );
+    }
+
+
+    else if (type === "moneyCreate") {
+
+        variableBox("money", 200, "Variable");
+
+        calculation.textContent =
+            "money = 200";
+    }
+
+
+    else if (type === "moneyDivide") {
+
+        variableBox("money", 200, "Before");
+
+        arrow();
+
+        variableBox("money", 50, "After");
+
+        calculation.textContent =
+            "200 / 4 = 50";
+
+        explain(
+            "money changed from 200 to 50."
+        );
+    }
+
+}
+
+
+/* =========================================
+   EXPLANATION
+========================================= */
+
+function explain(text) {
+
+    explanation.innerHTML =
+        "📚 " + text;
+
+    explanation.style.display =
+        "block";
+
+}
+
+
+/* =========================================
+   VARIABLE BOX
+========================================= */
+
+function variableBox(
+    name,
+    value,
+    label
+) {
+
+    const box =
+        document.createElement("div");
+
+    box.className =
+        "variable-box";
+
+    box.innerHTML = `
+        <div class="label">${label}</div>
+        <div class="name">${name}</div>
+        <div class="value">${value}</div>
+    `;
+
+    boxes.appendChild(box);
+
+}
+
+
+/* =========================================
+   RESULT BOX
+========================================= */
+
+function resultBox(
+    name,
+    value
+) {
+
+    const box =
+        document.createElement("div");
+
+    box.className =
+        "result-box";
+
+    box.innerHTML = `
+        <div class="label">Temporary Result</div>
+        <div class="name">${name}</div>
+        <div class="value">${value}</div>
+    `;
+
+    boxes.appendChild(box);
+
+}
+
+
+/* =========================================
+   ARROW
+========================================= */
+
+function arrow() {
+
+    const element =
+        document.createElement("div");
+
+    element.className =
+        "arrow";
+
+    element.textContent =
+        "→";
+
+    boxes.appendChild(element);
+
+}
+
+
+/* =========================================
+   NEXT
+========================================= */
+
+nextBtn.addEventListener(
+    "click",
+    function() {
+
+        currentQuestion++;
+
+        if (
+            currentQuestion >=
+            questions.length
+        ) {
+
+            lessonCard.style.display =
+                "none";
+
+            finished.style.display =
+                "block";
+
+            return;
+        }
+
+        loadQuestion();
+
+    }
+);
+
+
+/* =========================================
+   START
+========================================= */
+
+createProgress();
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
